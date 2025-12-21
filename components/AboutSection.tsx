@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
+import { API_ENDPOINTS, getImageUrl } from '../lib/api'
 
 interface AboutContent {
   subtitle: string
@@ -46,7 +47,7 @@ export default function AboutSection() {
 
   const fetchAboutContent = async () => {
     try {
-      const response = await fetch('http://localhost:8010/api/about-section/')
+      const response = await fetch(API_ENDPOINTS.ABOUT_SECTION)
       if (response.ok) {
         const data = await response.json()
         setAboutContent({
@@ -57,8 +58,8 @@ export default function AboutSection() {
           mission_description: data.mission_description || aboutContent.mission_description,
           vision_title: data.vision_title || aboutContent.vision_title,
           vision_description: data.vision_description || aboutContent.vision_description,
-          image1: data.image1 ? `http://localhost:8010${data.image1}` : aboutContent.image1,
-          image2: data.image2 ? `http://localhost:8010${data.image2}` : aboutContent.image2,
+          image1: getImageUrl(data.image1) || aboutContent.image1,
+          image2: getImageUrl(data.image2) || aboutContent.image2,
           floating_text: data.floating_text || aboutContent.floating_text
         })
       }

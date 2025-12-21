@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { API_ENDPOINTS, getImageUrl } from '../../../lib/api'
 
 export default function SiteSettings() {
   const [siteSettings, setSiteSettings] = useState({
@@ -10,7 +11,9 @@ export default function SiteSettings() {
     email: 'info.inno8sh@gmail.com',
     phone: '+93 711 167 380',
     address: 'Kabul, Afghanistan',
-    working_hours: '9:00 am - 6:00 pm'
+    working_hours: '9:00 am - 6:00 pm',
+    logo: null,
+    mobile_logo: null
   })
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
@@ -27,7 +30,7 @@ export default function SiteSettings() {
 
   const fetchSiteSettings = async () => {
     try {
-      const response = await fetch('http://localhost:8010/api/site-settings/')
+      const response = await fetch(API_ENDPOINTS.SITE_SETTINGS)
       if (response.ok) {
         const data = await response.json()
         setSiteSettings(data)
@@ -40,14 +43,38 @@ export default function SiteSettings() {
   const updateSiteSettings = async () => {
     const token = localStorage.getItem('access_token')
     try {
-      await fetch('http://localhost:8010/api/admin/site-settings/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(siteSettings)
-      })
+      if (siteSettings.logo instanceof File || siteSettings.mobile_logo instanceof File) {
+        const formData = new FormData()
+        formData.append('site_name', siteSettings.site_name)
+        formData.append('email', siteSettings.email)
+        formData.append('phone', siteSettings.phone)
+        formData.append('address', siteSettings.address)
+        formData.append('working_hours', siteSettings.working_hours)
+        
+        if (siteSettings.logo instanceof File) {
+          formData.append('logo', siteSettings.logo)
+        }
+        if (siteSettings.mobile_logo instanceof File) {
+          formData.append('mobile_logo', siteSettings.mobile_logo)
+        }
+        
+        await fetch(API_ENDPOINTS.ADMIN_SITE_SETTINGS, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        })
+      } else {
+        await fetch(API_ENDPOINTS.ADMIN_SITE_SETTINGS, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(siteSettings)
+        })
+      }
       setSuccessMessage('Settings updated successfully!')
       setShowSuccessModal(true)
     } catch (err) {
@@ -112,6 +139,48 @@ export default function SiteSettings() {
                 value={siteSettings.working_hours}
                 onChange={(e) => setSiteSettings({...siteSettings, working_hours: e.target.value})}
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Desktop Logo</label>
+              <input
+                type="file"
+                accept="image/*"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    setSiteSettings({...siteSettings, logo: file})
+                  }
+                }}
+              />
+              {siteSettings.logo && (
+                <img 
+                  src={typeof siteSettings.logo === 'string' ? getImageUrl(siteSettings.logo) : URL.createObjectURL(siteSettings.logo)} 
+                  alt="Desktop Logo Preview" 
+                  className="mt-2 h-12 w-auto object-contain" 
+                />
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Mobile Logo</label>
+              <input
+                type="file"
+                accept="image/*"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    setSiteSettings({...siteSettings, mobile_logo: file})
+                  }
+                }}
+              />
+              {siteSettings.mobile_logo && (
+                <img 
+                  src={typeof siteSettings.mobile_logo === 'string' ? getImageUrl(siteSettings.mobile_logo) : URL.createObjectURL(siteSettings.mobile_logo)} 
+                  alt="Mobile Logo Preview" 
+                  className="mt-2 h-10 w-auto object-contain" 
+                />
+              )}
             </div>
             <button
               onClick={updateSiteSettings}

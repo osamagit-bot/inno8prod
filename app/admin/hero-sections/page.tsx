@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { API_ENDPOINTS, getImageUrl } from '../../../lib/api'
 
 export default function HeroSections() {
   const [heroSections, setHeroSections] = useState([
@@ -52,7 +53,7 @@ export default function HeroSections() {
     }
     
     try {
-      const response = await fetch('http://localhost:8010/api/hero-sections/')
+      const response = await fetch(API_ENDPOINTS.HERO_SECTIONS)
       if (response.ok) {
         const data = await response.json()
         const formattedData = data.map(item => {
@@ -60,7 +61,7 @@ export default function HeroSections() {
           return {
             ...item,
             button_text: item.buttonText || item.button_text || 'Get Started',
-            backgroundImage: item.background_image ? `http://localhost:8010${item.background_image}` : null,
+            backgroundImage: getImageUrl(item.background_image),
             background_image: existingHero?.background_image || item.background_image
           }
         })
@@ -74,7 +75,7 @@ export default function HeroSections() {
   const saveAllHeroSections = async () => {
     const token = localStorage.getItem('access_token')
     try {
-      const deleteResponse = await fetch('http://localhost:8010/api/admin/hero-sections/delete-all/', {
+      const deleteResponse = await fetch(API_ENDPOINTS.ADMIN_HERO_SECTIONS_DELETE_ALL, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -101,7 +102,7 @@ export default function HeroSections() {
           formData.append('background_image', hero.background_image)
         }
         
-        const response = await fetch('http://localhost:8010/api/admin/hero-sections/', {
+        const response = await fetch(API_ENDPOINTS.ADMIN_HERO_SECTIONS, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -149,7 +150,7 @@ export default function HeroSections() {
     const token = localStorage.getItem('access_token')
     if (hero.id && typeof hero.id === 'number') {
       try {
-        await fetch(`http://localhost:8010/api/admin/hero-sections/${hero.id}/`, {
+        await fetch(`${API_ENDPOINTS.ADMIN_HERO_SECTIONS}${hero.id}/`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`

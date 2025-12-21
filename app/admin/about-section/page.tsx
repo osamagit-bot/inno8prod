@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { API_ENDPOINTS, getImageUrl, API_CONFIG } from '../../../lib/api'
 
 export default function AboutSection() {
   const [aboutSection, setAboutSection] = useState({
@@ -32,7 +33,7 @@ export default function AboutSection() {
 
   const fetchAboutSection = async () => {
     try {
-      const response = await fetch('http://localhost:8010/api/about-section/')
+      const response = await fetch(API_ENDPOINTS.ABOUT_SECTION)
       if (response.ok) {
         const data = await response.json()
         setAboutSection({
@@ -74,7 +75,7 @@ export default function AboutSection() {
           formData.append('image2', aboutSection.image2)
         }
         
-        const response = await fetch('http://localhost:8010/api/admin/about-section/', {
+        const response = await fetch(API_ENDPOINTS.ADMIN_ABOUT_SECTION, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -93,7 +94,7 @@ export default function AboutSection() {
           setShowSuccessModal(true)
         }
       } else {
-        const response = await fetch('http://localhost:8010/api/admin/about-section/', {
+        const response = await fetch(API_ENDPOINTS.ADMIN_ABOUT_SECTION, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -244,7 +245,7 @@ export default function AboutSection() {
                 />
                 {aboutSection.image1 && (
                   <img 
-                    src={typeof aboutSection.image1 === 'string' ? `http://localhost:8010${aboutSection.image1}` : URL.createObjectURL(aboutSection.image1)} 
+                    src={typeof aboutSection.image1 === 'string' ? getImageUrl(aboutSection.image1) : URL.createObjectURL(aboutSection.image1)} 
                     alt="Preview" 
                     className="mt-2 h-20 w-32 object-cover rounded" 
                   />
@@ -265,7 +266,7 @@ export default function AboutSection() {
                 />
                 {aboutSection.image2 && (
                   <img 
-                    src={typeof aboutSection.image2 === 'string' ? `http://localhost:8010${aboutSection.image2}` : URL.createObjectURL(aboutSection.image2)} 
+                    src={typeof aboutSection.image2 === 'string' ? getImageUrl(aboutSection.image2) : URL.createObjectURL(aboutSection.image2)} 
                     alt="Preview" 
                     className="mt-2 h-20 w-32 object-cover rounded" 
                   />

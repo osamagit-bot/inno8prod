@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { API_ENDPOINTS } from '../../../lib/api'
 
 export default function Services() {
   const [servicesSection, setServicesSection] = useState({
@@ -35,7 +36,7 @@ export default function Services() {
 
   const fetchServicesSection = async () => {
     try {
-      const response = await fetch('http://localhost:8010/api/services-section/')
+      const response = await fetch(API_ENDPOINTS.SERVICES_SECTION)
       if (response.ok) {
         const data = await response.json()
         setServicesSection({
@@ -52,7 +53,7 @@ export default function Services() {
 
   const fetchServices = async () => {
     try {
-      const response = await fetch('http://localhost:8010/api/services/')
+      const response = await fetch(API_ENDPOINTS.SERVICES)
       if (response.ok) {
         const data = await response.json()
         if (data.length > 0) {
@@ -67,7 +68,7 @@ export default function Services() {
   const saveServicesSection = async () => {
     const token = localStorage.getItem('access_token')
     try {
-      const response = await fetch('http://localhost:8010/api/admin/services-section/', {
+      const response = await fetch(API_ENDPOINTS.ADMIN_SERVICES_SECTION, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,13 +95,13 @@ export default function Services() {
     }
     
     try {
-      const existingResponse = await fetch('http://localhost:8010/api/admin/services/', {
+      const existingResponse = await fetch(API_ENDPOINTS.ADMIN_SERVICES, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (existingResponse.ok) {
         const existingServices = await existingResponse.json()
         for (const existing of existingServices) {
-          await fetch(`http://localhost:8010/api/admin/services/${existing.id}/`, {
+          await fetch(`${API_ENDPOINTS.ADMIN_SERVICES}${existing.id}/`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
           })
@@ -108,7 +109,7 @@ export default function Services() {
       }
 
       for (const service of services) {
-        const response = await fetch('http://localhost:8010/api/admin/services/', {
+        const response = await fetch(API_ENDPOINTS.ADMIN_SERVICES, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -154,7 +155,7 @@ export default function Services() {
     const token = localStorage.getItem('access_token')
     if (service.id && service.id < 1000) {
       try {
-        await fetch(`http://localhost:8010/api/admin/services/${service.id}/`, {
+        await fetch(`${API_ENDPOINTS.ADMIN_SERVICES}${service.id}/`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`

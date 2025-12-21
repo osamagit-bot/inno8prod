@@ -3,6 +3,7 @@ from django.db import models
 class SiteSettings(models.Model):
     site_name = models.CharField(max_length=100, default="Inno8 Solutions")
     logo = models.ImageField(upload_to='logos/', null=True, blank=True)
+    mobile_logo = models.ImageField(upload_to='logos/', null=True, blank=True)
     email = models.EmailField(default="info.inno8sh@gmail.com")
     phone = models.CharField(max_length=20, default="+93 711 167 380")
     address = models.CharField(max_length=200, default="Kabul, Afghanistan")

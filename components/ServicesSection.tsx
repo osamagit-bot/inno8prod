@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
+import { API_ENDPOINTS } from '../lib/api'
 
 interface ServicesSectionContent {
   subtitle: string
@@ -45,7 +46,7 @@ export default function ServicesSection() {
 
   const fetchSectionContent = async () => {
     try {
-      const response = await fetch('http://localhost:8010/api/services-section/')
+      const response = await fetch(API_ENDPOINTS.SERVICES_SECTION)
       if (response.ok) {
         const data = await response.json()
         setSectionContent({
@@ -62,7 +63,7 @@ export default function ServicesSection() {
 
   const fetchServices = async () => {
     try {
-      const response = await fetch('http://localhost:8010/api/services/')
+      const response = await fetch(API_ENDPOINTS.SERVICES)
       if (response.ok) {
         const data = await response.json()
         setServices(data) // Always use backend data, even if empty
@@ -172,13 +173,32 @@ export default function ServicesSection() {
           {services.map((service, index) => (
             <div 
               key={index}
-              className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-8 hover:bg-white/10 transition-all duration-500 hover:scale-105 hover:shadow-2xl"
+              className="group relative rounded-lg p-8 transition-all duration-500 hover:scale-105 hover:shadow-2xl overflow-hidden" 
+              style={{ backgroundColor: '#fff' }}
               data-aos="fade-up"
               data-aos-delay={index * 100}
             >
+              {/* Dark Background Overlay - Slides from bottom to top */}
+              <div className="absolute inset-0 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.secondary_color }}></div>
+              
+              {/* Bottom Border - Slides from left to right */}
+              <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-500 ease-out" style={{ backgroundColor: colors.accent_color }}></div>
+              
               {/* Service Icon */}
-              <div className="mb-6">
-                <div className="w-20 h-20 rounded-lg flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" style={{ backgroundColor: colors.primary_color + '20', color: colors.primary_color }}>
+              <div className="mb-6 relative z-10">
+                <div 
+                  className="w-20 h-20 rounded-lg flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" 
+                  style={{ backgroundColor: colors.primary_color + '20', color: colors.primary_color }}
+                  ref={(el) => {
+                    if (el) {
+                      const parent = el.closest('.group')
+                      const handleMouseEnter = () => el.style.color = 'white'
+                      const handleMouseLeave = () => el.style.color = colors.primary_color
+                      parent?.addEventListener('mouseenter', handleMouseEnter)
+                      parent?.addEventListener('mouseleave', handleMouseLeave)
+                    }
+                  }}
+                >
                   {service.icon_svg ? (
                     <div dangerouslySetInnerHTML={{ __html: service.icon_svg }} />
                   ) : (
@@ -188,19 +208,43 @@ export default function ServicesSection() {
               </div>
 
               {/* Service Title */}
-              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-white transition-colors">
+              <h3 
+                className="text-xl font-bold mb-4 transition-colors relative z-10" 
+                style={{ color: colors.secondary_color }}
+                ref={(el) => {
+                  if (el) {
+                    const parent = el.closest('.group')
+                    const handleMouseEnter = () => el.style.color = 'white'
+                    const handleMouseLeave = () => el.style.color = colors.secondary_color
+                    parent?.addEventListener('mouseenter', handleMouseEnter)
+                    parent?.addEventListener('mouseleave', handleMouseLeave)
+                  }
+                }}
+              >
                 {service.name}
               </h3>
 
               {/* Service Description */}
               {service.description && (
-                <p className="text-gray-300 text-sm mb-6 leading-relaxed">
+                <p 
+                  className="text-sm mb-6 leading-relaxed transition-colors relative z-10" 
+                  style={{ color: colors.primary_color }}
+                  ref={(el) => {
+                    if (el) {
+                      const parent = el.closest('.group')
+                      const handleMouseEnter = () => el.style.color = 'white'
+                      const handleMouseLeave = () => el.style.color = colors.primary_color
+                      parent?.addEventListener('mouseenter', handleMouseEnter)
+                      parent?.addEventListener('mouseleave', handleMouseLeave)
+                    }
+                  }}
+                >
                   {service.description}
                 </p>
               )}
 
               {/* Arrow Icon - Bottom Right */}
-              <div className="absolute bottom-4 right-4 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0" style={{ backgroundColor: colors.primary_color }}>
+              <div className="absolute bottom-4 right-4 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0 z-10" style={{ backgroundColor: colors.primary_color }}>
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>

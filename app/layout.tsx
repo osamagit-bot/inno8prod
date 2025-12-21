@@ -1,12 +1,14 @@
 'use client'
 
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { Nunito } from 'next/font/google'
 import Header from '@/components/Header'
+import LoadingScreen from '@/components/LoadingScreen'
+import CustomCursor from '@/components/CustomCursor'
 import { usePathname } from 'next/navigation'
 import { ColorProvider } from '@/contexts/ColorContext'
 
-const inter = Inter({ subsets: ['latin'] })
+const nunito = Nunito({ subsets: ['latin'] })
 
 export default function RootLayout({
   children,
@@ -18,8 +20,10 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${nunito.className} cursor-none`}>
         <ColorProvider>
+          <CustomCursor />
+          <LoadingScreen />
           {!hideHeader && <Header />}
           {children}
         </ColorProvider>

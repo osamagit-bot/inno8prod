@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { API_ENDPOINTS } from '../../../lib/api'
 
 export default function ColorPalette() {
   const [colorPalette, setColorPalette] = useState({
@@ -29,7 +30,7 @@ export default function ColorPalette() {
   const fetchColorPalette = async () => {
     try {
       const token = localStorage.getItem('access_token')
-      const response = await fetch('http://localhost:8010/api/admin/color-palettes/', {
+      const response = await fetch(API_ENDPOINTS.ADMIN_COLOR_PALETTES, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -56,14 +57,14 @@ export default function ColorPalette() {
   const saveColorPalette = async () => {
     const token = localStorage.getItem('access_token')
     try {
-      await fetch('http://localhost:8010/api/admin/color-palettes/deactivate-all/', {
+      await fetch(API_ENDPOINTS.ADMIN_COLOR_PALETTES_DEACTIVATE, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
         }
       })
       
-      const response = await fetch(`http://localhost:8010/api/admin/color-palettes/${colorPalette.id}/`, {
+      const response = await fetch(`${API_ENDPOINTS.ADMIN_COLOR_PALETTES}${colorPalette.id}/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

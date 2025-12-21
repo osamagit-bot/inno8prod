@@ -37,7 +37,7 @@ export function ColorProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    fetch('http://localhost:8010/api/color-palette/')
+    fetch(API_ENDPOINTS.COLOR_PALETTE)
       .then(res => res.json())
       .then(data => {
         setColors({

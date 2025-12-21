@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { API_ENDPOINTS } from '../../../lib/api'
 
 export default function MenuItems() {
   const [menuItems, setMenuItems] = useState([
@@ -29,7 +30,7 @@ export default function MenuItems() {
 
   const fetchMenuItems = async () => {
     try {
-      const response = await fetch('http://localhost:8010/api/menu-items/')
+      const response = await fetch(API_ENDPOINTS.MENU_ITEMS)
       if (response.ok) {
         const data = await response.json()
         if (data.length > 0) {
@@ -53,7 +54,7 @@ export default function MenuItems() {
         is_active: true
       }))
       
-      const response = await fetch('http://localhost:8010/api/admin/menu-items/', {
+      const response = await fetch(API_ENDPOINTS.ADMIN_MENU_ITEMS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

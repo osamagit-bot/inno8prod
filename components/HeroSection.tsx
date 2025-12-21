@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
+import { API_ENDPOINTS, getImageUrl } from '../lib/api'
 
 interface HeroContent {
   id?: number
@@ -25,7 +26,7 @@ export default function HeroSection() {
 
   const fetchHeroContent = async () => {
     try {
-      const response = await fetch('http://localhost:8010/api/hero-sections/')
+      const response = await fetch(API_ENDPOINTS.HERO_SECTIONS)
       if (response.ok) {
         const data = await response.json()
         if (data.length > 0) {
@@ -34,7 +35,7 @@ export default function HeroSection() {
             subtitle: item.subtitle,
             description: item.description,
             buttonText: item.buttonText || item.button_text,
-            backgroundImage: item.background_image ? `http://localhost:8010${item.background_image}` : ''
+            backgroundImage: getImageUrl(item.background_image)
           }))
           setHeroContents(formattedData)
         }
@@ -73,7 +74,8 @@ export default function HeroSection() {
     <section className="relative h-screen flex items-center justify-center">
       {/* Background Image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 z-0"
+        key={currentSlide}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 z-0 animate-zoom-in"
         style={{ backgroundImage: `url(${currentContent.backgroundImage})` }}
       />
       

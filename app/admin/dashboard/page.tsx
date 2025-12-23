@@ -27,6 +27,10 @@ export default function AdminDashboard() {
     { id: 'about-section', name: 'About Section', href: '/admin/about-section', icon: '📝' },
     { id: 'menu-items', name: 'Menu Items', href: '/admin/menu-items', icon: '📋' },
     { id: 'services', name: 'Services', href: '/admin/services', icon: '🛠️' },
+    { id: 'working-process', name: 'Working Process', href: '/admin/working-process', icon: '⚡' },
+    { id: 'projects', name: 'Projects', href: '/admin/projects', icon: '💼' },
+    { id: 'why-choose-us', name: 'Why Choose Us', href: '/admin/why-choose-us', icon: '⭐' },
+    { id: 'client-logos', name: 'Client Logos', href: '/admin/client-logos', icon: '🏢' },
   ]
 
   return (

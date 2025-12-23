@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import { API_ENDPOINTS } from '../lib/api'
 
 interface ColorPalette {
   primary_color: string

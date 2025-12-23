@@ -9,6 +9,12 @@ export const API_ENDPOINTS = {
   ABOUT_SECTION: `${API_CONFIG.BASE_URL}/api/about-section/`,
   SERVICES_SECTION: `${API_CONFIG.BASE_URL}/api/services-section/`,
   SERVICES: `${API_CONFIG.BASE_URL}/api/services/`,
+  PROJECTS: `${API_CONFIG.BASE_URL}/api/projects/`,
+  WHY_CHOOSE_US: `${API_CONFIG.BASE_URL}/api/why-choose-us/`,
+  WHY_CHOOSE_US_SECTION: `${API_CONFIG.BASE_URL}/api/why-choose-us-section/`,
+  WORKING_PROCESS: `${API_CONFIG.BASE_URL}/api/working-process/`,
+  WORKING_PROCESS_SECTION: `${API_CONFIG.BASE_URL}/api/working-process-section/`,
+  CLIENT_LOGOS: `${API_CONFIG.BASE_URL}/api/client-logos/`,
   COLOR_PALETTE: `${API_CONFIG.BASE_URL}/api/color-palette/`,
   LOGIN: `${API_CONFIG.BASE_URL}/api/login/`,
   // Admin endpoints
@@ -19,10 +25,16 @@ export const API_ENDPOINTS = {
   ADMIN_ABOUT_SECTION: `${API_CONFIG.BASE_URL}/api/admin/about-section/`,
   ADMIN_SERVICES_SECTION: `${API_CONFIG.BASE_URL}/api/admin/services-section/`,
   ADMIN_SERVICES: `${API_CONFIG.BASE_URL}/api/admin/services/`,
+  ADMIN_PROJECTS: `${API_CONFIG.BASE_URL}/api/admin/projects/`,
+  ADMIN_WHY_CHOOSE_US: `${API_CONFIG.BASE_URL}/api/admin/why-choose-us-features/`,
+  ADMIN_WORKING_PROCESS: `${API_CONFIG.BASE_URL}/api/admin/working-process/`,
+  ADMIN_CLIENT_LOGOS: `${API_CONFIG.BASE_URL}/api/admin/client-logos/`,
   ADMIN_COLOR_PALETTES: `${API_CONFIG.BASE_URL}/api/admin/color-palettes/`,
   ADMIN_COLOR_PALETTES_DEACTIVATE: `${API_CONFIG.BASE_URL}/api/admin/color-palettes/deactivate-all/`
 }
 
 export const getImageUrl = (imagePath: string) => {
-  return imagePath ? `${API_CONFIG.BASE_URL}${imagePath}` : ''
+  if (!imagePath) return ''
+  if (imagePath.startsWith('http')) return imagePath
+  return `${API_CONFIG.BASE_URL}${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`
 }

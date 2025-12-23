@@ -80,7 +80,7 @@ export default function HeroSection() {
       />
       
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-40 z-0" />
+      <div className="absolute inset-0 bg-black bg-opacity-60 z-0" />
       
       {/* Blue Overlay Animation */}
       <div className={`absolute inset-0 bg-opacity-90 transform transition-transform duration-1500 ease-out z-0 ${

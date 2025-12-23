@@ -73,7 +73,11 @@ export default function AboutSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div data-aos="fade-up">
-            <h3 className="text-lg font-medium mb-4" style={{ color: colors.primary_color }} data-aos="fade-down">{aboutContent.subtitle}</h3>
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-12 h-1 rounded-full mr-4" style={{ backgroundColor: colors.primary_color }}></div>
+            <h3 className="text-lg font-medium" style={{ color: colors.primary_color }} data-aos="fade-down">{aboutContent.subtitle}</h3>
+            <div className="w-12 h-1 rounded-full ml-4" style={{ backgroundColor: colors.primary_color }}></div>
+          </div>
             <h2 className="text-4xl lg:text-5xl font-bold mb-8 leading-tight" style={{ color: colors.secondary_color }} data-aos="fade-up" data-aos-delay="200">
               {aboutContent.title.split('\n').map((line, index) => (
                 <span key={index}>
@@ -143,7 +147,7 @@ export default function AboutSection() {
             
             {/* Floating Text Box */}
             <div className="absolute bottom-4 left-4 p-6 rounded-sm shadow-md max-w-sm animate-bounce" style={{ backgroundColor: colors.accent_color }}>
-              <p className="text-white text-sm leading-relaxed">
+              <p className="text-black text-sm leading-relaxed">
                 {aboutContent.floating_text}
               </p>
             </div>

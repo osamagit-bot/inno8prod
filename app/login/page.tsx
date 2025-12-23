@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { API_ENDPOINTS } from '../../lib/api'
 
 export default function LoginPage() {
   const [credentials, setCredentials] = useState({ username: '', password: '' })

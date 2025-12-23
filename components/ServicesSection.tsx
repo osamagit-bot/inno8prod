@@ -173,8 +173,7 @@ export default function ServicesSection() {
           {services.map((service, index) => (
             <div 
               key={index}
-              className="group relative rounded-lg p-8 transition-all duration-500 hover:scale-105 hover:shadow-2xl overflow-hidden" 
-              style={{ backgroundColor: '#fff' }}
+              className="group relative rounded-lg p-8 transition-all duration-500 hover:scale-105 hover:shadow-2xl overflow-hidden bg-blue-800/30" 
               data-aos="fade-up"
               data-aos-delay={index * 100}
             >
@@ -189,15 +188,6 @@ export default function ServicesSection() {
                 <div 
                   className="w-20 h-20 rounded-lg flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" 
                   style={{ backgroundColor: colors.primary_color + '20', color: colors.primary_color }}
-                  ref={(el) => {
-                    if (el) {
-                      const parent = el.closest('.group')
-                      const handleMouseEnter = () => el.style.color = 'white'
-                      const handleMouseLeave = () => el.style.color = colors.primary_color
-                      parent?.addEventListener('mouseenter', handleMouseEnter)
-                      parent?.addEventListener('mouseleave', handleMouseLeave)
-                    }
-                  }}
                 >
                   {service.icon_svg ? (
                     <div dangerouslySetInnerHTML={{ __html: service.icon_svg }} />
@@ -208,37 +198,13 @@ export default function ServicesSection() {
               </div>
 
               {/* Service Title */}
-              <h3 
-                className="text-xl font-bold mb-4 transition-colors relative z-10" 
-                style={{ color: colors.secondary_color }}
-                ref={(el) => {
-                  if (el) {
-                    const parent = el.closest('.group')
-                    const handleMouseEnter = () => el.style.color = 'white'
-                    const handleMouseLeave = () => el.style.color = colors.secondary_color
-                    parent?.addEventListener('mouseenter', handleMouseEnter)
-                    parent?.addEventListener('mouseleave', handleMouseLeave)
-                  }
-                }}
-              >
+              <h3 className="text-xl text-white font-bold mb-4 relative z-10">
                 {service.name}
               </h3>
 
               {/* Service Description */}
               {service.description && (
-                <p 
-                  className="text-sm mb-6 leading-relaxed transition-colors relative z-10" 
-                  style={{ color: colors.primary_color }}
-                  ref={(el) => {
-                    if (el) {
-                      const parent = el.closest('.group')
-                      const handleMouseEnter = () => el.style.color = 'white'
-                      const handleMouseLeave = () => el.style.color = colors.primary_color
-                      parent?.addEventListener('mouseenter', handleMouseEnter)
-                      parent?.addEventListener('mouseleave', handleMouseLeave)
-                    }
-                  }}
-                >
+                <p className="text-sm text-gray-100 mb-6 leading-relaxed relative z-10">
                   {service.description}
                 </p>
               )}

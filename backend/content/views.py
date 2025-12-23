@@ -154,6 +154,56 @@ def services_view(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
+def projects_view(request):
+    projects = Project.objects.filter(is_active=True).order_by('-created_at')
+    serializer = ProjectSerializer(projects, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def why_choose_us_view(request):
+    features = WhyChooseUsFeature.objects.filter(is_active=True).order_by('order')
+    serializer = WhyChooseUsFeatureSerializer(features, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def why_choose_us_section_view(request):
+    section = WhyChooseUsSection.objects.first()
+    if section:
+        serializer = WhyChooseUsSectionSerializer(section)
+        return Response(serializer.data)
+    return Response({})
+
+@api_view(['GET'])
+def client_logos_view(request):
+    logos = ClientLogo.objects.filter(is_active=True).order_by('order')
+    serializer = ClientLogoSerializer(logos, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def working_process_view(request):
+    steps = WorkingProcessStep.objects.filter(is_active=True).order_by('order')
+    serializer = WorkingProcessStepSerializer(steps, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def admin_working_process_section_view(request):
+    section, created = WorkingProcessSection.objects.get_or_create(id=1)
+    serializer = WorkingProcessSectionSerializer(section, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=400)
+
+@api_view(['GET'])
+def working_process_section_view(request):
+    section = WorkingProcessSection.objects.first()
+    if section:
+        serializer = WorkingProcessSectionSerializer(section)
+        return Response(serializer.data)
+    return Response({})
+
+@api_view(['GET'])
 def color_palette_view(request):
     palette = ColorPalette.objects.filter(is_active=True).first()
     if palette:
@@ -209,4 +259,29 @@ class AboutSectionViewSet(viewsets.ModelViewSet):
 class ServicesSectionViewSet(viewsets.ModelViewSet):
     queryset = ServicesSection.objects.all()
     serializer_class = ServicesSectionSerializer
+    permission_classes = [IsAuthenticated]
+
+class WhyChooseUsFeatureViewSet(viewsets.ModelViewSet):
+    queryset = WhyChooseUsFeature.objects.all()
+    serializer_class = WhyChooseUsFeatureSerializer
+    permission_classes = [IsAuthenticated]
+
+class WhyChooseUsSectionViewSet(viewsets.ModelViewSet):
+    queryset = WhyChooseUsSection.objects.all()
+    serializer_class = WhyChooseUsSectionSerializer
+    permission_classes = [IsAuthenticated]
+
+class ClientLogoViewSet(viewsets.ModelViewSet):
+    queryset = ClientLogo.objects.all()
+    serializer_class = ClientLogoSerializer
+    permission_classes = [IsAuthenticated]
+
+class WorkingProcessStepViewSet(viewsets.ModelViewSet):
+    queryset = WorkingProcessStep.objects.all()
+    serializer_class = WorkingProcessStepSerializer
+    permission_classes = [IsAuthenticated]
+
+class WorkingProcessSectionViewSet(viewsets.ModelViewSet):
+    queryset = WorkingProcessSection.objects.all()
+    serializer_class = WorkingProcessSectionSerializer
     permission_classes = [IsAuthenticated]

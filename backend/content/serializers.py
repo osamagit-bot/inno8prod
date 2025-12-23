@@ -62,3 +62,28 @@ class ServicesSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServicesSection
         fields = '__all__'
+
+class WhyChooseUsFeatureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WhyChooseUsFeature
+        fields = '__all__'
+
+class WhyChooseUsSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WhyChooseUsSection
+        fields = '__all__'
+
+class ClientLogoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClientLogo
+        fields = '__all__'
+
+class WorkingProcessStepSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkingProcessStep
+        fields = '__all__'
+
+class WorkingProcessSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkingProcessSection
+        fields = '__all__'

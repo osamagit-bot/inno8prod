@@ -74,7 +74,7 @@ class Testimonial(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
-    image = models.ImageField(upload_to='projects/')
+    image = models.ImageField(upload_to='projects/', null=True, blank=True)
     url = models.URLField(null=True, blank=True)
     technologies = models.CharField(max_length=200)
     is_featured = models.BooleanField(default=False)
@@ -106,3 +106,66 @@ class ServicesSection(models.Model):
     class Meta:
         verbose_name = "Services Section"
         verbose_name_plural = "Services Section"
+
+class WhyChooseUsFeature(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    icon_svg = models.TextField(help_text="SVG icon code")
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Why Choose Us Feature"
+        verbose_name_plural = "Why Choose Us Features"
+    
+    def __str__(self):
+        return self.title
+
+class WhyChooseUsSection(models.Model):
+    subtitle = models.CharField(max_length=100, default="OUR STRENGTHS")
+    title = models.CharField(max_length=200, default="WHY CHOOSE INNO8")
+    breadcrumb_items = models.CharField(max_length=200, default="Experience,Innovation,Results", help_text="Comma separated items")
+    
+    class Meta:
+        verbose_name = "Why Choose Us Section"
+        verbose_name_plural = "Why Choose Us Section"
+
+class ClientLogo(models.Model):
+    name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to='clients/')
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Client Logo"
+        verbose_name_plural = "Client Logos"
+    
+    def __str__(self):
+        return self.name
+
+class WorkingProcessStep(models.Model):
+    number = models.CharField(max_length=10, default="01")
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    icon_svg = models.TextField(help_text="SVG icon code")
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Working Process Step"
+        verbose_name_plural = "Working Process Steps"
+    
+    def __str__(self):
+        return f"{self.number} - {self.title}"
+
+class WorkingProcessSection(models.Model):
+    subtitle = models.CharField(max_length=100, default="How We Work")
+    title = models.CharField(max_length=200, default="Our Working Process")
+    description = models.TextField(default="We follow a proven methodology to deliver exceptional results for every project")
+    
+    class Meta:
+        verbose_name = "Working Process Section"
+        verbose_name_plural = "Working Process Section"

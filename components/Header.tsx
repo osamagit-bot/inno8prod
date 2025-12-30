@@ -22,9 +22,12 @@ interface SiteSettings {
 }
 
 interface MenuItem {
+  id: number
   name: string
   url: string
-  children?: MenuItem[]
+  is_active: boolean
+  order: number
+  children?: { name: string; url: string }[]
 }
 
 export default function Header() {
@@ -35,7 +38,7 @@ export default function Header() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [isScrolled, setIsScrolled] = useState(false)
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(fallbackData.siteSettings)
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(fallbackData.menuItems)
+  const [menuItems, setMenuItems] = useState<any[]>(fallbackData.menuItems)
 
   useEffect(() => {
     fetchSiteSettings()
@@ -69,11 +72,11 @@ export default function Header() {
       if (response.ok) {
         const data = await response.json()
         if (data.length > 0) {
-          const parentItems = data.filter(item => !item.parent).sort((a, b) => a.order - b.order)
-          const structuredMenu = parentItems.map(parent => ({
+          const parentItems = data.filter((item: any) => !item.parent).sort((a: any, b: any) => a.order - b.order)
+          const structuredMenu = parentItems.map((parent: any) => ({
             name: parent.name,
             url: parent.url,
-            children: parent.children && parent.children.length > 0 ? parent.children.map(child => ({
+            children: parent.children && parent.children.length > 0 ? parent.children.map((child: any) => ({
               name: child.name,
               url: child.url
             })) : undefined
@@ -222,7 +225,7 @@ export default function Header() {
               {menuItems.map((item, index) => (
                 item.children ? (
                   <div key={index} className="relative group">
-                    <a href={item.url} className="transition-colors font-medium flex items-center space-x-1 py-2" style={{ color: colors.secondary_color }} onMouseEnter={(e) => e.target.style.color = colors.primary_color} onMouseLeave={(e) => e.target.style.color = colors.secondary_color}>
+                    <a href={item.url} className="transition-colors font-medium flex items-center space-x-1 py-2" style={{ color: colors.secondary_color }} onMouseEnter={(e) => (e.target as HTMLElement).style.color = colors.primary_color} onMouseLeave={(e) => (e.target as HTMLElement).style.color = colors.secondary_color}>
                       <span>{item.name}</span>
                       <svg className="w-4 h-4 transform group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -230,8 +233,8 @@ export default function Header() {
                     </a>
                     <div className="absolute top-full left-0 w-64 bg-white shadow-lg rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out transform origin-top scale-y-0 group-hover:scale-y-100 z-50">
                       <div className="py-2">
-                        {item.children.map((child, childIndex) => (
-                          <a key={childIndex} href={child.url} className="relative block px-4 py-2 transition-colors overflow-hidden group/item" onMouseEnter={(e) => e.currentTarget.querySelector('span').style.color = 'white'} onMouseLeave={(e) => e.currentTarget.querySelector('span').style.color = colors.secondary_color}>
+                        {item.children.map((child: any, childIndex: number) => (
+                          <a key={childIndex} href={child.url} className="relative block px-4 py-2 transition-colors overflow-hidden group/item" onMouseEnter={(e) => (e.currentTarget.querySelector('span') as HTMLElement)!.style.color = 'white'} onMouseLeave={(e) => (e.currentTarget.querySelector('span') as HTMLElement)!.style.color = colors.secondary_color}>
                             <span className="relative z-10" style={{ color: colors.secondary_color }}>{child.name}</span>
                             <div className="absolute inset-0 transform -translate-x-full group-hover/item:translate-x-0 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
                           </a>
@@ -240,7 +243,7 @@ export default function Header() {
                     </div>
                   </div>
                 ) : (
-                  <a key={index} href={item.url} className="transition-colors font-medium" style={{ color: colors.secondary_color }} onMouseEnter={(e) => e.target.style.color = colors.primary_color} onMouseLeave={(e) => e.target.style.color = colors.secondary_color}>
+                  <a key={index} href={item.url} className="transition-colors font-medium" style={{ color: colors.secondary_color }} onMouseEnter={(e) => (e.target as HTMLElement).style.color = colors.primary_color} onMouseLeave={(e) => (e.target as HTMLElement).style.color = colors.secondary_color}>
                     {item.name}
                   </a>
                 )
@@ -365,7 +368,7 @@ export default function Header() {
                             openDropdown === item.name.toLowerCase() ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
                           }`}>
                             <div className="ml-4 mt-2 space-y-1">
-                              {item.children.map((child, childIndex) => (
+                              {item.children.map((child: any, childIndex: number) => (
                                 <a key={childIndex} href={child.url} className="block text-white text-opacity-70 hover:text-opacity-100 transition-colors py-1 text-sm">
                                   {child.name}
                                 </a>

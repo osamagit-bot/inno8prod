@@ -16,11 +16,14 @@ export const fallbackData = {
   },
 
   menuItems: [
-    { name: 'Home', url: '/' },
-    { name: 'About', url: '/about_us' },
+    { id: 1, name: 'Home', url: '/', is_active: true, order: 1 },
+    { id: 2, name: 'About', url: '/about_us', is_active: true, order: 2 },
     { 
+      id: 3,
       name: 'Services', 
       url: '/services',
+      is_active: true,
+      order: 3,
       children: [
         { name: 'Web Development', url: '/services/web-development' },
         { name: 'Mobile Apps', url: '/services/mobile-apps' },
@@ -29,10 +32,10 @@ export const fallbackData = {
         { name: 'Digital Marketing', url: '/services/digital-marketing' }
       ]
     },
-    { name: 'Projects', url: '/projects' },
-    { name: 'Testimonials', url: '/#testimonials' },
-    { name: 'Blog', url: '/blogs' },
-    { name: 'Contact Us', url: '/contact' }
+    { id: 4, name: 'Projects', url: '/projects', is_active: true, order: 4 },
+    { id: 5, name: 'Testimonials', url: '/#testimonials', is_active: true, order: 5 },
+    { id: 6, name: 'Blog', url: '/blogs', is_active: true, order: 6 },
+    { id: 7, name: 'Contact Us', url: '/contact', is_active: true, order: 7 }
   ],
 
   heroSections: [
@@ -74,6 +77,7 @@ export const fallbackData = {
 
   services: [
     {
+      id: 1,
       name: "Web Development",
       description: "Custom web applications built with modern technologies for optimal performance and user experience.",
       icon: "web",
@@ -82,6 +86,7 @@ export const fallbackData = {
       order: 1
     },
     {
+      id: 2,
       name: "Mobile App Development",
       description: "Native and cross-platform mobile applications for iOS and Android with seamless user experiences.",
       icon: "mobile",
@@ -90,6 +95,7 @@ export const fallbackData = {
       order: 2
     },
     {
+      id: 3,
       name: "UI/UX Design",
       description: "User-centered design solutions that create intuitive and engaging digital experiences.",
       icon: "design",
@@ -98,6 +104,7 @@ export const fallbackData = {
       order: 3
     },
     {
+      id: 4,
       name: "Digital Marketing",
       description: "Comprehensive digital marketing strategies to boost your online presence and drive growth.",
       icon: "marketing",
@@ -115,6 +122,7 @@ export const fallbackData = {
 
   whyChooseUsFeatures: [
     {
+      id: 1,
       title: "Expert Team",
       description: "Our skilled professionals bring years of experience in cutting-edge technologies.",
       icon_svg: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-4h3v4h2v-7.5c0-.83.67-1.5 1.5-1.5S12 9.67 12 10.5V18h2v-4h3v4h2V8.5c0-1.93-1.57-3.5-3.5-3.5S12 6.57 12 8.5V18H4z"/></svg>`,
@@ -122,6 +130,7 @@ export const fallbackData = {
       is_active: true
     },
     {
+      id: 2,
       title: "Quality Assurance",
       description: "We ensure the highest quality standards in every project we deliver.",
       icon_svg: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>`,
@@ -129,6 +138,7 @@ export const fallbackData = {
       is_active: true
     },
     {
+      id: 3,
       title: "24/7 Support",
       description: "Round-the-clock support to ensure your business runs smoothly.",
       icon_svg: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`,
@@ -145,6 +155,7 @@ export const fallbackData = {
 
   workingProcessSteps: [
     {
+      id: 1,
       number: "01",
       title: "Discovery & Planning",
       description: "We analyze your requirements and create a comprehensive project plan.",
@@ -153,6 +164,7 @@ export const fallbackData = {
       is_active: true
     },
     {
+      id: 2,
       number: "02",
       title: "Design & Development",
       description: "Our team creates and develops your solution with attention to detail.",
@@ -161,6 +173,7 @@ export const fallbackData = {
       is_active: true
     },
     {
+      id: 3,
       number: "03",
       title: "Testing & Launch",
       description: "Rigorous testing ensures quality before we launch your project.",
@@ -172,12 +185,14 @@ export const fallbackData = {
 
   clientLogos: [
     {
+      id: 1,
       name: "Client 1",
       logo: "/images/update logo.png",
       order: 1,
       is_active: true
     },
       {
+      id: 2,
       name: "Client 2",
       logo: "/images/update logo.png",
       order: 2,
@@ -194,6 +209,7 @@ export const fallbackData = {
 
   testimonials: [
     {
+      id: 1,
       name: "John Smith",
       position: "CEO",
       company: "Tech Solutions Inc",
@@ -203,6 +219,7 @@ export const fallbackData = {
       is_active: true
     },
     {
+      id: 2,
       name: "Sarah Johnson",
       position: "Marketing Director",
       company: "Digital Ventures",
@@ -215,18 +232,34 @@ export const fallbackData = {
 
   projects: [
     {
+      id: 1,
       title: "E-Commerce Platform",
       description: "A comprehensive e-commerce solution with advanced features and seamless user experience.",
+      image: "",
       technologies: "React, Node.js, MongoDB",
       is_featured: true,
-      is_active: true
+      is_active: true,
+      created_at: new Date().toISOString()
     },
     {
+      id: 2,
       title: "Mobile Banking App",
       description: "Secure and user-friendly mobile banking application with real-time transactions.",
+      image: "",
       technologies: "React Native, Firebase, Node.js",
       is_featured: true,
-      is_active: true
+      is_active: true,
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 3,
+      title: "Enterprise Management System",
+      description: "Complete business management solution for enterprise-level operations and workflow automation.",
+      image: "",
+      technologies: "Vue.js, Laravel, MySQL",
+      is_featured: false,
+      is_active: true,
+      created_at: new Date().toISOString()
     }
   ],
 
@@ -236,7 +269,7 @@ export const fallbackData = {
       name: "Ahmad Osama",
       position: "CEO & Founder",
       bio: "Visionary leader with 10+ years of experience in software development and business strategy.",
-      image: "/images/osama.jpg",
+      image: "",
       is_active: true,
       order: 1
     },
@@ -245,7 +278,7 @@ export const fallbackData = {
       name: "Sarah Johnson",
       position: "CTO",
       bio: "Technical expert specializing in full-stack development and system architecture.",
-      image: "/images/team/sarah.jpg",
+      image: "",
       is_active: true,
       order: 2
     },
@@ -254,7 +287,7 @@ export const fallbackData = {
       name: "Michael Chen",
       position: "Lead Developer",
       bio: "Senior developer with expertise in React, Node.js, and cloud technologies.",
-      image: "/images/team/michael.jpg",
+      image: "",
       is_active: true,
       order: 3
     },
@@ -263,7 +296,7 @@ export const fallbackData = {
       name: "Emily Rodriguez",
       position: "UI/UX Designer",
       bio: "Creative designer focused on user experience and modern interface design.",
-      image: "/images/team/emily.jpg",
+      image: "",
       is_active: true,
       order: 4
     }

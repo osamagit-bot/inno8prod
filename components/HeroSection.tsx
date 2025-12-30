@@ -39,7 +39,7 @@ export default function HeroSection() {
       if (response.ok) {
         const data = await response.json()
         if (data.length > 0) {
-          const formattedData = data.map(item => ({
+          const formattedData = data.map((item: any) => ({
             title: item.title,
             subtitle: item.subtitle,
             description: item.description,

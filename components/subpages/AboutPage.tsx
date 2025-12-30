@@ -39,9 +39,9 @@ export default function AboutPage() {
   const [statsCounters, setStatsCounters] = useState({ customers: 0, projects: 0, experts: 0, satisfaction: 0 })
   const [statsAnimated, setStatsAnimated] = useState(false)
   const statsMainRef = useRef(null)
-  const [teamMembers, setTeamMembers] = useState([])
+  const [teamMembers, setTeamMembers] = useState<any[]>([])
   const [currentSlide, setCurrentSlide] = useState(0)
-  const [hoveredCard, setHoveredCard] = useState(null)
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const itemsPerSlide = 4
 
   useEffect(() => {
@@ -100,10 +100,10 @@ export default function AboutPage() {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !statsAnimated) {
             setStatsAnimated(true)
-            animateCounter((val) => setStatsCounters(prev => ({ ...prev, customers: val })), 500, 2000)
-            animateCounter((val) => setStatsCounters(prev => ({ ...prev, projects: val })), 150, 2500)
-            animateCounter((val) => setStatsCounters(prev => ({ ...prev, experts: val })), 20, 3000)
-            animateCounter((val) => setStatsCounters(prev => ({ ...prev, satisfaction: val })), 100, 3500)
+            animateCounter((val: number) => setStatsCounters(prev => ({ ...prev, customers: val })), 500, 2000)
+            animateCounter((val: number) => setStatsCounters(prev => ({ ...prev, projects: val })), 150, 2500)
+            animateCounter((val: number) => setStatsCounters(prev => ({ ...prev, experts: val })), 20, 3000)
+            animateCounter((val: number) => setStatsCounters(prev => ({ ...prev, satisfaction: val })), 100, 3500)
           }
         })
       },
@@ -117,7 +117,7 @@ export default function AboutPage() {
     return () => observer.disconnect()
   }, [statsAnimated])
 
-  const animateCounter = (setter, target, duration) => {
+  const animateCounter = (setter: (val: number) => void, target: number, duration: number) => {
     let start = 0
     const increment = target / (duration / 16)
     const timer = setInterval(() => {
@@ -346,11 +346,25 @@ export default function AboutPage() {
               >
                 <div className="rounded-tl-[4rem] rounded-br-[4rem] shadow-sm overflow-hidden transition-all duration-300" style={{'backgroundColor':'#f8f9fa'}}>
                   <div className="relative h-80 overflow-hidden">
-                    <img
-                      src={member.image ? getImageUrl(member.image) : '/images/placeholder-team.jpg'}
-                      alt={member.name}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
+                    {member.image ? (
+                      <img
+                        src={getImageUrl(member.image)}
+                        alt={member.name}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                          if (nextElement) {
+                            nextElement.style.display = 'flex';
+                          }
+                        }}
+                      />
+                    ) : null}
+                    <div className={`w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center ${member.image ? 'hidden' : 'flex'}`}>
+                      <svg className="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                      </svg>
+                    </div>
                     
                     <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#0477BF] via-[#0477BF]/80 to-transparent transition-all duration-500 ${
                       hoveredCard === member.id ? 'h-full' : 'h-0'

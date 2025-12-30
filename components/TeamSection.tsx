@@ -77,14 +77,25 @@ export default function TeamSection() {
               >
                 <div className="rounded-tl-[4rem] rounded-br-[4rem] shadow-sm overflow-hidden transition-all duration-300" style={{'backgroundColor':'#f8f9fa'}}>
                   <div className="relative h-80 overflow-hidden">
-                    <img
-                      src={member.image ? (member.image.startsWith('/') ? member.image : getImageUrl(member.image)) : '/images/placeholder-team.jpg'}
-                      alt={member.name}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      onError={(e) => {
-                        e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjEwMCIgY3k9IjgwIiByPSIzMCIgZmlsbD0iIzlDQTNBRiIvPgo8cGF0aCBkPSJNNTAgMTYwQzUwIDEzNS4xNDcgNzAuMTQ3IDExNSA5NSAxMTVIMTA1QzEyOS44NTMgMTE1IDE1MCAxMzUuMTQ3IDE1MCAxNjBWMjAwSDUwVjE2MFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
-                      }}
-                    />
+                    {member.image ? (
+                      <img
+                        src={member.image.startsWith('/') ? member.image : getImageUrl(member.image)}
+                        alt={member.name}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                          if (nextElement) {
+                            nextElement.style.display = 'flex';
+                          }
+                        }}
+                      />
+                    ) : null}
+                    <div className={`w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center ${member.image ? 'hidden' : 'flex'}`}>
+                      <svg className="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                      </svg>
+                    </div>
                     
                     <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#0477BF] via-[#0477BF]/80 to-transparent transition-all duration-500 ${
                       hoveredCard === member.id ? 'h-full' : 'h-0'

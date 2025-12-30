@@ -135,7 +135,7 @@ export default function WorkingProcess() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const stepIndex = parseInt(entry.target.getAttribute('data-step') || '0')
-            setVisibleSteps(prev => [...new Set([...prev, stepIndex])])
+            setVisibleSteps(prev => [...Array.from(new Set([...prev, stepIndex]))])
           }
         })
       },
@@ -196,7 +196,7 @@ export default function WorkingProcess() {
               {/* Step Card */}
               <div className={`rounded-2xl p-8 shadow-sm transition-all duration-500 relative overflow-hidden ${
                 activeStep === index ? 'ring-1' : ''
-              }`} style={{ backgroundColor: '#FAFAFA', ringColor: activeStep === index ? colors.primary_color : 'transparent' }}>
+              }`} style={{ backgroundColor: '#FAFAFA', ...(activeStep === index && { borderColor: colors.primary_color, borderWidth: '1px' }) }}>
                 
                 {/* Animated Background */}
                 <div className={`absolute inset-0 transform transition-transform duration-700 ${

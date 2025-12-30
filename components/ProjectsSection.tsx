@@ -132,7 +132,7 @@ export default function ProjectsSection() {
           {filteredProjects.slice(0, 3).map((project, index) => (
             <div
               key={project.id}
-              className="group rounded-xl overflow-hidden shadow-sm transition-all duration-500 transform hover:-translate-y-2"
+              className="group rounded-xl overflow-hidden shadow-sm transition-all duration-500 transform hover:-translate-y-2 flex flex-col h-full"
               style={{ backgroundColor: '#FAFAFA' }}
               data-aos="fade-up"
               data-aos-delay={index * 100}
@@ -147,13 +147,10 @@ export default function ProjectsSection() {
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                    <div className="text-center text-gray-600">
-                      <svg className="w-16 h-16 mx-auto mb-2 opacity-50" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-sm font-medium">{project.title}</span>
-                    </div>
+                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <svg className="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                    </svg>
                   </div>
                 )}
                 <div className="absolute inset-0 bg-black/40 scale-0 group-hover:scale-150 transition-transform duration-500 ease-out"></div>
@@ -167,16 +164,16 @@ export default function ProjectsSection() {
               </div>
 
               {/* Project Content */}
-              <div className="p-6">
+              <div className="p-6 flex flex-col flex-grow">
                 <h3 className="text-xl font-bold mb-3 group-hover:text-blue-600 transition-colors" style={{ color: colors.secondary_color }}>
                   {project.title}
                 </h3>
-                <p className="text-gray-600 mb-4 line-clamp-3">
+                <p className="text-gray-600 mb-4 line-clamp-3 flex-grow">
                   {project.description}
                 </p>
 
                 {/* Technologies */}
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="flex flex-wrap gap-2 mb-4 mt-auto">
                   {project.technologies.split(', ').map((tech, techIndex) => (
                     <span
                       key={`${project.id}-${tech}-${techIndex}`}

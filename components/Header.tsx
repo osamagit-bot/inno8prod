@@ -200,12 +200,11 @@ export default function Header() {
           <div className="flex justify-between items-center">
             {/* Logo */}
             <a href="/" className="flex items-center space-x-3">
-              <Image 
+              <img 
                 src={siteSettings.logo ? getImageUrl(siteSettings.logo) : "/images/update%20logo.png"} 
                 alt="Inno8 Logo" 
                 width={150} 
                 height={50}
-                priority
                 style={{ width: 'auto', height: '48px' }}
                 onError={(e) => {
                   console.log('Logo failed to load:', e.currentTarget.src);

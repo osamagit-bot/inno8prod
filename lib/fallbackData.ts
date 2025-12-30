@@ -11,8 +11,8 @@ export const fallbackData = {
     telegram_url: "https://t.me/inno8solutions",
     linkedin_url: "https://linkedin.com/company/inno8solutions",
     youtube_url: "https://youtube.com/@inno8solutions",
-    logo: "/images/update logo.png",
-    mobile_logo: "/images/inoo8 With Bg.jpg"
+    logo: "/images/update%20logo.png",
+    mobile_logo: "/images/inoo8%20With%20Bg.jpg"
   },
 
   menuItems: [

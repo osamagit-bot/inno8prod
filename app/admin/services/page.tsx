@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_ENDPOINTS } from '../../../lib/api'
@@ -12,7 +12,7 @@ export default function Services() {
     title_highlight: 'Technology Trends',
     button_text: 'Explore More'
   })
-  const [services, setServices] = useState([
+  const [services, setServices] = useState<any[]>([
     { id: 1, name: 'Web Development', description: '', icon: 'web', order: 1, is_active: true },
     { id: 2, name: 'Graphic Design', description: '', icon: 'design', order: 2, is_active: true },
     { id: 3, name: 'Video Editing', description: '', icon: 'video', order: 3, is_active: true },
@@ -22,7 +22,9 @@ export default function Services() {
   ])
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
+  const servicesContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -65,7 +67,50 @@ export default function Services() {
     }
   }
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+    
+    // Validate section data
+    if (!servicesSection.subtitle.trim()) {
+      newErrors.subtitle = 'Subtitle is required'
+    }
+    if (!servicesSection.title.trim()) {
+      newErrors.title = 'Title is required'
+    }
+    if (!servicesSection.title_highlight.trim()) {
+      newErrors.title_highlight = 'Title highlight is required'
+    }
+    if (!servicesSection.button_text.trim()) {
+      newErrors.button_text = 'Button text is required'
+    }
+    
+    // Validate services
+    services.forEach((service, index) => {
+      if (!service.name.trim()) {
+        newErrors[`name_${index}`] = 'Service name is required'
+      }
+      if (!service.description.trim()) {
+        newErrors[`description_${index}`] = 'Description is required'
+      }
+    })
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const isFormValid = () => {
+    return servicesSection.subtitle.trim() && 
+           servicesSection.title.trim() && 
+           servicesSection.title_highlight.trim() &&
+           servicesSection.button_text.trim() &&
+           services.every(s => 
+             s.name.trim() && 
+             s.description.trim()
+           )
+  }
+
   const saveServicesSection = async () => {
+    if (!validateForm()) return
     const token = localStorage.getItem('access_token')
     try {
       const response = await fetch(API_ENDPOINTS.ADMIN_SERVICES_SECTION, {
@@ -79,6 +124,7 @@ export default function Services() {
       if (response.ok) {
         setSuccessMessage('Services section updated successfully!')
         setShowSuccessModal(true)
+        setErrors({})
       }
     } catch (err) {
       setSuccessMessage('Error updating services section')
@@ -86,7 +132,8 @@ export default function Services() {
     }
   }
 
-  const saveAllServices = async () => {
+  const saveService = async (index: number) => {
+    if (!validateForm()) return
     const token = localStorage.getItem('access_token')
     if (!token) {
       setSuccessMessage('Please login again')
@@ -94,22 +141,30 @@ export default function Services() {
       return
     }
     
+    const service = services[index]
+    
     try {
-      const existingResponse = await fetch(API_ENDPOINTS.ADMIN_SERVICES, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      if (existingResponse.ok) {
-        const existingServices = await existingResponse.json()
-        for (const existing of existingServices) {
-          await fetch(`${API_ENDPOINTS.ADMIN_SERVICES}${existing.id}/`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
+      let response
+      if (service.id && service.id < Date.now() - 1000000) {
+        // Update existing service
+        response = await fetch(`${API_ENDPOINTS.ADMIN_SERVICES}${service.id}/`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            name: service.name,
+            description: service.description,
+            icon: service.icon,
+            icon_svg: (service as any).icon_svg || '',
+            order: service.order,
+            is_active: service.is_active
           })
-        }
-      }
-
-      for (const service of services) {
-        const response = await fetch(API_ENDPOINTS.ADMIN_SERVICES, {
+        })
+      } else {
+        // Create new service
+        response = await fetch(API_ENDPOINTS.ADMIN_SERVICES, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -119,22 +174,24 @@ export default function Services() {
             name: service.name,
             description: service.description,
             icon: service.icon,
-            icon_svg: service.icon_svg || '',
+            icon_svg: (service as any).icon_svg || '',
             order: service.order,
             is_active: service.is_active
           })
         })
-        
-        if (!response.ok) {
-          throw new Error(`Failed to save service: ${service.name}`)
-        }
       }
-      setSuccessMessage('Services saved successfully!')
-      setShowSuccessModal(true)
-      await fetchServices()
+      
+      if (response.ok) {
+        setSuccessMessage(`Service "${service.name}" saved successfully!`)
+        setShowSuccessModal(true)
+        setErrors({})
+        await fetchServices()
+      } else {
+        const errorData = await response.json()
+        throw new Error(JSON.stringify(errorData))
+      }
     } catch (err) {
-      console.error('Save error:', err)
-      setSuccessMessage(`Error: ${err.message}`)
+      setSuccessMessage(`Error saving service "${service.name}": ${err instanceof Error ? err.message : 'Unknown error'}`)
       setShowSuccessModal(true)
     }
   }
@@ -142,16 +199,26 @@ export default function Services() {
   const addService = () => {
     const newService = {
       id: Date.now(),
-      name: 'New Service',
+      name: '',
       description: '',
       icon: 'web',
       order: services.length + 1,
       is_active: true
     }
     setServices([...services, newService])
+    
+    // Scroll to the new service after a short delay
+    setTimeout(() => {
+      if (servicesContainerRef.current) {
+        const newServiceElement = servicesContainerRef.current.lastElementChild
+        if (newServiceElement) {
+          newServiceElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
-  const deleteService = async (index, service) => {
+  const deleteService = async (index: number, service: any) => {
     const token = localStorage.getItem('access_token')
     if (service.id && service.id < 1000) {
       try {
@@ -168,10 +235,12 @@ export default function Services() {
     setServices(services.filter((_, i) => i !== index))
   }
 
-  const updateService = (index, field, value) => {
+  const updateService = (index: number, field: string, value: any) => {
     const updated = [...services]
-    updated[index][field] = value
+    ;(updated[index] as any)[field] = value
     setServices(updated)
+    // Trigger validation on change
+    setTimeout(() => validateForm(), 0)
   }
 
   return (
@@ -194,49 +263,78 @@ export default function Services() {
                 <label className="block text-sm font-medium text-gray-700">Subtitle</label>
                 <input
                   type="text"
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                    errors.subtitle ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   value={servicesSection.subtitle}
-                  onChange={(e) => setServicesSection({...servicesSection, subtitle: e.target.value})}
+                  onChange={(e) => {
+                    setServicesSection({...servicesSection, subtitle: e.target.value})
+                    setTimeout(() => validateForm(), 0)
+                  }}
                 />
+                {errors.subtitle && <p className="text-red-500 text-sm mt-1">{errors.subtitle}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Button Text</label>
                 <input
                   type="text"
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                    errors.button_text ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   value={servicesSection.button_text}
-                  onChange={(e) => setServicesSection({...servicesSection, button_text: e.target.value})}
+                  onChange={(e) => {
+                    setServicesSection({...servicesSection, button_text: e.target.value})
+                    setTimeout(() => validateForm(), 0)
+                  }}
                 />
+                {errors.button_text && <p className="text-red-500 text-sm mt-1">{errors.button_text}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Main Title</label>
                 <input
                   type="text"
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                    errors.title ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   value={servicesSection.title}
-                  onChange={(e) => setServicesSection({...servicesSection, title: e.target.value})}
+                  onChange={(e) => {
+                    setServicesSection({...servicesSection, title: e.target.value})
+                    setTimeout(() => validateForm(), 0)
+                  }}
                 />
+                {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Highlighted Title</label>
                 <input
                   type="text"
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                    errors.title_highlight ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   value={servicesSection.title_highlight}
-                  onChange={(e) => setServicesSection({...servicesSection, title_highlight: e.target.value})}
+                  onChange={(e) => {
+                    setServicesSection({...servicesSection, title_highlight: e.target.value})
+                    setTimeout(() => validateForm(), 0)
+                  }}
                 />
+                {errors.title_highlight && <p className="text-red-500 text-sm mt-1">{errors.title_highlight}</p>}
               </div>
             </div>
             <button
               onClick={saveServicesSection}
-              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              disabled={!isFormValid()}
+              className={`mt-4 px-4 py-2 rounded-md ${
+                isFormValid() 
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
             >
               Save Section Header
             </button>
           </div>
 
           {/* Services List */}
-          <div className="space-y-4">
+          <div className="space-y-4" ref={servicesContainerRef}>
             <div className="flex justify-between items-center">
               <h3 className="text-md font-medium text-gray-800">Services</h3>
               <button
@@ -254,10 +352,13 @@ export default function Services() {
                     <label className="block text-sm font-medium text-gray-700">Service Name</label>
                     <input
                       type="text"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                        errors[`name_${index}`] ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       value={service.name}
                       onChange={(e) => updateService(index, 'name', e.target.value)}
                     />
+                    {errors[`name_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`name_${index}`]}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Icon Type</label>
@@ -283,7 +384,13 @@ export default function Services() {
                       onChange={(e) => updateService(index, 'order', parseInt(e.target.value))}
                     />
                   </div>
-                  <div className="flex items-end">
+                  <div className="flex items-end space-x-2">
+                    <button
+                      onClick={() => saveService(index)}
+                      className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700"
+                    >
+                      {service.id && service.id < Date.now() - 1000000 ? 'Update' : 'Save'}
+                    </button>
                     <button
                       onClick={() => deleteService(index, service)}
                       className="bg-red-600 text-white px-3 py-2 rounded text-sm hover:bg-red-700"
@@ -296,10 +403,13 @@ export default function Services() {
                   <label className="block text-sm font-medium text-gray-700">Description</label>
                   <textarea
                     rows={2}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                    className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                      errors[`description_${index}`] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     value={service.description}
                     onChange={(e) => updateService(index, 'description', e.target.value)}
                   />
+                  {errors[`description_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`description_${index}`]}</p>}
                 </div>
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700">Custom SVG Icon (Optional)</label>
@@ -307,7 +417,7 @@ export default function Services() {
                     rows={3}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-xs"
                     placeholder='<svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">...</svg>'
-                    value={service.icon_svg || ''}
+                    value={(service as any).icon_svg || ''}
                     onChange={(e) => updateService(index, 'icon_svg', e.target.value)}
                   />
                   <p className="text-xs text-gray-500 mt-1">Paste SVG code here to use custom icon. Leave empty to use predefined icon.</p>
@@ -317,12 +427,9 @@ export default function Services() {
           </div>
 
           <div className="mt-6 flex justify-end">
-            <button
-              onClick={saveAllServices}
-              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"
-            >
-              Save All Services
-            </button>
+            <p className="text-gray-600 text-sm">
+              Save each service individually using the Save/Update buttons above.
+            </p>
           </div>
         </div>
       </div>

@@ -241,9 +241,38 @@ class ServiceViewSet(viewsets.ModelViewSet):
     serializer_class = ServiceSerializer
     permission_classes = [IsAuthenticated]
 
+@api_view(['GET'])
+def testimonials_view(request):
+    testimonials = Testimonial.objects.filter(is_active=True).order_by('order')
+    serializer = TestimonialSerializer(testimonials, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def testimonials_section_view(request):
+    section = TestimonialsSection.objects.first()
+    if section:
+        serializer = TestimonialsSectionSerializer(section)
+        return Response(serializer.data)
+    return Response({})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def admin_testimonials_section_view(request):
+    section, created = TestimonialsSection.objects.get_or_create(id=1)
+    serializer = TestimonialsSectionSerializer(section, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=400)
+
 class TestimonialViewSet(viewsets.ModelViewSet):
     queryset = Testimonial.objects.all()
     serializer_class = TestimonialSerializer
+    permission_classes = [IsAuthenticated]
+
+class TestimonialsSectionViewSet(viewsets.ModelViewSet):
+    queryset = TestimonialsSection.objects.all()
+    serializer_class = TestimonialsSectionSerializer
     permission_classes = [IsAuthenticated]
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -284,4 +313,127 @@ class WorkingProcessStepViewSet(viewsets.ModelViewSet):
 class WorkingProcessSectionViewSet(viewsets.ModelViewSet):
     queryset = WorkingProcessSection.objects.all()
     serializer_class = WorkingProcessSectionSerializer
+    permission_classes = [IsAuthenticated]
+
+@api_view(['GET'])
+def contact_info_view(request):
+    contact_info = ContactInfo.objects.filter(is_active=True).order_by('order')
+    serializer = ContactInfoSerializer(contact_info, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def contact_section_view(request):
+    section = ContactSection.objects.first()
+    if section:
+        serializer = ContactSectionSerializer(section)
+        return Response(serializer.data)
+    return Response({})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def admin_contact_section_view(request):
+    section, created = ContactSection.objects.get_or_create(id=1)
+    serializer = ContactSectionSerializer(section, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=400)
+
+class ContactInfoViewSet(viewsets.ModelViewSet):
+    queryset = ContactInfo.objects.all()
+    serializer_class = ContactInfoSerializer
+    permission_classes = [IsAuthenticated]
+
+class ContactSectionViewSet(viewsets.ModelViewSet):
+    queryset = ContactSection.objects.all()
+    serializer_class = ContactSectionSerializer
+    permission_classes = [IsAuthenticated]
+
+@api_view(['GET'])
+def blog_posts_view(request):
+    posts = BlogPost.objects.filter(is_active=True).order_by('date_published')[:6]
+    serializer = BlogPostSerializer(posts, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def blogs_section_view(request):
+    section = BlogsSection.objects.first()
+    if section:
+        serializer = BlogsSectionSerializer(section)
+        return Response(serializer.data)
+    return Response({})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def admin_blogs_section_view(request):
+    section, created = BlogsSection.objects.get_or_create(id=1)
+    serializer = BlogsSectionSerializer(section, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=400)
+
+class BlogPostViewSet(viewsets.ModelViewSet):
+    queryset = BlogPost.objects.all()
+    serializer_class = BlogPostSerializer
+    permission_classes = [IsAuthenticated]
+
+class BlogsSectionViewSet(viewsets.ModelViewSet):
+    queryset = BlogsSection.objects.all()
+    serializer_class = BlogsSectionSerializer
+    permission_classes = [IsAuthenticated]
+
+@api_view(['GET'])
+def team_members_view(request):
+    members = TeamMember.objects.filter(is_active=True).order_by('order')
+    serializer = TeamMemberSerializer(members, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def team_section_view(request):
+    section = TeamSection.objects.first()
+    if section:
+        serializer = TeamSectionSerializer(section)
+        return Response(serializer.data)
+    return Response({})
+
+class TeamMemberViewSet(viewsets.ModelViewSet):
+    queryset = TeamMember.objects.all()
+    serializer_class = TeamMemberSerializer
+    permission_classes = [IsAuthenticated]
+
+class TeamSectionViewSet(viewsets.ModelViewSet):
+    queryset = TeamSection.objects.all()
+    serializer_class = TeamSectionSerializer
+    permission_classes = [IsAuthenticated]
+
+@api_view(['POST'])
+def contact_submit_view(request):
+    serializer = ContactSubmissionSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'success': True, 'message': 'Contact form submitted successfully'})
+    return Response(serializer.errors, status=400)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def contact_submissions_view(request):
+    submissions = ContactSubmission.objects.all().order_by('-submitted_at')
+    serializer = ContactSubmissionSerializer(submissions, many=True)
+    return Response(serializer.data)
+
+class ContactSubmissionViewSet(viewsets.ModelViewSet):
+    queryset = ContactSubmission.objects.all()
+    serializer_class = ContactSubmissionSerializer
+    permission_classes = [IsAuthenticated]
+
+@api_view(['GET'])
+def faqs_view(request):
+    faqs = FAQ.objects.filter(is_active=True).order_by('order')
+    serializer = FAQSerializer(faqs, many=True)
+    return Response(serializer.data)
+
+class FAQViewSet(viewsets.ModelViewSet):
+    queryset = FAQ.objects.all()
+    serializer_class = FAQSerializer
     permission_classes = [IsAuthenticated]

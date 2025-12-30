@@ -20,6 +20,7 @@ export default function AdminClientLogos() {
   const [successMessage, setSuccessMessage] = useState('')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null)
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
 
   useEffect(() => {
@@ -46,7 +47,23 @@ export default function AdminClientLogos() {
     }
   }
 
-  const saveAllLogos = async () => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+    
+    logos.forEach((logo, index) => {
+      if (!logo.name.trim()) newErrors[`name_${index}`] = 'Client name is required'
+    })
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const isFormValid = () => {
+    return logos.every(l => l.name.trim())
+  }
+
+  const saveLogo = async (index: number) => {
+    if (!validateForm()) return
     const token = localStorage.getItem('access_token')
     if (!token) {
       setSuccessMessage('Please login again')
@@ -54,70 +71,75 @@ export default function AdminClientLogos() {
       return
     }
     
+    const logo = logos[index]
+    
     try {
-      for (const logo of logos) {
-        if (!logo.id && !(logo.logo instanceof File)) {
-          continue
-        }
-        
-        let response
-        if (logo.id) {
-          if (logo.logo instanceof File) {
-            const formData = new FormData()
-            formData.append('name', logo.name)
-            formData.append('order', logo.order.toString())
-            formData.append('is_active', logo.is_active.toString())
-            formData.append('logo', logo.logo)
-            
-            response = await fetch(`${API_ENDPOINTS.ADMIN_CLIENT_LOGOS}${logo.id}/`, {
-              method: 'PUT',
-              headers: { 'Authorization': `Bearer ${token}` },
-              body: formData
-            })
-          } else {
-            response = await fetch(`${API_ENDPOINTS.ADMIN_CLIENT_LOGOS}${logo.id}/`, {
-              method: 'PATCH',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify({
-                name: logo.name,
-                order: logo.order,
-                is_active: logo.is_active
-              })
-            })
-          }
-        } else {
+      let response
+      if (logo.id) {
+        if (logo.logo instanceof File) {
           const formData = new FormData()
           formData.append('name', logo.name)
           formData.append('order', logo.order.toString())
           formData.append('is_active', logo.is_active.toString())
           formData.append('logo', logo.logo)
           
-          response = await fetch(API_ENDPOINTS.ADMIN_CLIENT_LOGOS, {
-            method: 'POST',
+          response = await fetch(`${API_ENDPOINTS.ADMIN_CLIENT_LOGOS}${logo.id}/`, {
+            method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}` },
             body: formData
           })
+        } else {
+          response = await fetch(`${API_ENDPOINTS.ADMIN_CLIENT_LOGOS}${logo.id}/`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              name: logo.name,
+              order: logo.order,
+              is_active: logo.is_active
+            })
+          })
+        }
+      } else {
+        if (!(logo.logo instanceof File)) {
+          setSuccessMessage('Please select a logo image')
+          setShowSuccessModal(true)
+          return
         }
         
-        if (!response.ok) {
-          throw new Error(`Failed to save logo: ${logo.name}`)
-        }
+        const formData = new FormData()
+        formData.append('name', logo.name)
+        formData.append('order', logo.order.toString())
+        formData.append('is_active', logo.is_active.toString())
+        formData.append('logo', logo.logo)
+        
+        response = await fetch(API_ENDPOINTS.ADMIN_CLIENT_LOGOS, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        })
       }
-      setSuccessMessage('Client logos saved successfully!')
-      setShowSuccessModal(true)
-      await fetchLogos()
+      
+      if (response.ok) {
+        setSuccessMessage(`Logo "${logo.name}" saved successfully!`)
+        setShowSuccessModal(true)
+        setErrors({})
+        await fetchLogos()
+      } else {
+        const errorData = await response.json()
+        throw new Error(JSON.stringify(errorData))
+      }
     } catch (err) {
-      setSuccessMessage(`Error: ${err.message}`)
+      setSuccessMessage(`Error saving logo "${logo.name}": ${err instanceof Error ? err.message : 'Unknown error'}`)
       setShowSuccessModal(true)
     }
   }
 
   const addLogo = () => {
     const newLogo: ClientLogo = {
-      name: 'New Client',
+      name: '',
       logo: '',
       order: logos.length,
       is_active: true
@@ -159,8 +181,9 @@ export default function AdminClientLogos() {
 
   const updateLogo = (index: number, field: keyof ClientLogo, value: any) => {
     const updated = [...logos]
-    updated[index][field] = value
+    ;(updated[index] as any)[field] = value
     setLogos(updated)
+    setTimeout(() => validateForm(), 0)
   }
 
   const handleImageUpload = (index: number, file: File) => {
@@ -207,10 +230,13 @@ export default function AdminClientLogos() {
                     <label className="block text-sm font-medium text-gray-700">Client Name</label>
                     <input
                       type="text"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                        errors[`name_${index}`] ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       value={logo.name}
                       onChange={(e) => updateLogo(index, 'name', e.target.value)}
                     />
+                    {errors[`name_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`name_${index}`]}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Order</label>
@@ -221,7 +247,13 @@ export default function AdminClientLogos() {
                       onChange={(e) => updateLogo(index, 'order', parseInt(e.target.value))}
                     />
                   </div>
-                  <div className="flex items-end">
+                  <div className="flex items-end space-x-2">
+                    <button
+                      onClick={() => saveLogo(index)}
+                      className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700"
+                    >
+                      {logo.id ? 'Update' : 'Save'}
+                    </button>
                     <button
                       onClick={() => deleteLogo(index)}
                       className="bg-red-600 text-white px-3 py-2 rounded text-sm hover:bg-red-700"
@@ -273,12 +305,9 @@ export default function AdminClientLogos() {
           </div>
 
           <div className="mt-6 flex justify-end">
-            <button
-              onClick={saveAllLogos}
-              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"
-            >
-              Save All Logos
-            </button>
+            <p className="text-gray-600 text-sm">
+              Save each logo individually using the Save/Update buttons above.
+            </p>
           </div>
         </div>
       </div>

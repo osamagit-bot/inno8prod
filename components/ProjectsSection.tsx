@@ -1,9 +1,10 @@
 'use client'
 
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../lib/api'
-import Image from 'next/image'
+import { fallbackData } from '../lib/fallbackData'
 
 interface Project {
   id: number
@@ -11,6 +12,7 @@ interface Project {
   description: string
   image: string
   url?: string
+  live_preview_url?: string
   technologies: string
   is_featured: boolean
   is_active: boolean
@@ -19,7 +21,7 @@ interface Project {
 
 export default function ProjectsSection() {
   const colors = useColors()
-  const [projects, setProjects] = useState<Project[]>([])
+  const [projects, setProjects] = useState<Project[]>(fallbackData.projects)
   const [activeCategory, setActiveCategory] = useState('All')
 
   useEffect(() => {
@@ -38,10 +40,14 @@ export default function ProjectsSection() {
       const response = await fetch(API_ENDPOINTS.PROJECTS)
       if (response.ok) {
         const data = await response.json()
-        setProjects(data.filter((p: Project) => p.is_active))
+        const activeProjects = data.filter((p: Project) => p.is_active)
+        if (activeProjects.length > 0) {
+          setProjects(activeProjects)
+        }
       }
     } catch (error) {
-      console.log('Error fetching projects:', error)
+      console.log('Backend offline - using fallback projects')
+      setProjects(fallbackData.projects)
     }
   }
 
@@ -84,14 +90,13 @@ export default function ProjectsSection() {
         {/* Section Header */}
         <div className="text-center mb-16" data-aos="fade-up">
           <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-1 rounded-full mr-4" style={{ backgroundColor: colors.primary_color }}></div>
-            <span className="text-lg font-medium" style={{ color: colors.primary_color }}>
+            <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
+            <span className="text-gray-500 uppercase tracking-wider text-sm">
               OUR PORTFOLIO
             </span>
-            <div className="w-12 h-1 rounded-full ml-4" style={{ backgroundColor: colors.primary_color }}></div>
           </div>
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6" style={{ color: colors.secondary_color }}>
-            Featured <span style={{ color: colors.accent_color }}>Projects</span>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-[#012340]">
+            Featured <span className="text-[#FCB316]">Projects</span>
           </h2>
           <p className="text-lg max-w-3xl mx-auto" style={{ color: colors.primary_color }}>
             Discover our latest work and successful project implementations across various industries and technologies.
@@ -104,24 +109,27 @@ export default function ProjectsSection() {
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+              className={`relative px-6 py-3 rounded-full font-medium transition-all duration-300 overflow-hidden group ${
                 activeCategory === category 
-                  ? 'text-white shadow-lg transform scale-105' 
-                  : 'text-gray-600 bg-white hover:shadow-md'
+                  ? 'text-white transform scale-105' 
+                  : 'text-gray-600 bg-white'
               }`}
               style={{
                 backgroundColor: activeCategory === category ? colors.primary_color : 'white',
                 borderColor: colors.primary_color
               }}
             >
-              {category}
+              <span className="relative z-10 group-hover:text-white transition-colors">{category}</span>
+              {activeCategory !== category && (
+                <div className="absolute inset-0 scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
+              )}
             </button>
           ))}
         </div>
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project, index) => (
+          {filteredProjects.slice(0, 3).map((project, index) => (
             <div
               key={project.id}
               className="group rounded-xl overflow-hidden shadow-sm transition-all duration-500 transform hover:-translate-y-2"
@@ -133,14 +141,19 @@ export default function ProjectsSection() {
               <div className="relative h-64 overflow-hidden">
                 {project.image ? (
                   <Image
-                    src={getImageUrl(project.image)}
+                    src={project.image.startsWith('/') ? project.image : getImageUrl(project.image)}
                     alt={project.title}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-                    <span className="text-gray-500">No Image</span>
+                  <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                    <div className="text-center text-gray-600">
+                      <svg className="w-16 h-16 mx-auto mb-2 opacity-50" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-sm font-medium">{project.title}</span>
+                    </div>
                   </div>
                 )}
                 <div className="absolute inset-0 bg-black/40 scale-0 group-hover:scale-150 transition-transform duration-500 ease-out"></div>
@@ -166,7 +179,7 @@ export default function ProjectsSection() {
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.technologies.split(', ').map((tech, techIndex) => (
                     <span
-                      key={techIndex}
+                      key={`${project.id}-${tech}-${techIndex}`}
                       className="px-3 py-1 text-sm rounded-full"
                       style={{ 
                         backgroundColor: colors.primary_color + '20', 
@@ -178,19 +191,24 @@ export default function ProjectsSection() {
                   ))}
                 </div>
 
-                {/* Project Actions */}
-                <div className="flex items-center justify-between">
-                  <span
-                    className="flex items-center space-x-2 font-medium transition-colors cursor-pointer"
-                    style={{ color: colors.primary_color }}
-                  >
-                    <span>Learn More</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </span>
+                  {/* Project Actions */}
+                  <div className="flex items-center justify-between">
+                    <a
+                      href={`/projects/${project.id}`}
+                      className="relative flex items-center space-x-2 font-medium transition-colors cursor-pointer overflow-hidden group/learn"
+                      style={{ color: colors.primary_color }}
+                    >
+                      <span className="relative z-10">Learn More</span>
+                      <svg className="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                      <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover/learn:w-full transition-all duration-300 ease-out" style={{ backgroundColor: colors.primary_color, marginTop: '2px' }}></div>
+                    </a>
+                      {project.live_preview_url && (
                   <a
-                    href={project.url}
+                    href={project.live_preview_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="relative flex items-center space-x-2 font-medium transition-colors overflow-hidden group/link"
                     style={{ color: colors.primary_color }}
                   >
@@ -200,6 +218,22 @@ export default function ProjectsSection() {
                     </svg>
                     <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover/link:w-full transition-all duration-300 ease-out" style={{ backgroundColor: colors.primary_color, marginTop: '2px' }}></div>
                   </a>
+                      )}
+                    {!project.live_preview_url && (
+                  <a
+                    href={project.url || '#'}
+                    target={project.url ? '_blank' : '_self'}
+                    rel={project.url ? 'noopener noreferrer' : undefined}
+                    className="relative flex items-center space-x-2 font-medium transition-colors overflow-hidden group/link"
+                    style={{ color: colors.primary_color }}
+                  >
+                    <span className="relative z-10">Live Preview</span>
+                    <svg className="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                    <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover/link:w-full transition-all duration-300 ease-out" style={{ backgroundColor: colors.primary_color, marginTop: '2px' }}></div>
+                  </a>
+                      )}
                 </div>
               </div>
             </div>
@@ -208,10 +242,10 @@ export default function ProjectsSection() {
 
         {/* View All Projects Button */}
         <div className="text-center mt-12" data-aos="fade-up" data-aos-delay="400">
-          <button className="relative px-8 py-4 rounded-sm font-semibold shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl" style={{ backgroundColor: colors.accent_color, color: colors.secondary_color }}>
+          <a href="/projects" className="relative inline-block px-8 py-4 rounded-sm font-semibold shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl" style={{ backgroundColor: colors.accent_color, color: colors.secondary_color }}>
             <span className="relative z-10 group-hover:text-white transition-colors">View All Projects</span>
             <div className="absolute inset-0 scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
-          </button>
+          </a>
         </div>
       </div>
     </section>

@@ -1,11 +1,16 @@
-import HeroSection from '../components/HeroSection'
 import AboutSection from '../components/AboutSection'
-import ServicesSection from '../components/ServicesSection'
-import WorkingProcess from '../components/WorkingProcess'
-import ProjectsSection from '../components/ProjectsSection'
-import WhyChooseUsSection from '../components/WhyChooseUsSection'
+import BlogsSection from '../components/BlogsSection'
 import ClientLogosSection from '../components/ClientLogosSection'
+import CTASection from '../components/CTASection'
+import FAQSection from '../components/FAQSection'
+import Footer from '../components/Footer'
+import HeroSection from '../components/HeroSection'
+import ProjectsSection from '../components/ProjectsSection'
+import ServicesSection from '../components/ServicesSection'
+import TeamSection from '../components/TeamSection'
 import TestimonialsSection from '../components/TestimonialsSection'
+import WhyChooseUsSection from '../components/WhyChooseUsSection'
+import WorkingProcess from '../components/WorkingProcess'
 
 export default function Home() {
   return (
@@ -17,8 +22,12 @@ export default function Home() {
       <ProjectsSection />
       <WhyChooseUsSection />
       <ClientLogosSection />
+      <TeamSection />
       <TestimonialsSection />
-      {/* Add more sections here */}
+      <BlogsSection />
+       <FAQSection />
+      <CTASection />
+      <Footer />
     </main>
   )
 }

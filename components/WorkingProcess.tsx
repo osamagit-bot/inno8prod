@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
 import { API_ENDPOINTS } from '../lib/api'
+import { fallbackData } from '../lib/fallbackData'
 
 interface WorkingProcessStep {
   id: number
@@ -24,12 +25,8 @@ export default function WorkingProcess() {
   const colors = useColors()
   const [visibleSteps, setVisibleSteps] = useState<number[]>([])
   const [activeStep, setActiveStep] = useState(0)
-  const [steps, setSteps] = useState<WorkingProcessStep[]>([])
-  const [sectionData, setSectionData] = useState<SectionData>({
-    subtitle: 'How We Work',
-    title: 'Our Working Process',
-    description: 'We follow a proven methodology to deliver exceptional results for every project'
-  })
+  const [steps, setSteps] = useState<WorkingProcessStep[]>(fallbackData.workingProcessSteps)
+  const [sectionData, setSectionData] = useState<SectionData>(fallbackData.workingProcessSection)
   useEffect(() => {
     fetchWorkingProcessData()
     fetchSectionData()
@@ -49,15 +46,13 @@ export default function WorkingProcess() {
         console.log('Working process data received:', data)
         const activeSteps = data.filter((step: WorkingProcessStep) => step.is_active).sort((a: WorkingProcessStep, b: WorkingProcessStep) => a.order - b.order)
         console.log('Active steps:', activeSteps)
-        setSteps(activeSteps)
-      } else {
-        console.log('Response not ok, using default steps')
-        setDefaultSteps()
+        if (activeSteps.length > 0) {
+          setSteps(activeSteps)
+        }
       }
     } catch (error) {
-      console.log('Error fetching working process data:', error)
-      console.log('Using default working process steps')
-      setDefaultSteps()
+      console.log('Backend offline - using fallback working process data')
+      setSteps(fallbackData.workingProcessSteps)
     }
   }
 
@@ -73,7 +68,8 @@ export default function WorkingProcess() {
         })
       }
     } catch (error) {
-      console.log('Using default section data')
+      console.log('Backend offline - using fallback section data')
+      setSectionData(fallbackData.workingProcessSection)
     }
   }
 
@@ -165,18 +161,17 @@ export default function WorkingProcess() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-1 rounded-full mr-4" style={{ backgroundColor: colors.primary_color }}></div>
-            <span className="text-lg font-medium" style={{ color: colors.primary_color }}>
+            <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
+            <span className="text-gray-500 uppercase tracking-wider text-sm">
               {sectionData.subtitle}
             </span>
-            <div className="w-12 h-1 rounded-full ml-4" style={{ backgroundColor: colors.primary_color }}></div>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: colors.secondary_color }}>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-[#012340]">
             {sectionData.title.split(' ').map((word, index) => 
               word === 'Process' ? (
-                <span key={index} style={{ color: colors.primary_color }}>{word}</span>
+                <span key={`title-${word}-${index}`} className="text-[#FCB316]">{word}</span>
               ) : (
-                <span key={index}>{word} </span>
+                <span key={`title-${word}-${index}`}>{word} </span>
               )
             )}
           </h2>
@@ -185,13 +180,13 @@ export default function WorkingProcess() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="flex flex-wrap justify-center gap-8">
           
           {steps.map((step, index) => (
             <div
-              key={index}
+              key={step.id || `step-${index}`}
               data-step={index}
-              className={`relative transform transition-all duration-1000 ${
+              className={`w-full sm:w-80 relative transform transition-all duration-1000 ${
                 visibleSteps.includes(index) 
                   ? 'translate-y-0 opacity-100' 
                   : 'translate-y-10 opacity-0'
@@ -258,9 +253,9 @@ export default function WorkingProcess() {
 
         {/* Progress Indicator */}
         <div className="flex justify-center mt-12 space-x-2">
-          {steps.map((_, index) => (
+          {steps.map((step, index) => (
             <div
-              key={index}
+              key={step.id || `progress-${index}`}
               className={`w-3 h-3 rounded-full transition-all duration-500 cursor-pointer ${
                 activeStep === index ? 'scale-125' : 'scale-100'
               }`}

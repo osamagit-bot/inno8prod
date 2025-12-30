@@ -12,6 +12,8 @@ interface Project {
   description: string
   image: string | File
   url: string
+  learn_more_url: string
+  live_preview_url: string
   technologies: string
   is_featured: boolean
   is_active: boolean
@@ -23,6 +25,7 @@ export default function AdminProjects() {
   const [successMessage, setSuccessMessage] = useState('')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null)
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
 
   useEffect(() => {
@@ -49,7 +52,29 @@ export default function AdminProjects() {
     }
   }
 
-  const saveAllProjects = async () => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+    
+    projects.forEach((project, index) => {
+      if (!project.title.trim()) newErrors[`title_${index}`] = 'Title is required'
+      if (!project.description.trim()) newErrors[`description_${index}`] = 'Description is required'
+      if (!project.technologies.trim()) newErrors[`technologies_${index}`] = 'Technologies is required'
+    })
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const isFormValid = () => {
+    return projects.every(p => 
+      p.title.trim() && 
+      p.description.trim() && 
+      p.technologies.trim()
+    )
+  }
+
+  const saveProject = async (index: number) => {
+    if (!validateForm()) return
     const token = localStorage.getItem('access_token')
     if (!token) {
       setSuccessMessage('Please login again')
@@ -57,60 +82,62 @@ export default function AdminProjects() {
       return
     }
     
+    const project = projects[index]
+    
     try {
-      for (const project of projects) {
-        const formData = new FormData()
-        formData.append('title', project.title)
-        formData.append('description', project.description)
-        formData.append('url', project.url || '')
-        formData.append('technologies', project.technologies)
-        formData.append('is_featured', project.is_featured.toString())
-        formData.append('is_active', project.is_active.toString())
-        
-        if (project.image instanceof File) {
-          formData.append('image', project.image)
-        }
-        
-        let response
-        if (project.id) {
-          // Update existing project
-          response = await fetch(`${API_ENDPOINTS.ADMIN_PROJECTS}${project.id}/`, {
-            method: 'PUT',
-            headers: { 'Authorization': `Bearer ${token}` },
-            body: formData
-          })
-        } else {
-          // Create new project
-          response = await fetch(API_ENDPOINTS.ADMIN_PROJECTS, {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}` },
-            body: formData
-          })
-        }
-        
-        if (!response.ok) {
-          const errorData = await response.text()
-          console.error('Error response:', errorData)
-          throw new Error(`Failed to save project: ${project.title}`)
-        }
+      const formData = new FormData()
+      formData.append('title', project.title)
+      formData.append('description', project.description)
+      formData.append('url', project.url || '')
+      formData.append('learn_more_url', project.learn_more_url || '')
+      formData.append('live_preview_url', project.live_preview_url || '')
+      formData.append('technologies', project.technologies)
+      formData.append('is_featured', project.is_featured.toString())
+      formData.append('is_active', project.is_active.toString())
+      
+      if (project.image instanceof File) {
+        formData.append('image', project.image)
       }
-      setSuccessMessage('Projects saved successfully!')
-      setShowSuccessModal(true)
-      await fetchProjects()
+      
+      let response
+      if (project.id) {
+        response = await fetch(`${API_ENDPOINTS.ADMIN_PROJECTS}${project.id}/`, {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        })
+      } else {
+        response = await fetch(API_ENDPOINTS.ADMIN_PROJECTS, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        })
+      }
+      
+      if (response.ok) {
+        setSuccessMessage(`Project "${project.title}" saved successfully!`)
+        setShowSuccessModal(true)
+        setErrors({})
+        await fetchProjects()
+      } else {
+        const errorData = await response.json()
+        throw new Error(JSON.stringify(errorData))
+      }
     } catch (err) {
-      console.error('Save error:', err)
-      setSuccessMessage(`Error: ${err.message}`)
+      setSuccessMessage(`Error saving project "${project.title}": ${err instanceof Error ? err.message : 'Unknown error'}`)
       setShowSuccessModal(true)
     }
   }
 
   const addProject = () => {
     const newProject: Project = {
-      title: 'New Project',
-      description: 'Project description',
+      title: '',
+      description: '',
       image: '',
       url: '',
-      technologies: 'React, Node.js',
+      learn_more_url: '',
+      live_preview_url: '',
+      technologies: '',
       is_featured: false,
       is_active: true
     }
@@ -152,8 +179,9 @@ export default function AdminProjects() {
 
   const updateProject = (index: number, field: keyof Project, value: any) => {
     const updated = [...projects]
-    updated[index][field] = value
+    ;(updated[index] as any)[field] = value
     setProjects(updated)
+    setTimeout(() => validateForm(), 0)
   }
 
   const handleImageUpload = (index: number, file: File) => {
@@ -200,10 +228,13 @@ export default function AdminProjects() {
                     <label className="block text-sm font-medium text-gray-700">Project Title</label>
                     <input
                       type="text"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                        errors[`title_${index}`] ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       value={project.title}
                       onChange={(e) => updateProject(index, 'title', e.target.value)}
                     />
+                    {errors[`title_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`title_${index}`]}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Project URL</label>
@@ -214,7 +245,13 @@ export default function AdminProjects() {
                       onChange={(e) => updateProject(index, 'url', e.target.value)}
                     />
                   </div>
-                  <div className="flex items-end">
+                  <div className="flex items-end space-x-2">
+                    <button
+                      onClick={() => saveProject(index)}
+                      className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700"
+                    >
+                      {project.id ? 'Update' : 'Save'}
+                    </button>
                     <button
                       onClick={() => deleteProject(index)}
                       className="bg-red-600 text-white px-3 py-2 rounded text-sm hover:bg-red-700"
@@ -224,25 +261,54 @@ export default function AdminProjects() {
                   </div>
                 </div>
                 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Learn More URL</label>
+                    <input
+                      type="url"
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      value={project.learn_more_url}
+                      onChange={(e) => updateProject(index, 'learn_more_url', e.target.value)}
+                      placeholder="https://example.com/learn-more"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Live Preview URL</label>
+                    <input
+                      type="url"
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      value={project.live_preview_url}
+                      onChange={(e) => updateProject(index, 'live_preview_url', e.target.value)}
+                      placeholder="https://example.com/live-demo"
+                    />
+                  </div>
+                </div>
+                
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700">Description</label>
                   <textarea
                     rows={3}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                    className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                      errors[`description_${index}`] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     value={project.description}
                     onChange={(e) => updateProject(index, 'description', e.target.value)}
                   />
+                  {errors[`description_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`description_${index}`]}</p>}
                 </div>
                 
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700">Technologies (comma separated)</label>
                   <input
                     type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                    className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                      errors[`technologies_${index}`] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     value={project.technologies}
                     onChange={(e) => updateProject(index, 'technologies', e.target.value)}
                     placeholder="React, Node.js, MongoDB"
                   />
+                  {errors[`technologies_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`technologies_${index}`]}</p>}
                 </div>
                 
                 <div className="mt-4">
@@ -297,12 +363,9 @@ export default function AdminProjects() {
           </div>
 
           <div className="mt-6 flex justify-end">
-            <button
-              onClick={saveAllProjects}
-              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"
-            >
-              Save All Projects
-            </button>
+            <p className="text-gray-600 text-sm">
+              Save each project individually using the Save/Update buttons above.
+            </p>
           </div>
         </div>
       </div>

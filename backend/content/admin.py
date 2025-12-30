@@ -43,6 +43,9 @@ class AboutSectionAdmin(admin.ModelAdmin):
         ('Main Content', {
             'fields': ('subtitle', 'title', 'button_text')
         }),
+        ('Company Overview (About Page)', {
+            'fields': ('overview_title', 'overview_description1', 'overview_description2', 'projects_count', 'years_experience')
+        }),
         ('Mission & Vision', {
             'fields': ('mission_title', 'mission_description', 'vision_title', 'vision_description')
         }),
@@ -90,3 +93,94 @@ class WorkingProcessSectionAdmin(admin.ModelAdmin):
             'fields': ('subtitle', 'title', 'description')
         }),
     )
+
+@admin.register(ContactInfo)
+class ContactInfoAdmin(admin.ModelAdmin):
+    list_display = ['title', 'value', 'order', 'is_active']
+    list_filter = ['is_active']
+    ordering = ['order']
+    fieldsets = (
+        ('Basic Info', {
+            'fields': ('title', 'value', 'order', 'is_active')
+        }),
+        ('Icon', {
+            'fields': ('icon_svg',),
+            'description': 'Add SVG icon code here'
+        }),
+    )
+
+@admin.register(ContactSection)
+class ContactSectionAdmin(admin.ModelAdmin):
+    list_display = ['subtitle', 'title']
+    fieldsets = (
+        ('Section Content', {
+            'fields': ('subtitle', 'title', 'description')
+        }),
+    )
+
+@admin.register(BlogPost)
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display = ['title', 'author', 'date_published', 'is_featured', 'is_active']
+    list_filter = ['is_featured', 'is_active', 'date_published']
+    search_fields = ['title', 'content']
+    prepopulated_fields = {'slug': ('title',)}
+    ordering = ['-date_published']
+
+@admin.register(BlogsSection)
+class BlogsSectionAdmin(admin.ModelAdmin):
+    list_display = ['subtitle', 'title']
+    fieldsets = (
+        ('Section Content', {
+            'fields': ('subtitle', 'title', 'description')
+        }),
+    )
+
+@admin.register(TeamMember)
+class TeamMemberAdmin(admin.ModelAdmin):
+    list_display = ['name', 'position', 'order', 'is_active']
+    list_filter = ['is_active']
+    ordering = ['order']
+    fieldsets = (
+        ('Basic Info', {
+            'fields': ('name', 'position', 'image', 'order', 'is_active')
+        }),
+        ('Social Links', {
+            'fields': ('rss_url', 'pinterest_url', 'google_plus_url', 'facebook_url', 'twitter_url')
+        }),
+    )
+
+@admin.register(TeamSection)
+class TeamSectionAdmin(admin.ModelAdmin):
+    list_display = ['subtitle', 'title']
+    fieldsets = (
+        ('Section Content', {
+            'fields': ('subtitle', 'title')
+        }),
+    )
+
+@admin.register(ContactSubmission)
+class ContactSubmissionAdmin(admin.ModelAdmin):
+    list_display = ['name', 'email', 'subject', 'submitted_at', 'is_read']
+    list_filter = ['is_read', 'submitted_at']
+    search_fields = ['name', 'email', 'subject']
+    readonly_fields = ['submitted_at']
+    ordering = ['-submitted_at']
+    
+    fieldsets = (
+        ('Contact Information', {
+            'fields': ('name', 'email', 'phone')
+        }),
+        ('Message Details', {
+            'fields': ('subject', 'message')
+        }),
+        ('Status', {
+            'fields': ('is_read', 'submitted_at')
+        }),
+    )
+
+@admin.register(FAQ)
+class FAQAdmin(admin.ModelAdmin):
+    list_display = ['question', 'order', 'is_active']
+    list_filter = ['is_active']
+    search_fields = ['question', 'answer']
+    ordering = ['order']

@@ -29,6 +29,12 @@ export default function AdminDashboard() {
     { id: 'services', name: 'Services', href: '/admin/services', icon: '🛠️' },
     { id: 'working-process', name: 'Working Process', href: '/admin/working-process', icon: '⚡' },
     { id: 'projects', name: 'Projects', href: '/admin/projects', icon: '💼' },
+    { id: 'testimonials', name: 'Testimonials', href: '/admin/testimonials', icon: '💬' },
+    { id: 'team', name: 'Team', href: '/admin/team', icon: '👥' },
+    { id: 'blogs', name: 'Blogs', href: '/admin/blogs', icon: '📝' },
+    { id: 'contact-section', name: 'Contact Section', href: '/admin/contact-section', icon: '📞' },
+    { id: 'contact-submissions', name: 'Contact Submissions', href: '/admin/contact-submissions', icon: '📧' },
+    { id: 'faqs', name: 'FAQs', href: '/admin/faqs', icon: '❓' },
     { id: 'why-choose-us', name: 'Why Choose Us', href: '/admin/why-choose-us', icon: '⭐' },
     { id: 'client-logos', name: 'Client Logos', href: '/admin/client-logos', icon: '🏢' },
   ]

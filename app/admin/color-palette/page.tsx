@@ -37,7 +37,7 @@ export default function ColorPalette() {
       })
       if (response.ok) {
         const data = await response.json()
-        const activePalette = data.filter(p => p.is_active).sort((a, b) => b.id - a.id)[0]
+        const activePalette = data.filter((p: any) => p.is_active).sort((a: any, b: any) => b.id - a.id)[0]
         if (activePalette) {
           setColorPalette({
             id: activePalette.id,

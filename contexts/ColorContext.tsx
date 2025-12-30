@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { API_ENDPOINTS } from '../lib/api'
+import { fallbackData } from '../lib/fallbackData'
 
 interface ColorPalette {
   primary_color: string
@@ -10,22 +11,12 @@ interface ColorPalette {
   light_color: string
 }
 
-const ColorContext = createContext<ColorPalette>({
-  primary_color: '#0477BF',
-  secondary_color: '#012340',
-  accent_color: '#FCB316',
-  light_color: '#048ABF'
-})
+const ColorContext = createContext<ColorPalette>(fallbackData.colorPalette)
 
 export const useColors = () => useContext(ColorContext)
 
 export function ColorProvider({ children }: { children: ReactNode }) {
-  const [colors, setColors] = useState<ColorPalette>({
-    primary_color: '#0477BF',
-    secondary_color: '#012340',
-    accent_color: '#FCB316',
-    light_color: '#048ABF'
-  })
+  const [colors, setColors] = useState<ColorPalette>(fallbackData.colorPalette)
 
   const validateHexColor = (color: string): string => {
     if (!color || !color.startsWith('#')) return '#000000'
@@ -48,7 +39,10 @@ export function ColorProvider({ children }: { children: ReactNode }) {
           light_color: validateHexColor(data.light_color)
         })
       })
-      .catch(() => console.log('Using default colors'))
+      .catch(() => {
+        console.log('Backend offline - using fallback colors')
+        setColors(fallbackData.colorPalette)
+      })
   }, [])
 
   return (

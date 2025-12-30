@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { API_ENDPOINTS, getImageUrl } from '../../../lib/api'
 
 export default function HeroSections() {
-  const [heroSections, setHeroSections] = useState([
+  const [heroSections, setHeroSections] = useState<any[]>([
     {
       id: 1,
       title: 'Innovative Software Solutions',
@@ -19,11 +19,13 @@ export default function HeroSections() {
       is_active: true
     }
   ])
-  const [heroImages, setHeroImages] = useState({})
+  const [heroImages, setHeroImages] = useState<Record<string, string>>({})
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
   const hasFetchedHeroSections = useRef(false)
+  const formContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -56,8 +58,8 @@ export default function HeroSections() {
       const response = await fetch(API_ENDPOINTS.HERO_SECTIONS)
       if (response.ok) {
         const data = await response.json()
-        const formattedData = data.map(item => {
-          const existingHero = heroSections.find(h => h.id === item.id)
+        const formattedData = data.map((item: any) => {
+          const existingHero = heroSections.find((h: any) => h.id === item.id)
           return {
             ...item,
             button_text: item.buttonText || item.button_text || 'Get Started',
@@ -72,59 +74,87 @@ export default function HeroSections() {
     }
   }
 
-  const saveAllHeroSections = async () => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+    
+    heroSections.forEach((hero, index) => {
+      if (!hero.title.trim()) newErrors[`title_${index}`] = 'Title is required'
+      if (!hero.subtitle.trim()) newErrors[`subtitle_${index}`] = 'Subtitle is required'
+      if (!hero.description.trim()) newErrors[`description_${index}`] = 'Description is required'
+      if (!hero.button_text.trim()) newErrors[`button_text_${index}`] = 'Button text is required'
+    })
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const isFormValid = () => {
+    return heroSections.every((h: any) => 
+      h.title.trim() && 
+      h.subtitle.trim() && 
+      h.description.trim() && 
+      h.button_text.trim()
+    )
+  }
+
+  const saveHeroSection = async (index: number) => {
+    if (!validateForm()) return
     const token = localStorage.getItem('access_token')
+    if (!token) {
+      setSuccessMessage('Please login again')
+      setShowSuccessModal(true)
+      return
+    }
+    
+    const hero = heroSections[index]
+    
     try {
-      const deleteResponse = await fetch(API_ENDPOINTS.ADMIN_HERO_SECTIONS_DELETE_ALL, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+      const formData = new FormData()
+      formData.append('title', hero.title)
+      formData.append('subtitle', hero.subtitle)
+      formData.append('description', hero.description)
+      formData.append('buttonText', hero.button_text)
+      formData.append('button_url', hero.button_url || '/contact')
+      formData.append('order', hero.order.toString())
+      formData.append('is_active', hero.is_active.toString())
       
-      if (deleteResponse.status === 401) {
-        localStorage.removeItem('access_token')
-        router.push('/login')
-        return
+      if ((hero.background_image as any) instanceof File) {
+        formData.append('background_image', hero.background_image as unknown as File)
       }
       
-      for (const hero of heroSections) {
-        const formData = new FormData()
-        formData.append('title', hero.title)
-        formData.append('subtitle', hero.subtitle)
-        formData.append('description', hero.description)
-        formData.append('buttonText', hero.button_text)
-        formData.append('button_url', hero.button_url || '/contact')
-        formData.append('order', hero.order.toString())
-        formData.append('is_active', 'true')
-        
-        if (hero.background_image instanceof File) {
-          formData.append('background_image', hero.background_image)
-        }
-        
-        const response = await fetch(API_ENDPOINTS.ADMIN_HERO_SECTIONS, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
+      let response
+      if (hero.id && typeof hero.id === 'number') {
+        response = await fetch(`${API_ENDPOINTS.ADMIN_HERO_SECTIONS}${hero.id}/`, {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token}` },
           body: formData
         })
-        
-        if (!response.ok) {
-          const error = await response.json()
-          console.error('Error creating hero:', error)
-          throw new Error('Failed to create hero section')
-        }
+      } else {
+        response = await fetch(API_ENDPOINTS.ADMIN_HERO_SECTIONS, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        })
       }
       
-      setSuccessMessage('Hero sections saved successfully!')
-      setShowSuccessModal(true)
-      await fetchHeroSections(true)
-      setHeroImages({})
-      localStorage.removeItem('heroImages')
+      if (response.ok) {
+        setSuccessMessage(`Hero section "${hero.title}" saved successfully!`)
+        setShowSuccessModal(true)
+        setErrors({})
+        await fetchHeroSections(true)
+        const heroId = hero.id || `temp-${index}`
+        if (heroImages[heroId]) {
+          const newImages = { ...heroImages }
+          delete newImages[heroId]
+          setHeroImages(newImages)
+          localStorage.setItem('heroImages', JSON.stringify(newImages))
+        }
+      } else {
+        const errorData = await response.json()
+        throw new Error(JSON.stringify(errorData))
+      }
     } catch (err) {
-      console.error('Save error:', err)
-      setSuccessMessage('Error saving hero sections: ' + err.message)
+      setSuccessMessage(`Error saving hero section "${hero.title}": ${err instanceof Error ? err.message : 'Unknown error'}`)
       setShowSuccessModal(true)
     }
   }
@@ -133,9 +163,9 @@ export default function HeroSections() {
     const tempId = `temp-${Date.now()}`
     const newHero = {
       id: tempId,
-      title: 'New Hero Section',
-      subtitle: 'New Subtitle',
-      description: 'New description for hero section',
+      title: '',
+      subtitle: '',
+      description: '',
       button_text: 'Get Started',
       button_url: '/contact',
       background_image: null,
@@ -144,9 +174,19 @@ export default function HeroSections() {
       is_active: true
     }
     setHeroSections(prev => [...prev, newHero])
+    
+    // Scroll to the new form after a short delay
+    setTimeout(() => {
+      if (formContainerRef.current) {
+        const newFormElement = formContainerRef.current.lastElementChild
+        if (newFormElement) {
+          newFormElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
-  const deleteHeroSection = async (index, hero) => {
+  const deleteHeroSection = async (index: number, hero: any) => {
     const token = localStorage.getItem('access_token')
     if (hero.id && typeof hero.id === 'number') {
       try {
@@ -163,13 +203,14 @@ export default function HeroSections() {
     setHeroSections(heroSections.filter((_, i) => i !== index))
   }
 
-  const updateHeroSection = (index, field, value) => {
+  const updateHeroSection = (index: number, field: string, value: any) => {
     const updated = [...heroSections]
-    updated[index][field] = value
+    ;(updated[index] as any)[field] = value
     setHeroSections(updated)
+    setTimeout(() => validateForm(), 0)
   }
 
-  const handleImageUpload = (index, file, hero) => {
+  const handleImageUpload = (index: number, file: File, hero: any) => {
     if (file) {
       const heroId = hero.id || `temp-${index}`
       const updated = [...heroSections]
@@ -208,7 +249,7 @@ export default function HeroSections() {
             </button>
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-6" ref={formContainerRef}>
             {heroSections.map((hero, index) => (
               <div key={hero.id || `hero-${index}`} className="p-6 border rounded-lg bg-gray-50">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -216,37 +257,49 @@ export default function HeroSections() {
                     <label className="block text-sm font-medium text-gray-700">Title</label>
                     <input
                       type="text"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                        errors[`title_${index}`] ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       value={hero.title}
                       onChange={(e) => updateHeroSection(index, 'title', e.target.value)}
                     />
+                    {errors[`title_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`title_${index}`]}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Subtitle</label>
                     <input
                       type="text"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                        errors[`subtitle_${index}`] ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       value={hero.subtitle}
                       onChange={(e) => updateHeroSection(index, 'subtitle', e.target.value)}
                     />
+                    {errors[`subtitle_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`subtitle_${index}`]}</p>}
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700">Description</label>
                     <textarea
                       rows={3}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                        errors[`description_${index}`] ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       value={hero.description}
                       onChange={(e) => updateHeroSection(index, 'description', e.target.value)}
                     />
+                    {errors[`description_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`description_${index}`]}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Button Text</label>
                     <input
                       type="text"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                        errors[`button_text_${index}`] ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       value={hero.button_text}
                       onChange={(e) => updateHeroSection(index, 'button_text', e.target.value)}
                     />
+                    {errors[`button_text_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`button_text_${index}`]}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Button URL</label>
@@ -301,7 +354,13 @@ export default function HeroSections() {
                     )}
                   </div>
                 </div>
-                <div className="mt-4 flex justify-end">
+                <div className="mt-4 flex justify-end space-x-2">
+                  <button
+                    onClick={() => saveHeroSection(index)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700"
+                  >
+                    {hero.id && typeof hero.id === 'number' ? 'Update' : 'Save'}
+                  </button>
                   <button
                     onClick={() => deleteHeroSection(index, hero)}
                     className="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700"
@@ -314,12 +373,9 @@ export default function HeroSections() {
           </div>
 
           <div className="mt-6 flex justify-end">
-            <button
-              onClick={saveAllHeroSections}
-              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"
-            >
-              Save All Changes
-            </button>
+            <p className="text-gray-600 text-sm">
+              Save each hero section individually using the Save/Update buttons above.
+            </p>
           </div>
         </div>
       </div>

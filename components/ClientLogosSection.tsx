@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../lib/api'
+import { fallbackData } from '../lib/fallbackData'
 
 interface ClientLogo {
   id: number
@@ -15,7 +16,7 @@ interface ClientLogo {
 
 export default function ClientLogosSection() {
   const colors = useColors()
-  const [logos, setLogos] = useState<ClientLogo[]>([])
+  const [logos, setLogos] = useState<ClientLogo[]>(fallbackData.clientLogos)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -34,10 +35,13 @@ export default function ClientLogosSection() {
         const response = await fetch(API_ENDPOINTS.CLIENT_LOGOS)
         if (response.ok) {
           const data = await response.json()
-          setLogos(data)
+          if (data.length > 0) {
+            setLogos(data)
+          }
         }
       } catch (error) {
-        console.error('Error fetching client logos:', error)
+        console.log('Backend offline - using fallback client logos')
+        setLogos(fallbackData.clientLogos)
       } finally {
         setLoading(false)
       }
@@ -46,8 +50,14 @@ export default function ClientLogosSection() {
     fetchLogos()
   }, [])
 
-  if (loading || logos.length === 0) {
-    return null
+  if (loading) {
+    return (
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4 text-center">
+          <div className="text-gray-500">Loading client logos...</div>
+        </div>
+      </section>
+    )
   }
 
   return (
@@ -64,7 +74,7 @@ export default function ClientLogosSection() {
                 className="flex-shrink-0 flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 min-w-[150px]"
               >
                 <Image
-                  src={getImageUrl(logo.logo)}
+                  src={logo.logo.startsWith('/') ? logo.logo : getImageUrl(logo.logo)}
                   alt={logo.name}
                   width={120}
                   height={60}

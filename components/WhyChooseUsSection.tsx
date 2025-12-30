@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
 import { API_ENDPOINTS } from '../lib/api'
+import { fallbackData } from '../lib/fallbackData'
 
 interface Feature {
   id: number
@@ -21,8 +22,8 @@ interface SectionData {
 
 export default function WhyChooseUsSection() {
   const colors = useColors()
-  const [features, setFeatures] = useState<Feature[]>([])
-  const [sectionData, setSectionData] = useState<SectionData>({ subtitle: 'OUR STRENGTHS', title: 'WHY CHOOSE INNO8', breadcrumb_items: 'Experience,Innovation,Results' })
+  const [features, setFeatures] = useState<Feature[]>(fallbackData.whyChooseUsFeatures)
+  const [sectionData, setSectionData] = useState<SectionData>(fallbackData.whyChooseUsSection)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -45,7 +46,9 @@ export default function WhyChooseUsSection() {
         
         if (featuresResponse.ok) {
           const featuresData = await featuresResponse.json()
-          setFeatures(featuresData)
+          if (featuresData.length > 0) {
+            setFeatures(featuresData)
+          }
         }
         
         if (sectionResponse.ok) {
@@ -53,7 +56,9 @@ export default function WhyChooseUsSection() {
           setSectionData(sectionData)
         }
       } catch (error) {
-        console.error('Error fetching data:', error)
+        console.log('Backend offline - using fallback why choose us data')
+        setFeatures(fallbackData.whyChooseUsFeatures)
+        setSectionData(fallbackData.whyChooseUsSection)
       } finally {
         setLoading(false)
       }
@@ -85,24 +90,23 @@ export default function WhyChooseUsSection() {
         {/* Section Header */}
         <div className="text-center mb-16" data-aos="fade-up">
           <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-1 rounded-full mr-4" style={{ backgroundColor: colors.accent_color }}></div>
-            <span className="text-lg font-medium text-white/80">
+            <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
+            <span className="text-gray-300 uppercase tracking-wider text-sm">
               {sectionData.subtitle}
             </span>
-            <div className="w-12 h-1 rounded-full ml-4" style={{ backgroundColor: colors.accent_color }}></div>
           </div>
           <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
             {sectionData.title?.split(' ').map((word, index) => 
               word === 'INNO8' ? (
-                <span key={index} style={{ color: colors.accent_color }}>{word}</span>
+                <span key={`title-${word}-${index}`} style={{ color: colors.accent_color }}>{word}</span>
               ) : (
-                <span key={index}>{word} </span>
+                <span key={`title-${word}-${index}`}>{word} </span>
               )
             )}
           </h2>
           <div className="flex items-center justify-center space-x-8 text-white/80">
             {sectionData.breadcrumb_items?.split(',').map((item, index, array) => (
-              <div key={index} className="flex items-center">
+              <div key={`breadcrumb-${index}`} className="flex items-center">
                 <span className="text-lg font-medium">{item.trim()}</span>
                 {index < array.length - 1 && <div className="w-2 h-2 rounded-full bg-white/60 ml-8"></div>}
               </div>
@@ -114,7 +118,7 @@ export default function WhyChooseUsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <div
-              key={index}
+              key={feature.id}
               className="relative"
               data-aos="fade-up"
               data-aos-delay={index * 100}

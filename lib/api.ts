@@ -15,6 +15,14 @@ export const API_ENDPOINTS = {
   WORKING_PROCESS: `${API_CONFIG.BASE_URL}/api/working-process/`,
   WORKING_PROCESS_SECTION: `${API_CONFIG.BASE_URL}/api/working-process-section/`,
   CLIENT_LOGOS: `${API_CONFIG.BASE_URL}/api/client-logos/`,
+  TESTIMONIALS: `${API_CONFIG.BASE_URL}/api/testimonials/`,
+  TESTIMONIALS_SECTION: `${API_CONFIG.BASE_URL}/api/testimonials-section/`,
+  CONTACT_INFO: `${API_CONFIG.BASE_URL}/api/contact-info/`,
+  CONTACT_SECTION: `${API_CONFIG.BASE_URL}/api/contact-section/`,
+  BLOG_POSTS: `${API_CONFIG.BASE_URL}/api/blog-posts/`,
+  BLOGS_SECTION: `${API_CONFIG.BASE_URL}/api/blogs-section/`,
+  TEAM_MEMBERS: `${API_CONFIG.BASE_URL}/api/team-members/`,
+  TEAM_SECTION: `${API_CONFIG.BASE_URL}/api/team-section/`,
   COLOR_PALETTE: `${API_CONFIG.BASE_URL}/api/color-palette/`,
   LOGIN: `${API_CONFIG.BASE_URL}/api/login/`,
   // Admin endpoints
@@ -29,12 +37,38 @@ export const API_ENDPOINTS = {
   ADMIN_WHY_CHOOSE_US: `${API_CONFIG.BASE_URL}/api/admin/why-choose-us-features/`,
   ADMIN_WORKING_PROCESS: `${API_CONFIG.BASE_URL}/api/admin/working-process/`,
   ADMIN_CLIENT_LOGOS: `${API_CONFIG.BASE_URL}/api/admin/client-logos/`,
+  ADMIN_TESTIMONIALS: `${API_CONFIG.BASE_URL}/api/admin/testimonials/`,
+  ADMIN_TESTIMONIALS_SECTION: `${API_CONFIG.BASE_URL}/api/admin/testimonials-section/`,
+  ADMIN_CONTACT_INFO: `${API_CONFIG.BASE_URL}/api/admin/contact-info/`,
+  ADMIN_CONTACT_SECTION: `${API_CONFIG.BASE_URL}/api/admin/contact-section/`,
+  ADMIN_BLOG_POSTS: `${API_CONFIG.BASE_URL}/api/admin/blog-posts/`,
+  ADMIN_BLOGS_SECTION: `${API_CONFIG.BASE_URL}/api/admin/blogs-section/`,
+  ADMIN_TEAM_MEMBERS: `${API_CONFIG.BASE_URL}/api/admin/team-members/`,
+  ADMIN_TEAM_SECTIONS: `${API_CONFIG.BASE_URL}/api/admin/team-sections/`,
   ADMIN_COLOR_PALETTES: `${API_CONFIG.BASE_URL}/api/admin/color-palettes/`,
-  ADMIN_COLOR_PALETTES_DEACTIVATE: `${API_CONFIG.BASE_URL}/api/admin/color-palettes/deactivate-all/`
+  ADMIN_COLOR_PALETTES_DEACTIVATE: `${API_CONFIG.BASE_URL}/api/admin/color-palettes/deactivate-all/`,
+  CONTACT_SUBMIT: `${API_CONFIG.BASE_URL}/api/contact-submit/`,
+  CONTACT_SUBMISSIONS: `${API_CONFIG.BASE_URL}/api/contact-submissions/`,
+  ADMIN_CONTACT_SUBMISSIONS: `${API_CONFIG.BASE_URL}/api/admin/contact-submissions/`,
+  FAQS: `${API_CONFIG.BASE_URL}/api/faqs/`,
+  ADMIN_FAQS: `${API_CONFIG.BASE_URL}/api/admin/faqs/`
 }
 
 export const getImageUrl = (imagePath: string) => {
   if (!imagePath) return ''
   if (imagePath.startsWith('http')) return imagePath
   return `${API_CONFIG.BASE_URL}${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`
+}
+
+// Team API functions
+export const fetchTeamMembers = async () => {
+  const response = await fetch(API_ENDPOINTS.TEAM_MEMBERS)
+  if (!response.ok) throw new Error('Failed to fetch team members')
+  return response.json()
+}
+
+export const fetchTeamSection = async () => {
+  const response = await fetch(API_ENDPOINTS.TEAM_SECTION)
+  if (!response.ok) throw new Error('Failed to fetch team section')
+  return response.json()
 }

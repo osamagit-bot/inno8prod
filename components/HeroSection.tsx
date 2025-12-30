@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../lib/api'
+import { fallbackData } from '../lib/fallbackData'
 
 interface HeroContent {
   id?: number
@@ -18,7 +19,15 @@ export default function HeroSection() {
   const colors = useColors()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
-  const [heroContents, setHeroContents] = useState<HeroContent[]>([])
+  const [heroContents, setHeroContents] = useState<HeroContent[]>([
+    {
+      title: fallbackData.heroSections[0].title,
+      subtitle: fallbackData.heroSections[0].subtitle,
+      description: fallbackData.heroSections[0].description,
+      buttonText: fallbackData.heroSections[0].button_text,
+      backgroundImage: fallbackData.heroSections[0].background_image
+    }
+  ])
 
   useEffect(() => {
     fetchHeroContent()
@@ -41,7 +50,16 @@ export default function HeroSection() {
         }
       }
     } catch (error) {
-      console.log('No hero content available')
+      console.log('Backend offline - using fallback hero content')
+      setHeroContents([
+        {
+          title: fallbackData.heroSections[0].title,
+          subtitle: fallbackData.heroSections[0].subtitle,
+          description: fallbackData.heroSections[0].description,
+          buttonText: fallbackData.heroSections[0].button_text,
+          backgroundImage: fallbackData.heroSections[0].background_image
+        }
+      ])
     }
   }
 
@@ -61,8 +79,8 @@ export default function HeroSection() {
     return (
       <section className="relative h-screen flex items-center justify-center bg-gray-900">
         <div className="text-center text-white">
-          <h1 className="text-4xl font-bold mb-4">No Hero Sections Available</h1>
-          <p className="text-lg">Please add hero sections from the admin dashboard.</p>
+          <h1 className="text-4xl font-bold mb-4">Loading Hero Content...</h1>
+          <p className="text-lg">Please wait while we load the content.</p>
         </div>
       </section>
     )
@@ -112,7 +130,7 @@ export default function HeroSection() {
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
         {heroContents.map((_, index) => (
           <button
-            key={index}
+            key={`slide-${index}`}
             onClick={() => {
               setIsAnimating(true)
               setTimeout(() => {

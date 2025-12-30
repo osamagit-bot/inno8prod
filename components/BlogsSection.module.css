@@ -1,0 +1,4 @@
+.blogCard:hover .categoryTag {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_ENDPOINTS } from '../../../lib/api'
@@ -17,7 +17,9 @@ export default function MenuItems() {
   ])
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
+  const menuContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -42,7 +44,29 @@ export default function MenuItems() {
     }
   }
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+    
+    menuItems.forEach((item) => {
+      if (!item.name.trim()) newErrors[`name_${item.id}`] = 'Menu name is required'
+      if (!item.url.trim()) newErrors[`url_${item.id}`] = 'URL is required'
+      else if (!item.url.startsWith('/')) newErrors[`url_${item.id}`] = 'URL must start with /'
+    })
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const isFormValid = () => {
+    return menuItems.every(item => 
+      item.name.trim() && 
+      item.url.trim() && 
+      item.url.startsWith('/')
+    )
+  }
+
   const saveMenuItems = async () => {
+    if (!validateForm()) return
     const token = localStorage.getItem('access_token')
     try {
       const menuData = menuItems.map(item => ({
@@ -66,6 +90,7 @@ export default function MenuItems() {
       if (response.ok) {
         setSuccessMessage('Menu items updated successfully!')
         setShowSuccessModal(true)
+        setErrors({})
       } else {
         const errorData = await response.json()
         console.error('Error response:', errorData)
@@ -88,9 +113,19 @@ export default function MenuItems() {
       parent: null
     }
     setMenuItems([...menuItems, newItem])
+    
+    // Scroll to the new item after a short delay
+    setTimeout(() => {
+      if (menuContainerRef.current) {
+        const newItemElement = menuContainerRef.current.lastElementChild
+        if (newItemElement) {
+          newItemElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
-  const addSubmenuItem = (parentId) => {
+  const addSubmenuItem = (parentId: number) => {
     const newChild = {
       id: Date.now(),
       name: 'New Submenu',
@@ -99,22 +134,36 @@ export default function MenuItems() {
       parent: parentId
     }
     setMenuItems([...menuItems, newChild])
+    
+    // Scroll to the new submenu item after a short delay
+    setTimeout(() => {
+      if (menuContainerRef.current) {
+        const allItems = menuContainerRef.current.children
+        const newItemElement = Array.from(allItems).find(el => 
+          el.querySelector('input')?.value === 'New Submenu'
+        )
+        if (newItemElement) {
+          newItemElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
-  const deleteMenuItem = (id) => {
+  const deleteMenuItem = (id: number) => {
     setMenuItems(menuItems.filter(i => i.id !== id))
   }
 
-  const updateMenuItem = (id, field, value) => {
+  const updateMenuItem = (id: number, field: string, value: any) => {
     const updated = [...menuItems]
     const itemIndex = updated.findIndex(i => i.id === id)
     if (itemIndex !== -1) {
-      updated[itemIndex][field] = value
+      ;(updated[itemIndex] as any)[field] = value
       setMenuItems(updated)
+      setTimeout(() => validateForm(), 0)
     }
   }
 
-  const moveItem = (id, direction) => {
+  const moveItem = (id: number, direction: string) => {
     const updated = [...menuItems]
     const currentIndex = updated.findIndex(i => i.id === id)
     if (currentIndex === -1) return
@@ -137,7 +186,7 @@ export default function MenuItems() {
   }
 
   const getSortedItems = () => {
-    const sortedItems = []
+    const sortedItems: any[] = []
     const parents = menuItems.filter(item => !item.parent).sort((a, b) => a.order - b.order)
     
     parents.forEach(parent => {
@@ -169,7 +218,7 @@ export default function MenuItems() {
             </button>
           </div>
           
-          <div className="space-y-3">
+          <div className="space-y-3" ref={menuContainerRef}>
             {getSortedItems().map((item) => (
               <div key={item.id} className={`p-4 border rounded-lg ${
                 item.parent ? 'bg-blue-50 ml-8 border-blue-200' : 'bg-gray-50 border-gray-300'
@@ -199,21 +248,35 @@ export default function MenuItems() {
                     </span>
                   </div>
 
-                  <input
-                    type="text"
-                    placeholder="Menu Name"
-                    className="flex-1 border border-gray-300 rounded px-3 py-2"
-                    value={item.name}
-                    onChange={(e) => updateMenuItem(item.id, 'name', e.target.value)}
-                  />
+                  <div className="flex-1 relative">
+                    <input
+                      type="text"
+                      placeholder="Menu Name"
+                      className={`w-full border rounded px-3 py-2 ${
+                        errors[`name_${item.id}`] ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      value={item.name}
+                      onChange={(e) => updateMenuItem(item.id, 'name', e.target.value)}
+                    />
+                    {errors[`name_${item.id}`] && (
+                      <p className="text-red-500 text-sm mt-1">{errors[`name_${item.id}`]}</p>
+                    )}
+                  </div>
 
-                  <input
-                    type="text"
-                    placeholder="URL (e.g., /about)"
-                    className="flex-1 border border-gray-300 rounded px-3 py-2"
-                    value={item.url}
-                    onChange={(e) => updateMenuItem(item.id, 'url', e.target.value)}
-                  />
+                  <div className="flex-1 relative">
+                    <input
+                      type="text"
+                      placeholder="URL (e.g., /about)"
+                      className={`w-full border rounded px-3 py-2 ${
+                        errors[`url_${item.id}`] ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      value={item.url}
+                      onChange={(e) => updateMenuItem(item.id, 'url', e.target.value)}
+                    />
+                    {errors[`url_${item.id}`] && (
+                      <p className="text-red-500 text-sm mt-1">{errors[`url_${item.id}`]}</p>
+                    )}
+                  </div>
 
                   <div className="flex space-x-2">
                     {!item.parent && (
@@ -239,7 +302,12 @@ export default function MenuItems() {
           <div className="mt-6 flex justify-end">
             <button
               onClick={saveMenuItems}
-              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"
+              disabled={!isFormValid()}
+              className={`px-6 py-3 rounded-md ${
+                isFormValid() 
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
             >
               Save All Changes
             </button>

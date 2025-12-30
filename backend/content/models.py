@@ -8,6 +8,11 @@ class SiteSettings(models.Model):
     phone = models.CharField(max_length=20, default="+93 711 167 380")
     address = models.CharField(max_length=200, default="Kabul, Afghanistan")
     working_hours = models.CharField(max_length=50, default="9:00 am - 6:00 pm")
+    facebook_url = models.URLField(blank=True, null=True)
+    instagram_url = models.URLField(blank=True, null=True)
+    telegram_url = models.URLField(blank=True, null=True)
+    linkedin_url = models.URLField(blank=True, null=True)
+    youtube_url = models.URLField(blank=True, null=True)
     
     class Meta:
         verbose_name = "Site Settings"
@@ -69,13 +74,28 @@ class Testimonial(models.Model):
     content = models.TextField()
     image = models.ImageField(upload_to='testimonials/', null=True, blank=True)
     rating = models.IntegerField(default=5)
+    order = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['order']
+
+class TestimonialsSection(models.Model):
+    subtitle = models.CharField(max_length=100, default="Client Testimonials")
+    title = models.CharField(max_length=200, default="What Our Clients Say")
+    description = models.TextField(default="Don't just take our word for it. Here's what our satisfied clients have to say about our services.")
+    
+    class Meta:
+        verbose_name = "Testimonials Section"
+        verbose_name_plural = "Testimonials Section"
     
 class Project(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     image = models.ImageField(upload_to='projects/', null=True, blank=True)
     url = models.URLField(null=True, blank=True)
+    learn_more_url = models.URLField(null=True, blank=True)
+    live_preview_url = models.URLField(null=True, blank=True)
     technologies = models.CharField(max_length=200)
     is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -85,6 +105,13 @@ class AboutSection(models.Model):
     subtitle = models.CharField(max_length=100, default="About Your Company")
     title = models.CharField(max_length=200, default="We Execute Ideas\nFrom Start to Finish")
     button_text = models.CharField(max_length=50, default="Know More")
+    # Company Overview fields
+    overview_title = models.CharField(max_length=100, default="Company Overview")
+    overview_description1 = models.TextField(default="Founded with a vision to bridge the gap between innovative technology and business success, Inno8 has been at the forefront of digital transformation.")
+    overview_description2 = models.TextField(default="Our team combines technical expertise with creative thinking to deliver solutions that are functional, user-friendly and scalable.")
+    projects_count = models.IntegerField(default=50)
+    years_experience = models.IntegerField(default=5)
+    # Mission & Vision fields
     mission_title = models.CharField(max_length=100, default="Our Mission")
     mission_description = models.TextField(default="Our mission is to push boundaries, engage audiences, drive innovation through cutting-edge technology solutions.")
     vision_title = models.CharField(max_length=100, default="Our Vision")
@@ -169,3 +196,115 @@ class WorkingProcessSection(models.Model):
     class Meta:
         verbose_name = "Working Process Section"
         verbose_name_plural = "Working Process Section"
+
+class ContactInfo(models.Model):
+    title = models.CharField(max_length=100)
+    value = models.CharField(max_length=200)
+    icon_svg = models.TextField(help_text="SVG icon code")
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Contact Info"
+        verbose_name_plural = "Contact Info"
+    
+    def __str__(self):
+        return self.title
+
+class ContactSection(models.Model):
+    subtitle = models.CharField(max_length=100, default="Get In Touch")
+    title = models.CharField(max_length=200, default="Contact Us")
+    description = models.TextField(default="Ready to transform your ideas into reality? Let's build something amazing together.")
+    
+    class Meta:
+        verbose_name = "Contact Section"
+        verbose_name_plural = "Contact Section"
+
+class BlogPost(models.Model):
+    title = models.CharField(max_length=200)
+    excerpt = models.TextField(max_length=300)
+    content = models.TextField()
+    image = models.ImageField(upload_to='blogs/', null=True, blank=True)
+    author = models.CharField(max_length=100, default="Inno8 Team")
+    category = models.CharField(max_length=50, default="DEVELOPMENT")
+    date_published = models.DateTimeField(auto_now_add=True)
+    slug = models.SlugField(unique=True)
+    is_featured = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['-date_published']
+        verbose_name = "Blog Post"
+        verbose_name_plural = "Blog Posts"
+    
+    def __str__(self):
+        return self.title
+
+class BlogsSection(models.Model):
+    subtitle = models.CharField(max_length=100, default="Latest News")
+    title = models.CharField(max_length=200, default="Our Blog")
+    description = models.TextField(default="Stay updated with our latest insights, tips, and industry news.")
+    
+    class Meta:
+        verbose_name = "Blogs Section"
+        verbose_name_plural = "Blogs Section"
+
+class TeamMember(models.Model):
+    name = models.CharField(max_length=100)
+    position = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='team/')
+    rss_url = models.URLField(null=True, blank=True)
+    pinterest_url = models.URLField(null=True, blank=True)
+    google_plus_url = models.URLField(null=True, blank=True)
+    facebook_url = models.URLField(null=True, blank=True)
+    twitter_url = models.URLField(null=True, blank=True)
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Team Member"
+        verbose_name_plural = "Team Members"
+    
+    def __str__(self):
+        return f"{self.name} - {self.position}"
+
+class TeamSection(models.Model):
+    subtitle = models.CharField(max_length=100, default="OUR PROFESSIONAL")
+    title = models.CharField(max_length=200, default="Meet Our Experts People")
+    
+    class Meta:
+        verbose_name = "Team Section"
+        verbose_name_plural = "Team Section"
+
+class ContactSubmission(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True)
+    subject = models.CharField(max_length=100, blank=True)
+    message = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['-submitted_at']
+        verbose_name = "Contact Submission"
+        verbose_name_plural = "Contact Submissions"
+    
+    def __str__(self):
+        return f"{self.name} - {self.email} ({self.submitted_at.strftime('%Y-%m-%d %H:%M')})"
+
+class FAQ(models.Model):
+    question = models.CharField(max_length=300)
+    answer = models.TextField()
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['order']
+        verbose_name = "FAQ"
+        verbose_name_plural = "FAQs"
+    
+    def __str__(self):
+        return self.question

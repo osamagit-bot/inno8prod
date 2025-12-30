@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
 import { API_ENDPOINTS } from '../lib/api'
+import { fallbackData } from '../lib/fallbackData'
 
 interface ServicesSectionContent {
   subtitle: string
@@ -22,13 +23,8 @@ interface Service {
 
 export default function ServicesSection() {
   const colors = useColors()
-  const [sectionContent, setSectionContent] = useState<ServicesSectionContent>({
-    subtitle: 'OUR OFFERING',
-    title: 'Enhance And Pioneer Using',
-    title_highlight: 'Technology Trends',
-    button_text: 'Explore More'
-  })
-  const [services, setServices] = useState<Service[]>([])
+  const [sectionContent, setSectionContent] = useState<ServicesSectionContent>(fallbackData.servicesSection)
+  const [services, setServices] = useState<Service[]>(fallbackData.services)
 
   useEffect(() => {
     fetchSectionContent()
@@ -57,7 +53,8 @@ export default function ServicesSection() {
         })
       }
     } catch (error) {
-      console.log('Using default services section content')
+      console.log('Backend offline - using fallback services section content')
+      setSectionContent(fallbackData.servicesSection)
     }
   }
 
@@ -66,11 +63,13 @@ export default function ServicesSection() {
       const response = await fetch(API_ENDPOINTS.SERVICES)
       if (response.ok) {
         const data = await response.json()
-        setServices(data) // Always use backend data, even if empty
+        if (data.length > 0) {
+          setServices(data)
+        }
       }
     } catch (error) {
-      console.log('Error fetching services:', error)
-      setServices([]) // Show empty if API fails
+      console.log('Backend offline - using fallback services')
+      setServices(fallbackData.services)
     }
   }
 
@@ -145,18 +144,17 @@ export default function ServicesSection() {
         {/* Section Header */}
         <div className="text-center mb-16" data-aos="fade-up">
           <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-1 rounded-full mr-4" style={{ backgroundColor: colors.primary_color }}></div>
-            <span className="text-lg font-medium" style={{ color: colors.primary_color }}>
+            <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
+            <span className="text-gray-300 uppercase tracking-wider text-sm">
               {sectionContent.subtitle}
             </span>
-            <div className="w-12 h-1 rounded-full ml-4" style={{ backgroundColor: colors.primary_color }}></div>
           </div>
           <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6" data-aos="fade-up" data-aos-delay="200">
             {sectionContent.title}<br />
             <span style={{ color: colors.accent_color }}>{sectionContent.title_highlight}</span>
           </h2>
           <div className="flex justify-end" data-aos="fade-left" data-aos-delay="400">
-            <button className="relative bg-transparent border font-medium overflow-hidden group transition-colors px-8 py-3 rounded-sm text-white" style={{ borderColor: colors.primary_color }}>
+            <a href="/services" className="relative bg-transparent border font-medium overflow-hidden group transition-colors px-8 py-3 rounded-sm text-white" style={{ borderColor: colors.primary_color }}>
               <span className="relative z-10 flex items-center space-x-2">
                 <span>{sectionContent.button_text}</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +162,7 @@ export default function ServicesSection() {
                 </svg>
               </span>
               <div className="absolute inset-0 scale-0 group-hover:scale-100 transition-transform duration-300 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
-            </button>
+            </a>
           </div>
         </div>
 
@@ -172,7 +170,7 @@ export default function ServicesSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
             <div 
-              key={index}
+              key={service.id}
               className="group relative rounded-lg p-8 transition-all duration-500 hover:scale-105 hover:shadow-2xl overflow-hidden bg-blue-800/30" 
               data-aos="fade-up"
               data-aos-delay={index * 100}

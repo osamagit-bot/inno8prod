@@ -2,12 +2,73 @@
 
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
+import { API_ENDPOINTS } from '../lib/api'
+import { fallbackData } from '../lib/fallbackData'
+
+interface Testimonial {
+  id: number
+  name: string
+  position: string
+  company: string
+  content: string
+  rating: number
+  order: number
+  is_active: boolean
+}
+
+interface SectionData {
+  subtitle: string
+  title: string
+  description: string
+}
 
 export default function TestimonialsSection() {
   const colors = useColors()
   const [activeTestimonial, setActiveTestimonial] = useState(0)
   const [startX, setStartX] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(fallbackData.testimonials)
+  const [sectionData, setSectionData] = useState<SectionData>(fallbackData.testimonialsSection)
+
+  useEffect(() => {
+    fetchTestimonialsData()
+    fetchSectionData()
+  }, [])
+
+  const fetchTestimonialsData = async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.TESTIMONIALS)
+      if (response.ok) {
+        const data = await response.json()
+        const activeTestimonials = data.filter((testimonial: Testimonial) => testimonial.is_active).sort((a: Testimonial, b: Testimonial) => a.order - b.order)
+        if (activeTestimonials.length > 0) {
+          setTestimonials(activeTestimonials)
+        }
+      }
+    } catch (error) {
+      console.log('Backend offline - using fallback testimonials data')
+      setTestimonials(fallbackData.testimonials)
+    }
+  }
+
+  const fetchSectionData = async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.TESTIMONIALS_SECTION)
+      if (response.ok) {
+        const data = await response.json()
+        setSectionData({
+          subtitle: data.subtitle || sectionData.subtitle,
+          title: data.title || sectionData.title,
+          description: data.description || sectionData.description
+        })
+      }
+    } catch (error) {
+      console.log('Backend offline - using fallback section data')
+      setSectionData(fallbackData.testimonialsSection)
+    }
+  }
+
+
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setStartX(e.clientX)
@@ -47,33 +108,6 @@ export default function TestimonialsSection() {
     }
   }
 
-  const testimonials = [
-    {
-      id: 1,
-      name: 'Sarah Johnson',
-      position: 'CEO, TechStart Inc.',
-      content: 'Inno8 transformed our digital presence completely. Their innovative approach and attention to detail exceeded our expectations. The team delivered a solution that not only met our requirements but also enhanced our business operations significantly.',
-      rating: 5,
-      avatar: '/images/avatar1.jpg'
-    },
-    {
-      id: 2,
-      name: 'Michael Chen',
-      position: 'CTO, Digital Solutions',
-      content: 'Working with Inno8 was an exceptional experience. Their technical expertise and professional approach made our complex project seem effortless. The results speak for themselves - increased efficiency and improved user engagement.',
-      rating: 5,
-      avatar: '/images/avatar2.jpg'
-    },
-    {
-      id: 3,
-      name: 'Emily Rodriguez',
-      position: 'Marketing Director, GrowthCorp',
-      content: 'The team at Inno8 delivered beyond our expectations. Their creative solutions and timely delivery helped us launch our product successfully. I highly recommend them for any software development needs.',
-      rating: 5,
-      avatar: '/images/avatar3.jpg'
-    }
-  ]
-
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveTestimonial(prev => (prev + 1) % testimonials.length)
@@ -85,7 +119,7 @@ export default function TestimonialsSection() {
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => (
       <svg
-        key={index}
+        key={`star-${index}`}
         className={`w-5 h-5 ${index < rating ? 'text-yellow-400' : 'text-gray-300'}`}
         fill="currentColor"
         viewBox="0 0 20 20"
@@ -96,22 +130,27 @@ export default function TestimonialsSection() {
   }
 
   return (
-    <section className="py-20" style={{ backgroundColor: colors.secondary_color }}>
+    <section id="testimonials" className="py-20" style={{ backgroundColor: colors.secondary_color, scrollMarginTop: '100px' }}>
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-1 rounded-full mr-4" style={{ backgroundColor: colors.primary_color }}></div>
-            <span className="text-lg font-medium text-white">
-              Client Testimonials
+            <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
+            <span className="text-gray-300 uppercase tracking-wider text-sm">
+              {sectionData.subtitle}
             </span>
-            <div className="w-12 h-1 rounded-full ml-4" style={{ backgroundColor: colors.primary_color }}></div>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-            What Our <span style={{ color: colors.primary_color }}>Clients Say</span>
+            {sectionData.title.split(' ').map((word, index) => 
+              word === 'Clients' || word === 'Say' ? (
+                <span key={`title-${word}-${index}`} style={{ color: colors.primary_color }}>{word} </span>
+              ) : (
+                <span key={`title-${word}-${index}`}>{word} </span>
+              )
+            )}
           </h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Don't just take our word for it. Here's what our satisfied clients have to say about our services.
+            {sectionData.description}
           </p>
         </div>
 
@@ -162,14 +201,14 @@ export default function TestimonialsSection() {
                     <div className="flex items-center justify-center space-x-4">
                       <div className="w-16 h-16 rounded-full overflow-hidden border-4" style={{ borderColor: colors.primary_color }}>
                         <div className="w-full h-full rounded-full flex items-center justify-center text-white font-bold text-xl" style={{ backgroundColor: colors.primary_color }}>
-                          {testimonial.name.split(' ').map(n => n[0]).join('')}
+                          {testimonial.name.split(' ').map((n, nameIndex) => n[0]).join('')}
                         </div>
                       </div>
                       <div className="text-center">
                         <h4 className="font-bold text-lg text-black">
                           {testimonial.name}
                         </h4>
-                        <p className="text-gray-800">{testimonial.position}</p>
+                        <p className="text-gray-800">{testimonial.position}, {testimonial.company}</p>
                       </div>
                     </div>
                   </div>
@@ -180,9 +219,9 @@ export default function TestimonialsSection() {
 
           {/* Navigation Dots */}
           <div className="flex justify-center mt-8 space-x-3">
-            {testimonials.map((_, index) => (
+            {testimonials.map((testimonial, index) => (
               <button
-                key={index}
+                key={testimonial.id}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
                   index === activeTestimonial ? 'scale-125' : 'scale-100'
                 }`}

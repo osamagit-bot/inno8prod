@@ -1,8 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../lib/api'
+import { fallbackData } from '../lib/fallbackData'
 
 interface AboutContent {
   subtitle: string
@@ -19,18 +21,7 @@ interface AboutContent {
 
 export default function AboutSection() {
   const colors = useColors()
-  const [aboutContent, setAboutContent] = useState<AboutContent>({
-    subtitle: 'About Your Company',
-    title: 'We Execute Ideas\nFrom Start to Finish',
-    button_text: 'Know More',
-    mission_title: 'Our Mission',
-    mission_description: 'Our mission is to push boundaries, engage audiences, and drive innovation through cutting-edge technology solutions.',
-    vision_title: 'Our Vision',
-    vision_description: 'To become the leading software house that transforms businesses through innovative digital solutions and exceptional user experiences.',
-    image1: '/images/about1.avif',
-    image2: '/images/about2.webp',
-    floating_text: 'Repellendus autem ruibusdam at aut officiis debitis aut re necessitatibus saepe eveniet ut et repudianda sint et molestiae non recusandae.'
-  })
+  const [aboutContent, setAboutContent] = useState<AboutContent>(fallbackData.aboutSection)
 
   useEffect(() => {
     fetchAboutContent()
@@ -64,32 +55,32 @@ export default function AboutSection() {
         })
       }
     } catch (error) {
-      console.log('Using default about content')
+      console.log('Backend offline - using fallback about content')
+      setAboutContent(fallbackData.aboutSection)
     }
   }
   return (
-    <section className="py-20 bg-gray-50">
+    <section id="mission" className="py-20 bg-gray-50" style={{ scrollMarginTop: '100px' }}>
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div data-aos="fade-up">
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-1 rounded-full mr-4" style={{ backgroundColor: colors.primary_color }}></div>
-            <h3 className="text-lg font-medium" style={{ color: colors.primary_color }} data-aos="fade-down">{aboutContent.subtitle}</h3>
-            <div className="w-12 h-1 rounded-full ml-4" style={{ backgroundColor: colors.primary_color }}></div>
+          <div className="flex items-center mb-4">
+            <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
+            <span className="text-gray-500 uppercase tracking-wider text-sm">{aboutContent.subtitle}</span>
           </div>
-            <h2 className="text-4xl lg:text-5xl font-bold mb-8 leading-tight" style={{ color: colors.secondary_color }} data-aos="fade-up" data-aos-delay="200">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-8 leading-tight text-[#012340]" data-aos="fade-up" data-aos-delay="200">
               {aboutContent.title.split('\n').map((line, index) => (
-                <span key={index}>
+                <span key={`title-line-${index}`}>
                   {line}
                   {index < aboutContent.title.split('\n').length - 1 && <br />}
                 </span>
               ))}
             </h2>
-            <button className="relative bg-transparent border font-medium mb-12 overflow-hidden group transition-colors px-8 py-3 rounded-sm group-hover:text-white" style={{ borderColor: colors.primary_color, color: colors.primary_color }} data-aos="fade-up" data-aos-delay="400">
+            <Link href="/about_us" className="relative bg-transparent border font-medium mb-12 overflow-hidden group transition-colors px-8 py-3 rounded-sm group-hover:text-white inline-block" style={{ borderColor: colors.primary_color, color: colors.primary_color }} data-aos="fade-up" data-aos-delay="400">
               <span className="relative z-10 group-hover:text-white">{aboutContent.button_text}</span>
               <div className="absolute inset-0 scale-0 group-hover:scale-100 transition-transform duration-300 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
-            </button>
+            </Link>
 
             {/* Mission, Vision, Awards */}
             <div className="space-y-8">

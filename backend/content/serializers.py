@@ -48,6 +48,11 @@ class TestimonialSerializer(serializers.ModelSerializer):
         model = Testimonial
         fields = '__all__'
 
+class TestimonialsSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestimonialsSection
+        fields = '__all__'
+
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
@@ -86,4 +91,45 @@ class WorkingProcessStepSerializer(serializers.ModelSerializer):
 class WorkingProcessSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkingProcessSection
+        fields = '__all__'
+
+class ContactInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactInfo
+        fields = '__all__'
+
+class ContactSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactSection
+        fields = '__all__'
+
+class BlogPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlogPost
+        fields = '__all__'
+
+class BlogsSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlogsSection
+        fields = '__all__'
+
+class TeamMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamMember
+        fields = '__all__'
+
+class TeamSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamSection
+        fields = '__all__'
+
+class ContactSubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactSubmission
+        fields = '__all__'
+        read_only_fields = ['submitted_at']
+
+class FAQSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FAQ
         fields = '__all__'

@@ -8,9 +8,14 @@ const nextConfig = {
         port: '8010',
         pathname: '/media/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8010',
+        pathname: '/images/**',
+      },
     ],
   },
-  // Removed rewrites to prevent conflicts with API routes
 }
 
 module.exports = nextConfig

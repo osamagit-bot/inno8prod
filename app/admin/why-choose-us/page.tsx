@@ -31,6 +31,7 @@ export default function AdminWhyChooseUs() {
   const [successMessage, setSuccessMessage] = useState('')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null)
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
 
   useEffect(() => {
@@ -66,7 +67,36 @@ export default function AdminWhyChooseUs() {
     }
   }
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+    
+    if (!sectionData.subtitle.trim()) newErrors.subtitle = 'Subtitle is required'
+    if (!sectionData.title.trim()) newErrors.title = 'Title is required'
+    if (!sectionData.breadcrumb_items.trim()) newErrors.breadcrumb_items = 'Breadcrumb items are required'
+    
+    features.forEach((feature, index) => {
+      if (!feature.title.trim()) newErrors[`title_${index}`] = 'Title is required'
+      if (!feature.description.trim()) newErrors[`description_${index}`] = 'Description is required'
+      if (!feature.icon_svg.trim()) newErrors[`icon_svg_${index}`] = 'Icon SVG is required'
+    })
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const isFormValid = () => {
+    return sectionData.subtitle.trim() && 
+           sectionData.title.trim() && 
+           sectionData.breadcrumb_items.trim() &&
+           features.every(f => 
+             f.title.trim() && 
+             f.description.trim() && 
+             f.icon_svg.trim()
+           )
+  }
+
   const saveSectionData = async () => {
+    if (!validateForm()) return
     const token = localStorage.getItem('access_token')
     try {
       const response = await fetch(`${API_ENDPOINTS.ADMIN_WHY_CHOOSE_US.replace('why-choose-us-features', 'why-choose-us-sections')}`, {
@@ -91,7 +121,8 @@ export default function AdminWhyChooseUs() {
     }
   }
 
-  const saveAllFeatures = async () => {
+  const saveFeature = async (index: number) => {
+    if (!validateForm()) return
     const token = localStorage.getItem('access_token')
     if (!token) {
       setSuccessMessage('Please login again')
@@ -99,51 +130,49 @@ export default function AdminWhyChooseUs() {
       return
     }
     
+    const feature = features[index]
+    
     try {
-      for (const feature of features) {
-        let response
-        if (feature.id) {
-          // Update existing feature
-          response = await fetch(`${API_ENDPOINTS.ADMIN_WHY_CHOOSE_US}${feature.id}/`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(feature)
-          })
-        } else {
-          // Create new feature
-          response = await fetch(API_ENDPOINTS.ADMIN_WHY_CHOOSE_US, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(feature)
-          })
-        }
-        
-        if (!response.ok) {
-          const errorData = await response.text()
-          console.error('Error response:', errorData)
-          throw new Error(`Failed to save feature: ${feature.title}`)
-        }
+      let response
+      if (feature.id) {
+        response = await fetch(`${API_ENDPOINTS.ADMIN_WHY_CHOOSE_US}${feature.id}/`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(feature)
+        })
+      } else {
+        response = await fetch(API_ENDPOINTS.ADMIN_WHY_CHOOSE_US, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(feature)
+        })
       }
-      setSuccessMessage('Features saved successfully!')
-      setShowSuccessModal(true)
-      await fetchFeatures()
+      
+      if (response.ok) {
+        setSuccessMessage(`Feature "${feature.title}" saved successfully!`)
+        setShowSuccessModal(true)
+        setErrors({})
+        await fetchData()
+      } else {
+        const errorData = await response.json()
+        throw new Error(JSON.stringify(errorData))
+      }
     } catch (err) {
-      console.error('Save error:', err)
-      setSuccessMessage(`Error: ${err.message}`)
+      setSuccessMessage(`Error saving feature "${feature.title}": ${err instanceof Error ? err.message : String(err)}`)
       setShowSuccessModal(true)
     }
   }
 
   const addFeature = () => {
     const newFeature: Feature = {
-      title: 'New Feature',
-      description: 'Feature description',
+      title: '',
+      description: '',
       icon_svg: '<svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>',
       order: features.length,
       is_active: true
@@ -186,8 +215,9 @@ export default function AdminWhyChooseUs() {
 
   const updateFeature = (index: number, field: keyof Feature, value: any) => {
     const updated = [...features]
-    updated[index][field] = value
+    ;(updated[index] as any)[field] = value
     setFeatures(updated)
+    setTimeout(() => validateForm(), 0)
   }
 
   return (
@@ -210,35 +240,49 @@ export default function AdminWhyChooseUs() {
                 <label className="block text-sm font-medium text-gray-700">Subtitle</label>
                 <input
                   type="text"
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                    errors.subtitle ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   value={sectionData.subtitle}
                   onChange={(e) => setSectionData({...sectionData, subtitle: e.target.value})}
                 />
+                {errors.subtitle && <p className="text-red-500 text-sm mt-1">{errors.subtitle}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Title</label>
                 <input
                   type="text"
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                    errors.title ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   value={sectionData.title}
                   onChange={(e) => setSectionData({...sectionData, title: e.target.value})}
                 />
+                {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
               </div>
             </div>
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700">Breadcrumb Items (comma separated)</label>
               <input
                 type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                  errors.breadcrumb_items ? 'border-red-500' : 'border-gray-300'
+                }`}
                 value={sectionData.breadcrumb_items}
                 onChange={(e) => setSectionData({...sectionData, breadcrumb_items: e.target.value})}
                 placeholder="Experience,Innovation,Results"
               />
+              {errors.breadcrumb_items && <p className="text-red-500 text-sm mt-1">{errors.breadcrumb_items}</p>}
             </div>
             <div className="mt-4">
               <button
                 onClick={saveSectionData}
-                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                disabled={!isFormValid()}
+                className={`px-4 py-2 rounded-md ${
+                  isFormValid() 
+                    ? 'bg-green-600 hover:bg-green-700 text-white' 
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
               >
                 Save Header
               </button>
@@ -263,10 +307,13 @@ export default function AdminWhyChooseUs() {
                     <label className="block text-sm font-medium text-gray-700">Feature Title</label>
                     <input
                       type="text"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                        errors[`title_${index}`] ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       value={feature.title}
                       onChange={(e) => updateFeature(index, 'title', e.target.value)}
                     />
+                    {errors[`title_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`title_${index}`]}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Order</label>
@@ -277,7 +324,13 @@ export default function AdminWhyChooseUs() {
                       onChange={(e) => updateFeature(index, 'order', parseInt(e.target.value))}
                     />
                   </div>
-                  <div className="flex items-end">
+                  <div className="flex items-end space-x-2">
+                    <button
+                      onClick={() => saveFeature(index)}
+                      className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700"
+                    >
+                      {feature.id ? 'Update' : 'Save'}
+                    </button>
                     <button
                       onClick={() => deleteFeature(index)}
                       className="bg-red-600 text-white px-3 py-2 rounded text-sm hover:bg-red-700"
@@ -291,21 +344,27 @@ export default function AdminWhyChooseUs() {
                   <label className="block text-sm font-medium text-gray-700">Description</label>
                   <textarea
                     rows={3}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                    className={`mt-1 block w-full border rounded-md px-3 py-2 ${
+                      errors[`description_${index}`] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     value={feature.description}
                     onChange={(e) => updateFeature(index, 'description', e.target.value)}
                   />
+                  {errors[`description_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`description_${index}`]}</p>}
                 </div>
                 
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700">Icon SVG</label>
                   <textarea
                     rows={4}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 font-mono text-sm"
+                    className={`mt-1 block w-full border rounded-md px-3 py-2 font-mono text-sm ${
+                      errors[`icon_svg_${index}`] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     value={feature.icon_svg}
                     onChange={(e) => updateFeature(index, 'icon_svg', e.target.value)}
                     placeholder="Paste SVG code here..."
                   />
+                  {errors[`icon_svg_${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`icon_svg_${index}`]}</p>}
                 </div>
                 
                 <div className="mt-4">
@@ -324,12 +383,9 @@ export default function AdminWhyChooseUs() {
           </div>
 
           <div className="mt-6 flex justify-end">
-            <button
-              onClick={saveAllFeatures}
-              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"
-            >
-              Save All Features
-            </button>
+            <p className="text-gray-600 text-sm">
+              Save each feature individually using the Save/Update buttons above.
+            </p>
           </div>
         </div>
       </div>

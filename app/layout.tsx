@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  const hideHeader = pathname === '/login' || pathname?.startsWith('/admin')
+  const hideHeader = pathname === '/login' || pathname === '/login/' || pathname?.startsWith('/admin')
 
   return (
     <html lang="en">

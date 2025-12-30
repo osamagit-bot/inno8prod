@@ -193,28 +193,14 @@ export default function Header() {
           <div className="flex justify-between items-center">
             {/* Logo */}
             <a href="/" className="flex items-center space-x-3">
-              {siteSettings.logo ? (
-                <Image 
-                  src={siteSettings.logo.startsWith('/') ? siteSettings.logo : getImageUrl(siteSettings.logo)}
-                  alt="Inno8 Logo" 
-                  width={150} 
-                  height={50}
-                  priority
-                  style={{ width: 'auto', height: '48px' }}
-                  onError={(e) => {
-                    e.currentTarget.src = '/images/update%20logo.png'
-                  }}
-                />
-              ) : (
-                <Image 
-                  src="/images/update%20logo.png" 
-                  alt="Inno8 Logo" 
-                  width={150} 
-                  height={50}
-                  priority
-                  style={{ width: 'auto', height: '48px' }}
-                />
-              )}
+              <Image 
+                src="/images/update%20logo.png" 
+                alt="Inno8 Logo" 
+                width={150} 
+                height={50}
+                priority
+                style={{ width: 'auto', height: '48px' }}
+              />
               <span className="text-2xl font-bold">
                 <span style={{ color: colors.primary_color }}>{siteSettings.site_name.split(' ')[0]}</span>
                 {siteSettings.site_name.split(' ').length > 1 && (
@@ -292,26 +278,13 @@ export default function Header() {
                   {/* Logo, Company Name and Close Button */}
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
-                      {siteSettings.mobile_logo ? (
-                        <Image 
-                          src={siteSettings.mobile_logo.startsWith('/') ? siteSettings.mobile_logo : getImageUrl(siteSettings.mobile_logo)}
-                          alt="Inno8 Logo" 
-                          width={120} 
-                          height={40}
-                          style={{ width: 'auto', height: '40px' }}
-                          onError={(e) => {
-                            e.currentTarget.src = '/images/inoo8%20With%20Bg.jpg'
-                          }}
-                        />
-                      ) : (
-                        <Image 
-                          src="/images/inoo8%20With%20Bg.jpg" 
-                          alt="Inno8 Logo" 
-                          width={120} 
-                          height={40}
-                          style={{ width: 'auto', height: '40px' }}
-                        />
-                      )}
+                      <Image 
+                        src="/images/inoo8%20With%20Bg.jpg" 
+                        alt="Inno8 Logo" 
+                        width={120} 
+                        height={40}
+                        style={{ width: 'auto', height: '40px' }}
+                      />
                       <span className="text-xl font-bold">
                         <span className="text-white">{siteSettings.site_name.split(' ')[0]}</span>
                         {siteSettings.site_name.split(' ').length > 1 && (

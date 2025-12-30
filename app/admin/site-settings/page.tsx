@@ -96,9 +96,11 @@ export default function SiteSettings() {
         formData.append('phone', siteSettings.phone)
         formData.append('address', siteSettings.address)
         formData.append('working_hours', siteSettings.working_hours)
-        formData.append('facebook_url', siteSettings.facebook_url)
-        formData.append('linkedin_url', siteSettings.linkedin_url)
-        formData.append('youtube_url', siteSettings.youtube_url)
+        formData.append('facebook_url', siteSettings.facebook_url || '')
+        formData.append('instagram_url', siteSettings.instagram_url || '')
+        formData.append('telegram_url', siteSettings.telegram_url || '')
+        formData.append('linkedin_url', siteSettings.linkedin_url || '')
+        formData.append('youtube_url', siteSettings.youtube_url || '')
         
         if (siteSettings.logo instanceof File) {
           formData.append('logo', siteSettings.logo)
@@ -122,9 +124,11 @@ export default function SiteSettings() {
           phone: siteSettings.phone,
           address: siteSettings.address,
           working_hours: siteSettings.working_hours,
-          facebook_url: siteSettings.facebook_url,
-          linkedin_url: siteSettings.linkedin_url,
-          youtube_url: siteSettings.youtube_url
+          facebook_url: siteSettings.facebook_url || '',
+          instagram_url: siteSettings.instagram_url || '',
+          telegram_url: siteSettings.telegram_url || '',
+          linkedin_url: siteSettings.linkedin_url || '',
+          youtube_url: siteSettings.youtube_url || ''
         }
         
         response = await fetch(API_ENDPOINTS.ADMIN_SITE_SETTINGS, {

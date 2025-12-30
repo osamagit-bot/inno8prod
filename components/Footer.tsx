@@ -127,26 +127,13 @@ export default function Footer() {
           {/* Company Info */}
           <div>
             <div className="flex items-center space-x-2 mb-6">
-              {siteSettings.mobile_logo ? (
-                <Image
-                  src={siteSettings.mobile_logo.startsWith('/') ? siteSettings.mobile_logo : getImageUrl(siteSettings.mobile_logo)}
-                  alt={siteSettings.site_name}
-                  width={32}
-                  height={32}
-                  className="rounded"
-                  onError={(e) => {
-                    e.currentTarget.src = '/images/inoo8%20With%20Bg.jpg'
-                  }}
-                />
-              ) : (
-                <Image
-                  src="/images/inoo8%20With%20Bg.jpg"
-                  alt={siteSettings.site_name}
-                  width={32}
-                  height={32}
-                  className="rounded"
-                />
-              )}
+              <Image
+                src="/images/inoo8%20With%20Bg.jpg"
+                alt={siteSettings.site_name}
+                width={32}
+                height={32}
+                className="rounded"
+              />
               <span className="text-2xl font-bold text-white">{siteSettings.site_name}</span>
             </div>
             <p className="text-gray-300 mb-6 text-sm leading-relaxed">

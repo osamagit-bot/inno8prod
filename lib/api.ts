@@ -58,13 +58,14 @@ export const getImageUrl = (imagePath: string) => {
   if (!imagePath) return ''
   if (imagePath.startsWith('http')) return imagePath
   
-  // Check if backend is available (development or production with backend)
-  if (API_CONFIG.BASE_URL !== 'http://localhost:8010' || 
-      (typeof window !== 'undefined' && window.location.hostname === 'localhost')) {
+  // Check if we're in development (localhost)
+  const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  
+  if (isLocalhost) {
     return `${API_CONFIG.BASE_URL}${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`
   }
   
-  // For static deployment (Netlify without backend) - decode URL encoding
+  // For production deployment - decode URL encoding
   let decodedPath = decodeURIComponent(imagePath)
   if (decodedPath.startsWith('/media/') || decodedPath.startsWith('media/')) {
     return decodedPath.replace(/^\/?(media\/)/, '/images/')

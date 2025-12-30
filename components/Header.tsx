@@ -204,7 +204,7 @@ export default function Header() {
                 />
               ) : (
                 <Image 
-                  src="/images/update logo.png" 
+                  src="/images/update%20logo.png" 
                   alt="Inno8 Logo" 
                   width={150} 
                   height={50}
@@ -299,7 +299,7 @@ export default function Header() {
                         />
                       ) : (
                         <Image 
-                          src="/images/inoo8 With Bg.jpg" 
+                          src="/images/inoo8%20With%20Bg.jpg" 
                           alt="Inno8 Logo" 
                           width={120} 
                           height={40}

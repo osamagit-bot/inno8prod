@@ -211,6 +211,7 @@ export default function Header() {
                   console.log('Logo failed to load:', e.currentTarget.src);
                   console.log('siteSettings.logo:', siteSettings.logo);
                   console.log('getImageUrl result:', siteSettings.logo ? getImageUrl(siteSettings.logo) : 'fallback');
+                  console.log('Final src attribute:', e.currentTarget.getAttribute('src'));
                 }}
               />
               <span className="text-2xl font-bold">

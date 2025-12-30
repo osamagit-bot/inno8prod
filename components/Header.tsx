@@ -194,7 +194,7 @@ export default function Header() {
             {/* Logo */}
             <a href="/" className="flex items-center space-x-3">
               <Image 
-                src="/images/update%20logo.png" 
+                src={siteSettings.logo ? getImageUrl(siteSettings.logo) : "/images/update logo.png"} 
                 alt="Inno8 Logo" 
                 width={150} 
                 height={50}
@@ -279,7 +279,7 @@ export default function Header() {
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
                       <Image 
-                        src="/images/inoo8%20With%20Bg.jpg" 
+                        src={siteSettings.mobile_logo ? getImageUrl(siteSettings.mobile_logo) : "/images/inoo8 With Bg.jpg"} 
                         alt="Inno8 Logo" 
                         width={120} 
                         height={40}

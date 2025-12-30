@@ -1,5 +1,5 @@
 export const API_CONFIG = {
-  BASE_URL: 'http://localhost:8010'
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8010'
 }
 
 export const API_ENDPOINTS = {
@@ -57,7 +57,18 @@ export const API_ENDPOINTS = {
 export const getImageUrl = (imagePath: string) => {
   if (!imagePath) return ''
   if (imagePath.startsWith('http')) return imagePath
-  return `${API_CONFIG.BASE_URL}${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`
+  
+  // Check if backend is available (development or production with backend)
+  if (API_CONFIG.BASE_URL !== 'http://localhost:8010' || 
+      (typeof window !== 'undefined' && window.location.hostname === 'localhost')) {
+    return `${API_CONFIG.BASE_URL}${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`
+  }
+  
+  // For static deployment (Netlify without backend)
+  if (imagePath.startsWith('/media/') || imagePath.startsWith('media/')) {
+    return imagePath.replace(/^\/?(media\/)/, '/images/')
+  }
+  return imagePath.startsWith('/') ? imagePath : '/' + imagePath
 }
 
 // Team API functions

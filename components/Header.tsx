@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
-import { API_ENDPOINTS, getImageUrl } from '../lib/api'
+import { API_ENDPOINTS, getImageUrl, API_CONFIG } from '../lib/api'
 import { fallbackData } from '../lib/fallbackData'
 
 interface SiteSettings {

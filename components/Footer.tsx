@@ -128,7 +128,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-6">
               <Image
-                src={siteSettings.mobile_logo ? getImageUrl(siteSettings.mobile_logo) : "/images/inoo8 With Bg.jpg"}
+                src={siteSettings.mobile_logo ? getImageUrl(siteSettings.mobile_logo) : "/images/inoo8%20With%20Bg.jpg"}
                 alt={siteSettings.site_name}
                 width={32}
                 height={32}

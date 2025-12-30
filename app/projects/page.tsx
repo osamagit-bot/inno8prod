@@ -101,6 +101,9 @@ export default function ProjectsPage() {
             fill
             className="object-cover"
             priority
+            onError={(e) => {
+              e.currentTarget.src = '/images/abouthero.jpg'
+            }}
           />
         </div>
         

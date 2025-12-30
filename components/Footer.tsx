@@ -134,11 +134,18 @@ export default function Footer() {
                   width={32}
                   height={32}
                   className="rounded"
+                  onError={(e) => {
+                    e.currentTarget.src = '/images/inoo8%20With%20Bg.jpg'
+                  }}
                 />
               ) : (
-                <div className="w-8 h-8 rounded flex items-center justify-center" style={{ backgroundColor: colors.primary_color }}>
-                  <span className="text-white font-bold text-sm">I8</span>
-                </div>
+                <Image
+                  src="/images/inoo8%20With%20Bg.jpg"
+                  alt={siteSettings.site_name}
+                  width={32}
+                  height={32}
+                  className="rounded"
+                />
               )}
               <span className="text-2xl font-bold text-white">{siteSettings.site_name}</span>
             </div>

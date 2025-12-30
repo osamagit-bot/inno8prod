@@ -201,6 +201,9 @@ export default function Header() {
                   height={50}
                   priority
                   style={{ width: 'auto', height: '48px' }}
+                  onError={(e) => {
+                    e.currentTarget.src = '/images/update%20logo.png'
+                  }}
                 />
               ) : (
                 <Image 
@@ -296,6 +299,9 @@ export default function Header() {
                           width={120} 
                           height={40}
                           style={{ width: 'auto', height: '40px' }}
+                          onError={(e) => {
+                            e.currentTarget.src = '/images/inoo8%20With%20Bg.jpg'
+                          }}
                         />
                       ) : (
                         <Image 

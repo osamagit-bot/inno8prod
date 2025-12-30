@@ -236,6 +236,9 @@ export default function ContactPage() {
             fill
             className="object-cover"
             priority
+            onError={(e) => {
+              e.currentTarget.src = '/images/abouthero.jpg'
+            }}
           />
         </div>
         

@@ -76,6 +76,9 @@ export default function BlogDetailPage() {
             fill
             className="object-cover"
             priority
+            onError={(e) => {
+              e.currentTarget.src = '/images/abouthero.jpg'
+            }}
           />
         </div>
         

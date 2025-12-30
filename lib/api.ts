@@ -64,11 +64,12 @@ export const getImageUrl = (imagePath: string) => {
     return `${API_CONFIG.BASE_URL}${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`
   }
   
-  // For static deployment (Netlify without backend)
-  if (imagePath.startsWith('/media/') || imagePath.startsWith('media/')) {
-    return imagePath.replace(/^\/?(media\/)/, '/images/')
+  // For static deployment (Netlify without backend) - decode URL encoding
+  let decodedPath = decodeURIComponent(imagePath)
+  if (decodedPath.startsWith('/media/') || decodedPath.startsWith('media/')) {
+    return decodedPath.replace(/^\/?(media\/)/, '/images/')
   }
-  return imagePath.startsWith('/') ? imagePath : '/' + imagePath
+  return decodedPath.startsWith('/') ? decodedPath : '/' + decodedPath
 }
 
 // Team API functions

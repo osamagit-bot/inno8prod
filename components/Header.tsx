@@ -44,6 +44,13 @@ export default function Header() {
     fetchSiteSettings()
     fetchMenuItems()
     
+    // Debug logging
+    console.log('Header - Initial siteSettings:', siteSettings);
+    console.log('Header - Environment check:', {
+      hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
+      apiBaseUrl: API_CONFIG.BASE_URL
+    });
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 64)
     }
@@ -200,6 +207,11 @@ export default function Header() {
                 height={50}
                 priority
                 style={{ width: 'auto', height: '48px' }}
+                onError={(e) => {
+                  console.log('Logo failed to load:', e.currentTarget.src);
+                  console.log('siteSettings.logo:', siteSettings.logo);
+                  console.log('getImageUrl result:', siteSettings.logo ? getImageUrl(siteSettings.logo) : 'fallback');
+                }}
               />
               <span className="text-2xl font-bold">
                 <span style={{ color: colors.primary_color }}>{siteSettings.site_name.split(' ')[0]}</span>

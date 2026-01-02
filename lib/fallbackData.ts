@@ -317,12 +317,15 @@ export const fallbackData = {
 
   blogPosts: [
     {
+      id: 1,
       title: "The Future of Web Development",
       excerpt: "Exploring the latest trends and technologies shaping the future of web development.",
-      content: "Web development continues to evolve with new technologies and frameworks...",
+      image: "",
       author: "Inno8 Team",
-      published_date: new Date().toISOString(),
-      is_published: true
+      category: "Development",
+      date_published: new Date().toISOString(),
+      slug: "future-of-web-development",
+      is_featured: true
     }
   ],
 

@@ -208,9 +208,6 @@ export default function Header() {
                 style={{ width: 'auto', height: '48px' }}
                 onError={(e) => {
                   console.log('Logo failed to load:', e.currentTarget.src);
-                  console.log('siteSettings.logo:', siteSettings.logo);
-                  console.log('getImageUrl result:', siteSettings.logo ? getImageUrl(siteSettings.logo) : 'fallback');
-                  console.log('Final src attribute:', e.currentTarget.getAttribute('src'));
                 }}
               />
               <span className="text-2xl font-bold">
@@ -290,12 +287,15 @@ export default function Header() {
                   {/* Logo, Company Name and Close Button */}
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
-                      <Image 
-                        src={siteSettings.mobile_logo ? getImageUrl(siteSettings.mobile_logo) : "/images/inoo8%20With%20Bg.jpg"} 
-                        alt="Inno8 Logo" 
-                        width={120} 
+                      <img
+                        src={siteSettings.mobile_logo ? getImageUrl(siteSettings.mobile_logo) : "/images/inoo8%20With%20Bg.jpg"}
+                        alt="Inno8 Logo"
+                        width={120}
                         height={40}
                         style={{ width: 'auto', height: '40px' }}
+                        onError={(e) => {
+                          console.log('Mobile logo failed to load:', e.currentTarget.src);
+                        }}
                       />
                       <span className="text-xl font-bold">
                         <span className="text-white">{siteSettings.site_name.split(' ')[0]}</span>

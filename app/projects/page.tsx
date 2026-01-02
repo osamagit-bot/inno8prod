@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import Footer from '../../components/Footer'
 import { useColors } from '../../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../../lib/api'
+import { fallbackData } from '../../lib/fallbackData'
 
 interface Project {
   id: number
@@ -21,7 +22,7 @@ interface Project {
 
 export default function ProjectsPage() {
   const colors = useColors()
-  const [projects, setProjects] = useState<Project[]>([])
+  const [projects, setProjects] = useState<Project[]>(fallbackData.projects)
   const [loading, setLoading] = useState(true)
   const [activeFilter, setActiveFilter] = useState('All')
 
@@ -44,7 +45,8 @@ export default function ProjectsPage() {
         setProjects(data.filter((p: Project) => p.is_active))
       }
     } catch (error) {
-      console.error('Error fetching projects:', error)
+      console.log('Backend offline - using fallback projects')
+      setProjects(fallbackData.projects)
     }
     setLoading(false)
   }
@@ -93,19 +95,10 @@ export default function ProjectsPage() {
     <div className="min-h-screen" style={{ backgroundColor: '#fff' }}>
       {/* Hero Section */}
       <section className="relative h-96 flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <Image
-            src="/images/abouthero.jpg"
-            alt="Projects Hero"
-            fill
-            className="object-cover"
-            priority
-            onError={(e) => {
-              e.currentTarget.src = '/images/abouthero.jpg'
-            }}
-          />
-        </div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${fallbackData.subpageHeros.projects})` }}
+        ></div>
         
         {/* Blue Overlay - Left to Right Gradient */}
         <div 

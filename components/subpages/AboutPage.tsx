@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { useColors } from '../../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../../lib/api'
+import { fallbackData } from '../../lib/fallbackData'
 import Footer from '../Footer'
 import TeamSection from '../TeamSection'
 
@@ -191,19 +192,10 @@ export default function AboutPage() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative h-96 flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <Image
-            src="/images/abouthero.jpg"
-            alt="About Hero"
-            fill
-            className="object-cover"
-            priority
-            onError={(e) => {
-              e.currentTarget.src = '/images/abouthero.jpg'
-            }}
-          />
-        </div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${fallbackData.subpageHeros.about || '/images/abouthero.jpg'})` }}
+        ></div>
         
         {/* Blue Overlay - Left to Right Gradient */}
         <div 

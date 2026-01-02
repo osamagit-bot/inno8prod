@@ -127,12 +127,16 @@ export default function Footer() {
           {/* Company Info */}
           <div>
             <div className="flex items-center space-x-2 mb-6">
-              <Image
+              <img
                 src={siteSettings.mobile_logo ? getImageUrl(siteSettings.mobile_logo) : "/images/inoo8%20With%20Bg.jpg"}
                 alt={siteSettings.site_name}
                 width={32}
                 height={32}
                 className="rounded"
+                style={{ width: 'auto', height: '32px' }}
+                onError={(e) => {
+                  console.log('Footer logo failed to load:', e.currentTarget.src);
+                }}
               />
               <span className="text-2xl font-bold text-white">{siteSettings.site_name}</span>
             </div>

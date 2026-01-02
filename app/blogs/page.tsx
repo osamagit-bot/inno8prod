@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Footer from '../../components/Footer'
 import { useColors } from '../../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../../lib/api'
+import { fallbackData } from '../../lib/fallbackData'
 
 interface BlogPost {
   id: number
@@ -20,7 +21,7 @@ interface BlogPost {
 
 export default function BlogsPage() {
   const colors = useColors()
-  const [posts, setPosts] = useState<BlogPost[]>([])
+  const [posts, setPosts] = useState<BlogPost[]>(fallbackData.blogPosts)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -35,7 +36,8 @@ export default function BlogsPage() {
         setPosts(data)
       }
     } catch (error) {
-      console.error('Error fetching blog posts:', error)
+      console.log('Backend offline - using fallback blog posts')
+      setPosts(fallbackData.blogPosts)
     }
     setLoading(false)
   }
@@ -52,15 +54,10 @@ export default function BlogsPage() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative h-96 flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/abouthero.jpg"
-            alt="Blogs Hero"
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${fallbackData.subpageHeros.blogs})` }}
+        ></div>
         
         <div 
           className="absolute inset-0" 

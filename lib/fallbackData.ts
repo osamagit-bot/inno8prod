@@ -50,6 +50,13 @@ export const fallbackData = {
     }
   ],
 
+  subpageHeros: {
+    services: "/images/abouthero.jpg",
+    projects: "/images/abouthero.jpg", 
+    blogs: "/images/abouthero.jpg",
+    about: "/images/abouthero.jpg"
+  },
+
   aboutSection: {
     subtitle: "About Inno8 Solutions",
     title: "We Execute Ideas\nFrom Start to Finish",

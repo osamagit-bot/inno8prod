@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import Footer from '../../components/Footer'
 import { useColors } from '../../contexts/ColorContext'
 import { API_ENDPOINTS } from '../../lib/api'
+import { fallbackData } from '../../lib/fallbackData'
 
 interface Service {
   id: number
@@ -17,7 +18,7 @@ interface Service {
 
 export default function ServicesPage() {
   const colors = useColors()
-  const [services, setServices] = useState<Service[]>([])
+  const [services, setServices] = useState<Service[]>(fallbackData.services)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -45,7 +46,8 @@ export default function ServicesPage() {
         console.error('Failed to fetch services, status:', response.status)
       }
     } catch (error) {
-      console.error('Error fetching services:', error)
+      console.log('Backend offline - using fallback services')
+      setServices(fallbackData.services)
     }
     setLoading(false)
   }
@@ -103,15 +105,10 @@ export default function ServicesPage() {
     <div className="min-h-screen" style={{ backgroundColor: '#fff' }}>
       {/* Hero Section */}
       <section className="relative h-96 flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/abouthero.jpg"
-            alt="Services Hero"
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${fallbackData.subpageHeros.services})` }}
+        ></div>
         
         <div 
           className="absolute inset-0" 

@@ -79,10 +79,11 @@ export default function TeamSection() {
                   <div className="relative h-80 overflow-hidden">
                     {member.image ? (
                       <img
-                        src={member.image.startsWith('/') ? member.image : getImageUrl(member.image)}
+                        src={getImageUrl(member.image)}
                         alt={member.name}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         onError={(e) => {
+                          console.log('Team image failed to load:', member.image, 'Generated URL:', getImageUrl(member.image))
                           e.currentTarget.style.display = 'none';
                           const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
                           if (nextElement) {

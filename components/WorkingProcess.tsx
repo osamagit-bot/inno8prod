@@ -32,26 +32,17 @@ export default function WorkingProcess() {
     fetchSectionData()
   }, [])
 
-  useEffect(() => {
-    console.log('Steps updated:', steps)
-  }, [steps])
-
   const fetchWorkingProcessData = async () => {
     try {
-      console.log('Fetching working process data from:', API_ENDPOINTS.WORKING_PROCESS)
       const response = await fetch(API_ENDPOINTS.WORKING_PROCESS)
-      console.log('Response status:', response.status)
       if (response.ok) {
         const data = await response.json()
-        console.log('Working process data received:', data)
         const activeSteps = data.filter((step: WorkingProcessStep) => step.is_active).sort((a: WorkingProcessStep, b: WorkingProcessStep) => a.order - b.order)
-        console.log('Active steps:', activeSteps)
         if (activeSteps.length > 0) {
           setSteps(activeSteps)
         }
       }
     } catch (error) {
-      console.log('Backend offline - using fallback working process data')
       setSteps(fallbackData.workingProcessSteps)
     }
   }
@@ -68,7 +59,6 @@ export default function WorkingProcess() {
         })
       }
     } catch (error) {
-      console.log('Backend offline - using fallback section data')
       setSectionData(fallbackData.workingProcessSection)
     }
   }

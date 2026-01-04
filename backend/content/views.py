@@ -433,6 +433,19 @@ def faqs_view(request):
     serializer = FAQSerializer(faqs, many=True)
     return Response(serializer.data)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def toggle_maintenance_mode(request):
+    settings, created = SiteSettings.objects.get_or_create(id=1)
+    settings.maintenance_mode = not settings.maintenance_mode
+    settings.save()
+    return Response({'maintenance_mode': settings.maintenance_mode})
+
+@api_view(['GET'])
+def maintenance_status_view(request):
+    settings = SiteSettings.objects.first()
+    return Response({'maintenance_mode': settings.maintenance_mode if settings else False})
+
 class FAQViewSet(viewsets.ModelViewSet):
     queryset = FAQ.objects.all()
     serializer_class = FAQSerializer

@@ -141,10 +141,13 @@ export default function ProjectsSection() {
               <div className="relative h-64 overflow-hidden">
                 {project.image ? (
                   <Image
-                    src={project.image.startsWith('/') ? project.image : getImageUrl(project.image)}
+                    src={getImageUrl(project.image)}
                     alt={project.title}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      console.log('Image failed to load:', project.image, 'Generated URL:', getImageUrl(project.image))
+                    }}
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">

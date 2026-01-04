@@ -51,26 +51,17 @@ export const API_ENDPOINTS = {
   CONTACT_SUBMISSIONS: `${API_CONFIG.BASE_URL}/api/contact-submissions/`,
   ADMIN_CONTACT_SUBMISSIONS: `${API_CONFIG.BASE_URL}/api/admin/contact-submissions/`,
   FAQS: `${API_CONFIG.BASE_URL}/api/faqs/`,
-  ADMIN_FAQS: `${API_CONFIG.BASE_URL}/api/admin/faqs/`
+  ADMIN_FAQS: `${API_CONFIG.BASE_URL}/api/admin/faqs/`,
+  MAINTENANCE_STATUS: `${API_CONFIG.BASE_URL}/api/maintenance-status/`,
+  ADMIN_TOGGLE_MAINTENANCE: `${API_CONFIG.BASE_URL}/api/admin/toggle-maintenance/`
 }
 
 export const getImageUrl = (imagePath: string) => {
   if (!imagePath) return ''
   if (imagePath.startsWith('http')) return imagePath
   
-  // Check if we're in development (localhost)
-  const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost'
-  
-  if (isLocalhost) {
-    return `${API_CONFIG.BASE_URL}${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`
-  }
-  
-  // For production deployment - decode URL encoding
-  let decodedPath = decodeURIComponent(imagePath)
-  if (decodedPath.startsWith('/media/') || decodedPath.startsWith('media/')) {
-    return decodedPath.replace(/^\/?(media\/)/, '/images/')
-  }
-  return decodedPath.startsWith('/') ? decodedPath : '/' + decodedPath
+  // Always use full URL for consistency between server and client
+  return `${API_CONFIG.BASE_URL}${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`
 }
 
 // Team API functions
@@ -83,5 +74,23 @@ export const fetchTeamMembers = async () => {
 export const fetchTeamSection = async () => {
   const response = await fetch(API_ENDPOINTS.TEAM_SECTION)
   if (!response.ok) throw new Error('Failed to fetch team section')
+  return response.json()
+}
+
+export const fetchMaintenanceStatus = async () => {
+  const response = await fetch(API_ENDPOINTS.MAINTENANCE_STATUS)
+  if (!response.ok) throw new Error('Failed to fetch maintenance status')
+  return response.json()
+}
+
+export const toggleMaintenanceMode = async (token: string) => {
+  const response = await fetch(API_ENDPOINTS.ADMIN_TOGGLE_MAINTENANCE, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  })
+  if (!response.ok) throw new Error('Failed to toggle maintenance mode')
   return response.json()
 }

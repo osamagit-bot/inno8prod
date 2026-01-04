@@ -25,8 +25,12 @@ export default function LoginPage() {
 
       if (response.ok) {
         const data = await response.json()
-        localStorage.setItem('access_token', data.access)
-        localStorage.setItem('refresh_token', data.refresh)
+        // Set httpOnly cookies via API call
+        await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access: data.access, refresh: data.refresh })
+        })
         router.push('/admin/dashboard')
       } else {
         setError('Invalid credentials')

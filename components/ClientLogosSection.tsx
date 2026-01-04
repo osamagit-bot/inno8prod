@@ -74,12 +74,15 @@ export default function ClientLogosSection() {
                 className="flex-shrink-0 flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 min-w-[150px]"
               >
                 <Image
-                  src={logo.logo.startsWith('/') ? logo.logo : getImageUrl(logo.logo)}
+                  src={getImageUrl(logo.logo)}
                   alt={logo.name}
                   width={120}
                   height={60}
                   className="max-w-full h-auto object-contain transition-all duration-300 rounded-lg"
                   style={{ width: 'auto', height: 'auto' }}
+                  onError={(e) => {
+                    console.log('Logo failed to load:', logo.logo, 'Generated URL:', getImageUrl(logo.logo))
+                  }}
                 />
               </div>
             ))}

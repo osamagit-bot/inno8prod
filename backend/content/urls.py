@@ -59,7 +59,10 @@ urlpatterns = [
     path('admin/contact-section/', views.admin_contact_section_view, name='admin-contact-section'),
     path('admin/blogs-section/', views.admin_blogs_section_view, name='admin-blogs-section'),
     path('admin/hero-sections/delete-all/', views.delete_all_hero_sections, name='delete-all-hero-sections'),
+    path('admin/working-process-section/', views.admin_working_process_section_view, name='admin-working-process-section'),
     path('admin/site-settings/', views.admin_site_settings_view, name='admin-site-settings'),
     path('admin/menu-items/', views.admin_menu_items_view, name='admin-menu-items'),
+    path('maintenance-status/', views.maintenance_status_view, name='maintenance-status'),
+    path('admin/toggle-maintenance/', views.toggle_maintenance_mode, name='toggle-maintenance'),
     path('admin/', include(router.urls)),
 ]

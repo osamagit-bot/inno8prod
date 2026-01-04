@@ -13,6 +13,7 @@ class SiteSettings(models.Model):
     telegram_url = models.URLField(blank=True, null=True)
     linkedin_url = models.URLField(blank=True, null=True)
     youtube_url = models.URLField(blank=True, null=True)
+    maintenance_mode = models.BooleanField(default=False)
     
     class Meta:
         verbose_name = "Site Settings"

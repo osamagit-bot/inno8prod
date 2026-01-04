@@ -44,13 +44,6 @@ export default function Header() {
     fetchSiteSettings()
     fetchMenuItems()
     
-    // Debug logging
-    console.log('Header - Initial siteSettings:', siteSettings);
-    console.log('Header - Environment check:', {
-      hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
-      apiBaseUrl: API_CONFIG.BASE_URL
-    });
-    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 64)
     }
@@ -207,7 +200,7 @@ export default function Header() {
                 height={50}
                 style={{ width: 'auto', height: '48px' }}
                 onError={(e) => {
-                  console.log('Logo failed to load:', e.currentTarget.src);
+                  // Silent error handling
                 }}
               />
               <span className="text-2xl font-bold">
@@ -294,7 +287,7 @@ export default function Header() {
                         height={40}
                         style={{ width: 'auto', height: '40px' }}
                         onError={(e) => {
-                          console.log('Mobile logo failed to load:', e.currentTarget.src);
+                          // Silent error handling
                         }}
                       />
                       <span className="text-xl font-bold">

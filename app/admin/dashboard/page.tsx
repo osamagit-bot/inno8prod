@@ -1,23 +1,64 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { fetchMaintenanceStatus, toggleMaintenanceMode } from '@/lib/api'
 
 export default function AdminDashboard() {
   const router = useRouter()
+  const [maintenanceMode, setMaintenanceMode] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token')
-    if (!token) {
-      router.push('/login')
+    // Check if user is authenticated
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/check')
+        if (!response.ok) {
+          router.push('/login')
+          return
+        }
+      } catch (error) {
+        router.push('/login')
+        return
+      }
     }
+    
+    checkAuth()
+    loadMaintenanceStatus()
   }, [router])
 
-  const handleLogout = () => {
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
-    router.push('/login')
+  const loadMaintenanceStatus = async () => {
+    try {
+      const data = await fetchMaintenanceStatus()
+      setMaintenanceMode(data.maintenance_mode)
+    } catch (error) {
+      console.error('Failed to fetch maintenance status:', error)
+    }
+  }
+
+  const handleToggleMaintenance = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/admin/toggle-maintenance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setMaintenanceMode(data.maintenance_mode)
+      }
+    } catch (error) {
+      console.error('Failed to toggle maintenance mode:', error)
+    }
+    setLoading(false)
+  }
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' })
+    // Force reload to clear any cached state
+    window.location.href = '/login'
   }
 
   const menuItems = [
@@ -54,6 +95,24 @@ export default function AdminDashboard() {
               <h1 className="text-xl font-semibold" style={{color: '#012340'}}>Inno8 Admin Dashboard</h1>
             </div>
             <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
+                <span className="text-sm font-medium" style={{color: maintenanceMode ? '#FCB316' : '#012340'}}>
+                  {maintenanceMode ? 'Maintenance ON' : 'Maintenance OFF'}
+                </span>
+                <button
+                  onClick={handleToggleMaintenance}
+                  disabled={loading}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                    maintenanceMode ? 'bg-red-600' : 'bg-gray-200'
+                  } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      maintenanceMode ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
               <button
                 onClick={handleLogout}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm"

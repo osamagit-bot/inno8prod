@@ -1,15 +1,37 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { API_ENDPOINTS } from '../../lib/api'
+import { API_ENDPOINTS, getImageUrl } from '../../lib/api'
 
 export default function LoginPage() {
   const [credentials, setCredentials] = useState({ username: '', password: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [logo, setLogo] = useState('/images/update logo.png')
   const router = useRouter()
+
+  useEffect(() => {
+    fetchLogo()
+  }, [])
+
+  const fetchLogo = async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.SITE_SETTINGS)
+      if (response.ok) {
+        const data = await response.json()
+        console.log('Site settings:', data)
+        if (data.logo) {
+          const logoUrl = getImageUrl(data.logo)
+          console.log('Desktop logo URL:', logoUrl)
+          setLogo(logoUrl)
+        }
+      }
+    } catch (error) {
+      // Use fallback logo
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,65 +65,117 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-inno8-blue to-inno8-light-blue flex items-center justify-center p-4">
-      <div style={{position: 'absolute', top: '20px', left: '20px'}}>
-        <a href="/" style={{color: 'white', textDecoration: 'none', fontSize: '16px', fontWeight: 'bold'}}>
-          ← Back to Website
-        </a>
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center">
+      {/* Animated Background */}
+      <div className="absolute inset-0" style={{background: 'linear-gradient(135deg, #012340 0%, #0477BF 50%, #048ABF 100%)'}}>
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-10 left-10 w-72 h-72 rounded-full" style={{background: 'linear-gradient(45deg, #FCB316, #0477BF)', animation: 'float 6s ease-in-out infinite'}}></div>
+          <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full" style={{background: 'linear-gradient(45deg, #048ABF, #FCB316)', animation: 'float 8s ease-in-out infinite reverse'}}></div>
+          <div className="absolute top-1/2 left-1/4 w-64 h-64 rounded-full" style={{background: 'linear-gradient(45deg, #0477BF, #012340)', animation: 'float 7s ease-in-out infinite'}}></div>
+        </div>
       </div>
-      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+
+      {/* Login Card */}
+      <div className="relative z-10 backdrop-blur-lg rounded-2xl shadow-2xl p-10 w-full max-w-md border border-white/20" style={{backgroundColor: '#FAFAFA'}}>
+        {/* Logo Section */}
         <div className="text-center mb-8">
-          <Image 
-            src="/images/update logo.png" 
-            alt="Inno8 Logo" 
-            width={120} 
-            height={40}
-            className="mx-auto mb-4"
-          />
-          <h1 className="text-2xl font-bold text-inno8-dark-blue">Admin Login</h1>
-          <p className="text-gray-600">Access your dashboard</p>
+          <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+            <Image 
+              src={logo} 
+              alt="Inno8 Logo" 
+              width={80} 
+              height={80}
+              className="object-contain"
+            />
+          </div>
+          <h1 className="text-3xl font-bold mb-2" style={{background: 'linear-gradient(135deg, #012340, #0477BF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>Admin Portal</h1>
+          <p className="text-gray-600">Welcome back to Inno8 Dashboard</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Username
-            </label>
+          <div className="relative">
             <input
               type="text"
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-inno8-blue"
+              className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all duration-300 bg-gray-50/50 peer"
+              placeholder=" "
               value={credentials.username}
               onChange={(e) => setCredentials({...credentials, username: e.target.value})}
+              onFocus={() => setError('')}
             />
+            <label className="absolute left-4 top-4 text-gray-500 transition-all duration-300 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-500 peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:text-blue-500 origin-left px-1" style={{backgroundColor: '#FAFAFA'}}>
+              Username
+            </label>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Password
-            </label>
+          <div className="relative">
             <input
               type="password"
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-inno8-blue"
+              className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all duration-300 bg-gray-50/50 peer"
+              placeholder=" "
               value={credentials.password}
               onChange={(e) => setCredentials({...credentials, password: e.target.value})}
+              onFocus={() => setError('')}
             />
+            <label className="absolute left-4 top-4 text-gray-500 transition-all duration-300 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-500 peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:text-blue-500 origin-left px-1" style={{backgroundColor: '#FAFAFA'}}>
+              Password
+            </label>
           </div>
 
           {error && (
-            <div className="text-red-600 text-sm text-center">{error}</div>
+            <div className="text-red-600 text-sm text-center bg-red-50 p-4 rounded-xl border border-red-200 animate-pulse">
+              <svg className="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              {error}
+            </div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-inno8-blue hover:bg-inno8-light-blue text-white py-2 px-4 rounded-md font-medium transition-colors disabled:opacity-50"
+            className="w-full py-4 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:transform-none relative overflow-hidden group"
+            style={{background: 'linear-gradient(135deg, #0477BF, #048ABF)'}}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            <span className="relative z-10 flex items-center justify-center">
+              {loading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  Sign In to Dashboard
+                  <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </>
+              )}
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
           </button>
         </form>
+        
+        <div className="mt-8 text-center">
+          <a href="/" className="inline-flex items-center text-sm font-medium transition-colors duration-300 hover:scale-105 transform" style={{color: '#0477BF'}}>
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Website
+          </a>
+        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(180deg); }
+        }
+      `}</style>
     </div>
   )
 }

@@ -89,21 +89,21 @@ export default function HeroSection() {
   const currentContent = heroContents[currentSlide]
 
   return (
-    <section className="relative h-screen flex items-center justify-center">
+    <section className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div 
         key={currentSlide}
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 z-0 animate-zoom-in"
-        style={{ backgroundImage: `url(${currentContent.backgroundImage})` }}
+        style={{ backgroundImage: `url(${currentContent.backgroundImage})`, zIndex: 1 }}
       />
       
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-60 z-0" />
+      <div className="absolute inset-0 bg-black bg-opacity-60 z-0" style={{ zIndex: 2 }} />
       
       {/* Blue Overlay Animation */}
-      <div className={`absolute inset-0 bg-opacity-90 transform transition-transform duration-1500 ease-out z-0 ${
+      <div className={`absolute inset-0 bg-opacity-90 transform transition-transform duration-1000 ease-in-out z-0 ${
         isAnimating ? 'translate-x-0' : '-translate-x-full'
-      }`} style={{ backgroundColor: colors.primary_color }} />
+      }`} style={{ backgroundColor: colors.primary_color, zIndex: 3 }} />
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center text-white">

@@ -282,12 +282,13 @@ export default function Header() {
                     <div className="flex items-center space-x-3">
                       <img
                         src={siteSettings.mobile_logo ? getImageUrl(siteSettings.mobile_logo) : "/images/inoo8%20With%20Bg.jpg"}
-                        alt="Inno8 Logo"
+                        alt="Inno8 Mobile Logo"
                         width={120}
                         height={40}
-                        style={{ width: 'auto', height: '40px' }}
+                        style={{ width: 'auto', height: '40px', borderRadius: '4px' }}
                         onError={(e) => {
-                          // Silent error handling
+                          const target = e.target as HTMLImageElement
+                          target.src = "/images/inoo8%20With%20Bg.jpg"
                         }}
                       />
                       <span className="text-xl font-bold">

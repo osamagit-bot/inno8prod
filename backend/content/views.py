@@ -446,6 +446,26 @@ def maintenance_status_view(request):
     settings = SiteSettings.objects.first()
     return Response({'maintenance_mode': settings.maintenance_mode if settings else False})
 
+@api_view(['POST'])
+def testimonial_submit_view(request):
+    serializer = TestimonialSubmissionSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'success': True, 'message': 'Testimonial submitted successfully. It will be reviewed and published after approval.'})
+    return Response(serializer.errors, status=400)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def testimonial_submissions_view(request):
+    submissions = TestimonialSubmission.objects.all().order_by('-submitted_at')
+    serializer = TestimonialSubmissionSerializer(submissions, many=True)
+    return Response(serializer.data)
+
+class TestimonialSubmissionViewSet(viewsets.ModelViewSet):
+    queryset = TestimonialSubmission.objects.all()
+    serializer_class = TestimonialSubmissionSerializer
+    permission_classes = [IsAuthenticated]
+
 class FAQViewSet(viewsets.ModelViewSet):
     queryset = FAQ.objects.all()
     serializer_class = FAQSerializer

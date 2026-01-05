@@ -13,9 +13,20 @@ export default function AdminDashboard() {
   useEffect(() => {
     // Check if user is authenticated
     const checkAuth = async () => {
+      const token = localStorage.getItem('access_token')
+      if (!token) {
+        router.push('/login')
+        return
+      }
+      
       try {
-        const response = await fetch('/api/auth/check')
+        const response = await fetch('/api/auth/check', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
         if (!response.ok) {
+          localStorage.removeItem('access_token')
           router.push('/login')
           return
         }
@@ -75,6 +86,7 @@ export default function AdminDashboard() {
     { id: 'blogs', name: 'Blogs', href: '/admin/blogs', icon: '📝' },
     { id: 'contact-section', name: 'Contact Section', href: '/admin/contact-section', icon: '📞' },
     { id: 'contact-submissions', name: 'Contact Submissions', href: '/admin/contact-submissions', icon: '📧' },
+    { id: 'testimonial-submissions', name: 'Testimonial Submissions', href: '/admin/testimonial-submissions', icon: '⭐' },
     { id: 'faqs', name: 'FAQs', href: '/admin/faqs', icon: '❓' },
     { id: 'why-choose-us', name: 'Why Choose Us', href: '/admin/why-choose-us', icon: '⭐' },
     { id: 'client-logos', name: 'Client Logos', href: '/admin/client-logos', icon: '🏢' },

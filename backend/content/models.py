@@ -309,3 +309,20 @@ class FAQ(models.Model):
     
     def __str__(self):
         return self.question
+
+class TestimonialSubmission(models.Model):
+    name = models.CharField(max_length=100)
+    position = models.CharField(max_length=100)
+    company = models.CharField(max_length=100)
+    content = models.TextField()
+    rating = models.IntegerField(default=5)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    is_approved = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['-submitted_at']
+        verbose_name = "Testimonial Submission"
+        verbose_name_plural = "Testimonial Submissions"
+    
+    def __str__(self):
+        return f"{self.name} - {self.company} ({self.submitted_at.strftime('%Y-%m-%d %H:%M')})"

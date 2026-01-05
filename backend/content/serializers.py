@@ -133,3 +133,9 @@ class FAQSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
         fields = '__all__'
+
+class TestimonialSubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestimonialSubmission
+        fields = '__all__'
+        read_only_fields = ['submitted_at']

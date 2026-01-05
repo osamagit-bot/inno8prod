@@ -25,6 +25,7 @@ router.register('blogs-sections', views.BlogsSectionViewSet)
 router.register('team-members', views.TeamMemberViewSet)
 router.register('team-sections', views.TeamSectionViewSet)
 router.register('contact-submissions', views.ContactSubmissionViewSet)
+router.register('testimonial-submissions', views.TestimonialSubmissionViewSet)
 router.register('faqs', views.FAQViewSet)
 
 urlpatterns = [
@@ -51,7 +52,9 @@ urlpatterns = [
     path('team-members/', views.team_members_view, name='team-members'),
     path('team-section/', views.team_section_view, name='team-section'),
     path('contact-submit/', views.contact_submit_view, name='contact-submit'),
+    path('testimonial-submit/', views.testimonial_submit_view, name='testimonial-submit'),
     path('contact-submissions/', views.contact_submissions_view, name='contact-submissions'),
+    path('testimonial-submissions/', views.testimonial_submissions_view, name='testimonial-submissions'),
     path('faqs/', views.faqs_view, name='faqs'),
     path('admin/about-section/', views.admin_about_section_view, name='admin-about-section'),
     path('admin/services-section/', views.admin_services_section_view, name='admin-services-section'),

@@ -178,6 +178,48 @@ class ContactSubmissionAdmin(admin.ModelAdmin):
         }),
     )
 
+@admin.register(TestimonialSubmission)
+class TestimonialSubmissionAdmin(admin.ModelAdmin):
+    list_display = ['name', 'position', 'company', 'rating', 'content_preview', 'submitted_at', 'is_approved']
+    list_filter = ['is_approved', 'rating', 'submitted_at']
+    search_fields = ['name', 'company', 'content']
+    readonly_fields = ['submitted_at']
+    ordering = ['-submitted_at']
+    actions = ['add_to_testimonials']
+    
+    def content_preview(self, obj):
+        return obj.content[:50] + '...' if len(obj.content) > 50 else obj.content
+    content_preview.short_description = 'Review Content'
+    
+    def add_to_testimonials(self, request, queryset):
+        count = 0
+        for submission in queryset.filter(is_approved=True):
+            testimonial, created = Testimonial.objects.get_or_create(
+                name=submission.name,
+                position=submission.position,
+                company=submission.company,
+                content=submission.content,
+                rating=submission.rating,
+                defaults={'order': 0, 'is_active': True}
+            )
+            if created:
+                count += 1
+        
+        self.message_user(request, f'{count} approved submissions added to testimonials.')
+    add_to_testimonials.short_description = 'Add approved submissions to testimonials'
+    
+    fieldsets = (
+        ('Reviewer Information', {
+            'fields': ('name', 'position', 'company')
+        }),
+        ('Review Details', {
+            'fields': ('content', 'rating')
+        }),
+        ('Status', {
+            'fields': ('is_approved', 'submitted_at')
+        }),
+    )
+
 @admin.register(FAQ)
 class FAQAdmin(admin.ModelAdmin):
     list_display = ['question', 'order', 'is_active']

@@ -47,7 +47,9 @@ export default function LoginPage() {
 
       if (response.ok) {
         const data = await response.json()
-        // Set httpOnly cookies via API call
+        // Store token in localStorage
+        localStorage.setItem('access_token', data.access)
+        // Also set httpOnly cookies via API call
         await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -95,6 +97,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="relative">
             <input
+              id="username"
               type="text"
               required
               className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all duration-300 bg-gray-50/50 peer"
@@ -103,13 +106,14 @@ export default function LoginPage() {
               onChange={(e) => setCredentials({...credentials, username: e.target.value})}
               onFocus={() => setError('')}
             />
-            <label className="absolute left-4 top-4 text-gray-500 transition-all duration-300 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-500 peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:text-blue-500 origin-left px-1" style={{backgroundColor: '#FAFAFA'}}>
+            <label htmlFor="username" className="absolute left-4 top-4 text-gray-500 transition-all duration-300 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-500 peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:text-blue-500 origin-left px-1 cursor-text" style={{backgroundColor: '#FAFAFA'}}>
               Username
             </label>
           </div>
 
           <div className="relative">
             <input
+              id="password"
               type="password"
               required
               className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all duration-300 bg-gray-50/50 peer"
@@ -118,7 +122,7 @@ export default function LoginPage() {
               onChange={(e) => setCredentials({...credentials, password: e.target.value})}
               onFocus={() => setError('')}
             />
-            <label className="absolute left-4 top-4 text-gray-500 transition-all duration-300 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-500 peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:text-blue-500 origin-left px-1" style={{backgroundColor: '#FAFAFA'}}>
+            <label htmlFor="password" className="absolute left-4 top-4 text-gray-500 transition-all duration-300 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-500 peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:text-blue-500 origin-left px-1 cursor-text" style={{backgroundColor: '#FAFAFA'}}>
               Password
             </label>
           </div>

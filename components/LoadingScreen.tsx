@@ -24,7 +24,7 @@ export default function LoadingScreen() {
   return (
     <>
       {/* Top Half */}
-      <div className={`fixed inset-0 z-50 flex items-end justify-center ${
+      <div className={`fixed inset-0 z-[9999] flex items-end justify-center ${
         isExiting ? 'animate-splitUp' : ''
       }`} style={{ backgroundColor: colors.secondary_color, height: '50vh' }}>
         <div className="text-center pb-4">
@@ -36,7 +36,7 @@ export default function LoadingScreen() {
       </div>
       
       {/* Bottom Half */}
-      <div className={`fixed bottom-0 left-0 right-0 z-50 flex items-start justify-center ${
+      <div className={`fixed bottom-0 left-0 right-0 z-[9999] flex items-start justify-center ${
         isExiting ? 'animate-splitDown' : ''
       }`} style={{ backgroundColor: colors.secondary_color, height: '50vh' }}>
         <div className="text-center pt-4">

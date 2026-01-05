@@ -1,8 +1,9 @@
 export default function handler(req, res) {
   if (req.method === 'GET') {
-    const token = req.cookies.access_token
+    const cookieToken = req.cookies.access_token
+    const headerToken = req.headers.authorization?.replace('Bearer ', '')
     
-    if (!token) {
+    if (!cookieToken && !headerToken) {
       return res.status(401).json({ error: 'Unauthorized' })
     }
 

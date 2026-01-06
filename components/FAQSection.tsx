@@ -19,6 +19,15 @@ export default function FAQSection() {
 
   useEffect(() => {
     fetchFAQs()
+    
+    // Initialize AOS
+    import('aos').then((AOS) => {
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+      })
+    })
   }, [])
 
   const fetchFAQs = async () => {
@@ -76,28 +85,28 @@ export default function FAQSection() {
   return (
     <section className="py-16 px-4 bg-white">
       <div className="container mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12" data-aos="fade-up">
           <div className="flex items-center justify-center mb-4">
             <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
             <span className="text-gray-500 uppercase tracking-wider text-sm">FAQ</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: colors.primary_color }}>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: colors.primary_color }} data-aos="fade-up" data-aos-delay="200">
             Frequently Asked Questions
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="400">
             Find answers to common questions about our services, processes, and how we can help your business grow.
           </p>
         </div>
 
         <div className="max-w-3xl mx-auto">
-          {faqData.map((faq) => (
-            <div key={faq.id} className="mb-4">
+          {faqData.map((faq, index) => (
+            <div key={faq.id} className="mb-4" data-aos="fade-up" data-aos-delay={index * 100}>
               <div 
                 className="bg-[#FAFAFA] rounded-lg shadow-sm border border-gray-200 overflow-hidden cursor-pointer transition-all duration-300 ease-in-out hover:shadow-sm"
                 onClick={() => toggleFAQ(faq.id)}
               >
                 <div className={`p-6 flex justify-between items-center transition-all duration-300 ${openFAQ === faq.id ? 'text-white' : 'text-gray-900'}`} style={{ backgroundColor: openFAQ === faq.id ? colors.primary_color : '#FAFAFA' }}>
-                  <h3 className="text-lg font-semibold pr-4">
+                  <h3 className="text-lg font-medium pr-4">
                     {faq.question}
                   </h3>
                   <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${openFAQ === faq.id ? 'bg-white' : ''}`} style={{ backgroundColor: openFAQ === faq.id ? 'white' : colors.primary_color }}>

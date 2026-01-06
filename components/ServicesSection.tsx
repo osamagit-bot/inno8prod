@@ -153,7 +153,7 @@ export default function ServicesSection() {
             {sectionContent.title}<br />
             <span style={{ color: colors.accent_color }}>{sectionContent.title_highlight}</span>
           </h2>
-          <div className="flex justify-end" data-aos="fade-left" data-aos-delay="400">
+          <div className="flex justify-end" data-aos="fade-up" data-aos-delay="400">
             <a href="/services" className="relative bg-transparent border font-medium overflow-hidden group transition-colors px-8 py-3 rounded-sm text-white" style={{ borderColor: colors.primary_color }}>
               <span className="relative z-10 flex items-center space-x-2">
                 <span>{sectionContent.button_text}</span>

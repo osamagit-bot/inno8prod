@@ -31,6 +31,15 @@ export default function CTASection() {
   useEffect(() => {
     fetchContactData()
     fetchSectionData()
+    
+    // Initialize AOS
+    import('aos').then((AOS) => {
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+      })
+    })
   }, [])
 
   const fetchContactData = async () => {
@@ -108,14 +117,14 @@ export default function CTASection() {
   return (
     <section className="py-20 border-b-2 border-blue-400/20" style={{ backgroundColor: colors.primary_color }}>
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-aos="fade-up">
           <div className="flex items-center justify-center mb-4">
             <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
             <span className="text-gray-300 uppercase tracking-wider text-sm">
               {sectionData.subtitle}
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6" data-aos="fade-up" data-aos-delay="200">
             {sectionData.title.split(' ').map((word, index) => 
               word === 'Us' ? (
                 <span key={`title-${word}-${index}`} style={{ color: colors.accent_color }}>{word}</span>
@@ -124,7 +133,7 @@ export default function CTASection() {
               )
             )}
           </h2>
-          <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto">
+          <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="400">
             {sectionData.description}
           </p>
         </div>
@@ -132,14 +141,14 @@ export default function CTASection() {
       
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {contactInfo.map((info, index) => (
-            <div key={info.id} className="relative overflow-hidden rounded-lg border border-white/20 group cursor-pointer">
+            <div key={info.id} className="relative overflow-hidden rounded-lg border border-white/20 group cursor-pointer" data-aos="fade-up" data-aos-delay={index * 100}>
               <div className="absolute inset-0 bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"></div>
               <div className="relative z-10 p-6 text-center">
                 <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-transparent transition-colors duration-500">
                   <div className="text-white group-hover:text-blue-600 transition-colors duration-500" dangerouslySetInnerHTML={{ __html: parseIconSvg(info.icon_svg) }} />
                 </div>
                 <h3 className="text-sm font-medium text-white/80 group-hover:text-gray-600 transition-colors duration-500 mb-1">{info.title}</h3>
-                <p className="text-lg font-semibold text-white group-hover:text-blue-600 transition-colors duration-500">{info.value}</p>
+                <p className="text-lg font-medium text-white group-hover:text-blue-600 transition-colors duration-500">{info.value}</p>
               </div>
             </div>
           ))}

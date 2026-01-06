@@ -49,7 +49,7 @@ export default function CustomCursor() {
           className="w-5 h-5 rounded-full border-2 transition-all duration-200"
           style={{
             borderColor: colors.accent_color,
-            backgroundColor: isHovering ? colors.accent_color : 'transparent',
+            backgroundColor: isHovering ? `${colors.accent_color}20` : 'transparent',
           }}
         />
       </div>

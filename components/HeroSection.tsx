@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useColors } from '../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../lib/api'
 import { fallbackData } from '../lib/fallbackData'
@@ -19,6 +20,8 @@ export default function HeroSection() {
   const colors = useColors()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
+  const [currentWordIndex, setCurrentWordIndex] = useState(0)
+  const [particles, setParticles] = useState<Array<{id: number, x: number, y: number, delay: number}>>([])
   const [heroContents, setHeroContents] = useState<HeroContent[]>([
     {
       title: fallbackData.heroSections[0].title,
@@ -29,8 +32,26 @@ export default function HeroSection() {
     }
   ])
 
+  const typingWords = ['Innovation', 'Excellence', 'Technology', 'Solutions']
+
   useEffect(() => {
     fetchHeroContent()
+    // Generate particles on client side only
+    setParticles(Array.from({ length: 50 }, (_, i) => ({ 
+      id: i, 
+      x: Math.random() * 100, 
+      y: Math.random() * 100, 
+      delay: Math.random() * 2 
+    })))
+  }, [])
+
+  // Smooth reveal animation effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWordIndex((prev) => (prev + 1) % typingWords.length)
+    }, 3000)
+
+    return () => clearInterval(interval)
   }, [])
 
   const fetchHeroContent = async () => {
@@ -90,40 +111,196 @@ export default function HeroSection() {
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div 
+      {/* Animated Background Particles */}
+      <div className="absolute inset-0 z-0">
+        {particles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            className="absolute w-1 h-1 bg-white rounded-full opacity-20"
+            style={{ left: `${particle.x}%`, top: `${particle.y}%` }}
+            animate={{
+              y: [0, -20, 0],
+              opacity: [0.2, 0.8, 0.2],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Infinity,
+              delay: particle.delay,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Background Image with Parallax */}
+      <motion.div 
         key={currentSlide}
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 z-0 animate-zoom-in"
-        style={{ backgroundImage: `url(${currentContent.backgroundImage})`, zIndex: 1 }}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${currentContent.backgroundImage})` }}
+        initial={{ scale: 1.1, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
       />
       
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-60 z-0" style={{ zIndex: 2 }} />
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-transparent z-10" />
       
-      {/* Blue Overlay Animation */}
-      <div className={`absolute inset-0 bg-opacity-90 transform transition-transform duration-1000 ease-in-out z-0 ${
-        isAnimating ? 'translate-x-0' : '-translate-x-full'
-      }`} style={{ backgroundColor: colors.primary_color, zIndex: 3 }} />
+      {/* Animated Geometric Shapes */}
+      <div className="absolute inset-0 z-20">
+        <motion.div
+          className="absolute top-20 right-20 w-32 h-32 border-2 border-inno8-orange opacity-20"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute bottom-32 left-16 w-24 h-24 bg-inno8-light-blue opacity-10 rounded-full"
+          animate={{ scale: [1, 1.2, 1], y: [0, -20, 0] }}
+          transition={{ duration: 4, repeat: Infinity }}
+        />
+      </div>
+      
+      {/* Lightning Swipe Effect */}
+      <AnimatePresence>
+        {isAnimating && (
+          <motion.div
+            className="absolute inset-0 z-45 overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.1 }}
+          >
+            <motion.div
+              className="absolute inset-0"
+              style={{ 
+                background: `linear-gradient(90deg, transparent 0%, ${colors.primary_color}40 20%, ${colors.primary_color} 50%, ${colors.primary_color}40 80%, transparent 100%)`,
+                filter: 'blur(1px)'
+              }}
+              initial={{ x: "-100%", scaleX: 0.3 }}
+              animate={{ x: "100%", scaleX: [0.3, 1, 0.3] }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            />
+            <motion.div
+              className="absolute inset-0"
+              style={{ 
+                background: `linear-gradient(90deg, transparent 30%, white 50%, transparent 70%)`,
+                opacity: 0.6
+              }}
+              initial={{ x: "-100%", scaleX: 0.1 }}
+              animate={{ x: "100%", scaleX: [0.1, 0.8, 0.1] }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 text-center text-white">
-        <div className={`transition-all duration-500 ${isAnimating ? 'opacity-0 transform translate-y-8' : 'opacity-100 transform translate-y-0'}`}>
-          <h2 className="text-lg md:text-xl font-medium mb-4 animate-fade-in" style={{ color: colors.accent_color }}>
-            {currentContent.subtitle}
-          </h2>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            {currentContent.title}
-          </h1>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-gray-200">
-            {currentContent.description}
-          </p>
-          <button className="relative px-8 py-4 rounded-sm font-medium text-lg shadow-lg overflow-hidden group hover:scale-105 transition-transform duration-300" style={{ backgroundColor: colors.accent_color, color: colors.secondary_color }}>
-            <span className="relative z-10 group-hover:text-white transition-colors">
-              {currentContent.buttonText}
-            </span>
-            <div className="absolute inset-0 rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
-          </button>
-        </div>
+      <div className="relative z-40 container mx-auto px-4 text-center text-white">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            {/* Animated Subtitle */}
+            <motion.h2 
+              className="text-lg md:text-xl font-medium mb-4"
+              style={{ color: colors.accent_color }}
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
+              {currentContent.subtitle}
+            </motion.h2>
+            
+            {/* Main Title with Split Animation */}
+            <div className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+              <motion.div
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+              >
+                {currentContent.title.split(' ').map((word, index) => (
+                  <motion.span
+                    key={index}
+                    className="inline-block mr-4"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 + index * 0.1, duration: 0.6 }}
+                  >
+                    {word}
+                  </motion.span>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Reveal Animation */}
+            <motion.div 
+              className="text-2xl md:text-3xl font-semibold mb-6 h-12 flex items-center justify-center"
+              style={{ color: colors.accent_color }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 0.6 }}
+            >
+              Delivering 
+              <div className="ml-2 relative overflow-hidden inline-block w-48 h-10">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentWordIndex}
+                    className="absolute inset-0 flex items-center"
+                    initial={{ y: 50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -50, opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    {/* Background sweep */}
+                    <motion.div
+                      className="absolute inset-0"
+                      style={{ backgroundColor: colors.primary_color }}
+                      initial={{ scaleX: 0, originX: 0 }}
+                      animate={{ scaleX: [0, 1, 0] }}
+                      transition={{ duration: 1.2, times: [0, 0.5, 1] }}
+                    />
+                    <motion.span 
+                      className="relative z-10 text-white"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.3, duration: 0.3 }}
+                    >
+                      {typingWords[currentWordIndex]}
+                    </motion.span>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </motion.div>
+            
+            {/* Description */}
+            <motion.p 
+              className="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-gray-200"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+            >
+              {currentContent.description}
+            </motion.p>
+            
+            {/* Animated Button */}
+            <motion.button 
+              className="relative px-6 py-3 rounded-sm font-medium shadow-sm overflow-hidden group"
+              style={{ backgroundColor: colors.accent_color, color: colors.secondary_color }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1.2, duration: 0.6 }}
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span className="relative z-10 group-hover:text-white transition-colors">
+                {currentContent.buttonText}
+              </span>
+              <div className="absolute inset-0 rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
+            </motion.button>
+          </motion.div>
+        </AnimatePresence>
       </div>
       
       {/* Slide Indicators */}

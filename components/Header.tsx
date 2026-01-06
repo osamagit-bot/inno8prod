@@ -216,7 +216,7 @@ export default function Header() {
               {menuItems.map((item, index) => (
                 item.children ? (
                   <div key={index} className="relative group">
-                    <a href={item.url} className="transition-colors font-medium flex items-center space-x-1 py-2" style={{ color: colors.secondary_color }} onMouseEnter={(e) => (e.target as HTMLElement).style.color = colors.primary_color} onMouseLeave={(e) => (e.target as HTMLElement).style.color = colors.secondary_color}>
+                    <a href={item.url} className="transition-colors font-medium flex items-center space-x-1 py-2 text-gray-600 hover:text-blue-600">
                       <span>{item.name}</span>
                       <svg className="w-4 h-4 transform group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -225,8 +225,8 @@ export default function Header() {
                     <div className="absolute top-full left-0 w-64 bg-white shadow-lg rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out transform origin-top scale-y-0 group-hover:scale-y-100 z-50">
                       <div className="py-2">
                         {item.children.map((child: any, childIndex: number) => (
-                          <a key={childIndex} href={child.url} className="relative block px-4 py-2 transition-colors overflow-hidden group/item" onMouseEnter={(e) => (e.currentTarget.querySelector('span') as HTMLElement)!.style.color = 'white'} onMouseLeave={(e) => (e.currentTarget.querySelector('span') as HTMLElement)!.style.color = colors.secondary_color}>
-                            <span className="relative z-10" style={{ color: colors.secondary_color }}>{child.name}</span>
+                          <a key={childIndex} href={child.url} className="relative block px-4 py-2 transition-colors overflow-hidden group/item text-gray-600 hover:text-white">
+                            <span className="relative z-10">{child.name}</span>
                             <div className="absolute inset-0 transform -translate-x-full group-hover/item:translate-x-0 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
                           </a>
                         ))}
@@ -234,13 +234,13 @@ export default function Header() {
                     </div>
                   </div>
                 ) : (
-                  <a key={index} href={item.url} className="transition-colors font-medium" style={{ color: colors.secondary_color }} onMouseEnter={(e) => (e.target as HTMLElement).style.color = colors.primary_color} onMouseLeave={(e) => (e.target as HTMLElement).style.color = colors.secondary_color}>
+                  <a key={index} href={item.url} className="transition-colors font-medium text-gray-600 hover:text-blue-600">
                     {item.name}
                   </a>
                 )
               ))}
               
-              <a href="/contact" className="relative px-6 py-3 rounded-sm font-semibold shadow-sm overflow-hidden group" style={{ backgroundColor: colors.accent_color, color: colors.secondary_color }}>
+              <a href="/contact" className="relative px-6 py-3 rounded-sm font-medium shadow-sm overflow-hidden group" style={{ backgroundColor: colors.accent_color, color: colors.secondary_color }}>
                 <span className="relative z-10 group-hover:text-white transition-colors">Get A Quote</span>
                 <div className="absolute inset-0 rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
               </a>
@@ -370,7 +370,7 @@ export default function Header() {
                   </div>
                   
                   {/* Get Quote Button */}
-                  <a href="/contact" className="relative block w-full px-6 py-4 rounded-sm font-semibold mb-6 overflow-hidden group border border-blue-500 text-white hover:bg-blue-500 transition-all duration-300 text-center">
+                  <a href="/contact" className="relative block w-full px-6 py-4 rounded-sm font-medium mb-6 overflow-hidden group border border-blue-500 text-white hover:bg-blue-500 transition-all duration-300 text-center">
                     <span className="relative z-10 group-hover:text-black transition-colors">Get A Quote</span>
                     <div className="absolute inset-0 rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.accent_color }}></div>
                   </a>

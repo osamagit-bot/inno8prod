@@ -23,6 +23,8 @@ export default function ProjectsSection() {
   const colors = useColors()
   const [projects, setProjects] = useState<Project[]>(fallbackData.projects)
   const [activeCategory, setActiveCategory] = useState('All')
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     fetchProjects()
@@ -63,6 +65,9 @@ export default function ProjectsSection() {
     if (techs.some(t => ['Spring', 'Oracle', 'Enterprise'].some(ent => t.includes(ent)))) {
       categories.push('Enterprise')
     }
+    if (techs.some(t => ['Logo', 'Branding', 'Brand', 'Identity', 'Photoshop', 'Canva', 'CorelDraw', 'Illustrator', 'Design', 'Graphics'].some(brand => t.includes(brand)))) {
+      categories.push('Branding & Logo')
+    }
     return categories
   }
 
@@ -76,6 +81,8 @@ export default function ProjectsSection() {
         return projects.filter(p => p.technologies.includes('React Native') || p.technologies.includes('Flutter'))
       case 'Enterprise':
         return projects.filter(p => ['Spring', 'Oracle', 'Enterprise'].some(tech => p.technologies.includes(tech)))
+      case 'Branding & Logo':
+        return projects.filter(p => ['Logo', 'Branding', 'Brand', 'Identity', 'Photoshop', 'Canva', 'CorelDraw', 'Illustrator', 'Design', 'Graphics'].some(tech => p.technologies.includes(tech)))
       default:
         return projects
     }
@@ -157,6 +164,22 @@ export default function ProjectsSection() {
                   </div>
                 )}
                 <div className="absolute inset-0 bg-black/40 scale-0 group-hover:scale-150 transition-transform duration-500 ease-out"></div>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  {project.image && (
+                    <button
+                      onClick={() => {
+                        setSelectedImage(getImageUrl(project.image))
+                        setTimeout(() => setIsModalOpen(true), 10)
+                      }}
+                      className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 z-10 cursor-pointer"
+                      style={{ color: colors.primary_color }}
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
                 
                 {/* Featured Badge */}
                 {project.is_featured && (
@@ -168,10 +191,10 @@ export default function ProjectsSection() {
 
               {/* Project Content */}
               <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-xl font-bold mb-3 group-hover:text-blue-600 transition-colors" style={{ color: colors.secondary_color }}>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-600 transition-colors tracking-wide" style={{ color: colors.primary_color }}>
                   {project.title}
                 </h3>
-                <p className="text-gray-600 mb-4 line-clamp-3 flex-grow">
+                <p className="text-gray-600 mb-4 line-clamp-3 flex-grow font-normal">
                   {project.description}
                 </p>
 
@@ -242,12 +265,49 @@ export default function ProjectsSection() {
 
         {/* View All Projects Button */}
         <div className="text-center mt-12" data-aos="fade-up" data-aos-delay="400">
-          <a href="/projects" className="relative inline-block px-8 py-4 rounded-sm font-semibold shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl" style={{ backgroundColor: colors.accent_color, color: colors.secondary_color }}>
+          <a href="/projects" className="relative inline-block px-8 py-4 rounded-sm font-medium shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl" style={{ backgroundColor: colors.accent_color, color: colors.secondary_color }}>
             <span className="relative z-10 group-hover:text-white transition-colors">View All Projects</span>
             <div className="absolute inset-0 scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
           </a>
         </div>
       </div>
+
+      {/* Image Modal */}
+      {selectedImage && (
+        <div 
+          className={`fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 cursor-pointer transition-all duration-500 ease-out ${
+            isModalOpen ? 'opacity-100' : 'opacity-0'
+          }`} 
+          onClick={() => {
+            setIsModalOpen(false)
+            setTimeout(() => setSelectedImage(null), 500)
+          }}
+        >
+          <div 
+            className={`relative max-w-4xl max-h-full transition-all duration-500 ease-out ${
+              isModalOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedImage}
+              alt="Project Image"
+              className="max-w-full max-h-full object-contain rounded-lg cursor-default"
+            />
+            <button
+              onClick={() => {
+                setIsModalOpen(false)
+                setTimeout(() => setSelectedImage(null), 500)
+              }}
+              className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer"
+            >
+              <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

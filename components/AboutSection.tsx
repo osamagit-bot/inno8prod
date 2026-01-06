@@ -98,7 +98,7 @@ export default function AboutSection() {
               </div>
 
               {/* Our Vision */}
-              <div className="flex items-start space-x-4" data-aos="fade-down" data-aos-delay="800">
+              <div className="flex items-start space-x-4" data-aos="fade-up" data-aos-delay="800">
                 <div className="w-16 h-16 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: colors.primary_color }}>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

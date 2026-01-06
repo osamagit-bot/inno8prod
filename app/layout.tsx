@@ -5,6 +5,7 @@ import { Nunito } from 'next/font/google'
 import Header from '@/components/Header'
 import LoadingScreen from '@/components/LoadingScreen'
 import CustomCursor from '@/components/CustomCursor'
+import WhatsAppFloat from '@/components/WhatsAppFloat'
 import { usePathname } from 'next/navigation'
 import { ColorProvider } from '@/contexts/ColorContext'
 import { useEffect, useState } from 'react'
@@ -65,12 +66,13 @@ export default function RootLayout({
       <head>
         <link rel="icon" href={faviconUrl} />
       </head>
-      <body className={`${nunito.className} cursor-none`}>
+      <body className="cursor-none" style={{ fontFamily: 'Poppins, sans-serif' }}>
         <ColorProvider>
           <CustomCursor />
           <LoadingScreen />
           {!hideHeader && <Header />}
           {children}
+          <WhatsAppFloat />
         </ColorProvider>
       </body>
     </html>

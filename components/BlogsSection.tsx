@@ -26,6 +26,8 @@ interface SectionData {
 export default function BlogsSection() {
   const colors = useColors()
   const [posts, setPosts] = useState<BlogPost[]>([])
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [sectionData, setSectionData] = useState<SectionData>({
     subtitle: 'Latest News',
     title: 'Our Blog',
@@ -35,6 +37,15 @@ export default function BlogsSection() {
   useEffect(() => {
     fetchBlogPosts()
     fetchSectionData()
+    
+    // Initialize AOS
+    import('aos').then((AOS) => {
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+      })
+    })
   }, [])
 
   const fetchBlogPosts = async () => {
@@ -117,14 +128,14 @@ export default function BlogsSection() {
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-aos="fade-up">
           <div className="flex items-center justify-center mb-4">
             <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
             <span className="text-gray-500 uppercase tracking-wider text-sm">
               {sectionData.subtitle}
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-[#012340]">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-[#012340]" data-aos="fade-up" data-aos-delay="200">
             {sectionData.title.split(' ').map((word, index) => 
               word === 'Blog' ? (
                 <span key={`title-${word}-${index}`} className="text-[#FCB316]">{word}</span>
@@ -133,14 +144,14 @@ export default function BlogsSection() {
               )
             )}
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="400">
             {sectionData.description}
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post) => (
-            <article key={post.id} className={`${styles.blogCard} bg-white rounded-lg border border-gray-200 overflow-hidden transition-all duration-300 group hover:border-gray-300`} style={{ '--primary-color': colors.primary_color } as any}>
+          {posts.map((post, index) => (
+            <article key={post.id} className={`${styles.blogCard} bg-white rounded-lg border border-gray-200 overflow-hidden transition-all duration-300 group hover:border-gray-300`} style={{ '--primary-color': colors.primary_color } as any} data-aos="fade-up" data-aos-delay={index * 100}>
               <div className="p-4">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center text-sm text-gray-500">
@@ -153,7 +164,7 @@ export default function BlogsSection() {
                   </div>
                 </div>
                 
-                <h3 className="text-xl font-semibold mb-4 text-gray-800 leading-tight">
+                <h3 className="text-xl font-semibold mb-4 leading-tight tracking-wide" style={{ color: colors.primary_color }}>
                   {post.title}
                 </h3>
                 
@@ -179,6 +190,22 @@ export default function BlogsSection() {
                   </div>
                 )}
                 <div className="absolute inset-0 bg-black/40 scale-0 group-hover:scale-150 transition-transform duration-500 ease-out"></div>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  {post.image && (
+                    <button
+                      onClick={() => {
+                        setSelectedImage(getImageUrl(post.image))
+                        setTimeout(() => setIsModalOpen(true), 10)
+                      }}
+                      className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 z-10 cursor-pointer"
+                      style={{ color: colors.primary_color }}
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </div>
               
               <div className="p-4">
@@ -189,7 +216,7 @@ export default function BlogsSection() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </a>
-                  <span className="font-bold text-sm" style={{ color: colors.accent_color }}>
+                  <span className="font-medium text-sm" style={{ color: colors.accent_color }}>
                     {new Date(post.date_published).toLocaleDateString('en-US', { 
                       day: '2-digit', 
                       month: 'short', 
@@ -205,7 +232,7 @@ export default function BlogsSection() {
         <div className="text-center mt-12">
           <a 
             href="/blogs"
-            className="relative px-8 py-3 rounded-sm font-semibold transition-all duration-300 overflow-hidden group inline-block"
+            className="relative px-8 py-3 rounded-sm font-medium transition-all duration-300 overflow-hidden group inline-block"
             style={{ 
               backgroundColor: colors.accent_color,
               color: colors.secondary_color
@@ -216,6 +243,43 @@ export default function BlogsSection() {
           </a>
         </div>
       </div>
+
+      {/* Image Modal */}
+      {selectedImage && (
+        <div 
+          className={`fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 cursor-pointer transition-all duration-500 ease-out ${
+            isModalOpen ? 'opacity-100' : 'opacity-0'
+          }`} 
+          onClick={() => {
+            setIsModalOpen(false)
+            setTimeout(() => setSelectedImage(null), 500)
+          }}
+        >
+          <div 
+            className={`relative max-w-4xl max-h-full transition-all duration-500 ease-out ${
+              isModalOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedImage}
+              alt="Blog Image"
+              className="max-w-full max-h-full object-contain rounded-lg cursor-default"
+            />
+            <button
+              onClick={() => {
+                setIsModalOpen(false)
+                setTimeout(() => setSelectedImage(null), 500)
+              }}
+              className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer"
+            >
+              <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

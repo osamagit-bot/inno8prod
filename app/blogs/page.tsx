@@ -23,6 +23,8 @@ export default function BlogsPage() {
   const colors = useColors()
   const [posts, setPosts] = useState<BlogPost[]>(fallbackData.blogPosts)
   const [loading, setLoading] = useState(true)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     fetchBlogPosts()
@@ -99,7 +101,7 @@ export default function BlogsPage() {
                     </div>
                   </div>
                   
-                  <h3 className="text-xl font-semibold mb-4 text-gray-800 leading-tight">
+                  <h3 className="text-xl font-semibold mb-4 leading-tight tracking-wide" style={{ color: colors.primary_color }}>
                     {post.title}
                   </h3>
                   
@@ -126,6 +128,22 @@ export default function BlogsPage() {
                     </div>
                   )}
                   <div className="absolute inset-0 bg-black/40 scale-0 group-hover:scale-150 transition-transform duration-500 ease-out"></div>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    {post.image && (
+                      <button
+                        onClick={() => {
+                          setSelectedImage(getImageUrl(post.image))
+                          setTimeout(() => setIsModalOpen(true), 10)
+                        }}
+                        className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 z-10 cursor-pointer"
+                        style={{ color: colors.primary_color }}
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
                 </div>
                 
                 <div className="p-4">
@@ -139,7 +157,7 @@ export default function BlogsPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                       </svg>
                     </a>
-                    <span className="font-bold text-sm" style={{ color: colors.accent_color }}>
+                    <span className="font-medium text-sm" style={{ color: colors.accent_color }}>
                       {new Date(post.date_published).toLocaleDateString('en-US', { 
                         day: '2-digit', 
                         month: 'short', 
@@ -153,6 +171,43 @@ export default function BlogsPage() {
           </div>
         </div>
       </section>
+
+      {/* Image Modal */}
+      {selectedImage && (
+        <div 
+          className={`fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 cursor-pointer transition-all duration-500 ease-out ${
+            isModalOpen ? 'opacity-100' : 'opacity-0'
+          }`} 
+          onClick={() => {
+            setIsModalOpen(false)
+            setTimeout(() => setSelectedImage(null), 500)
+          }}
+        >
+          <div 
+            className={`relative max-w-4xl max-h-full transition-all duration-500 ease-out ${
+              isModalOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedImage}
+              alt="Blog Image"
+              className="max-w-full max-h-full object-contain rounded-lg cursor-default"
+            />
+            <button
+              onClick={() => {
+                setIsModalOpen(false)
+                setTimeout(() => setSelectedImage(null), 500)
+              }}
+              className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer"
+            >
+              <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

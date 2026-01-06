@@ -53,6 +53,15 @@ export default function TestimonialsSection() {
   useEffect(() => {
     fetchTestimonialsData()
     fetchSectionData()
+    
+    // Initialize AOS
+    import('aos').then((AOS) => {
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+      })
+    })
   }, [])
 
   const fetchTestimonialsData = async () => {
@@ -270,14 +279,14 @@ export default function TestimonialsSection() {
     <section id="testimonials" className="py-20" style={{ backgroundColor: colors.secondary_color, scrollMarginTop: '100px' }}>
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-aos="fade-up">
           <div className="flex items-center justify-center mb-4">
             <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
             <span className="text-gray-300 uppercase tracking-wider text-sm">
               {sectionData.subtitle}
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white" data-aos="fade-up" data-aos-delay="200">
             {sectionData.title.split(' ').map((word, index) => 
               word === 'Clients' || word === 'Say' ? (
                 <span key={`title-${word}-${index}`} style={{ color: colors.primary_color }}>{word} </span>
@@ -286,13 +295,13 @@ export default function TestimonialsSection() {
               )
             )}
           </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="400">
             {sectionData.description}
           </p>
         </div>
 
         {/* Testimonials Carousel */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto" data-aos="fade-up" data-aos-delay="600">
           <div 
             className="relative cursor-grab active:cursor-grabbing select-none"
             onMouseDown={handleMouseDown}
@@ -397,7 +406,7 @@ export default function TestimonialsSection() {
           <div className="flex justify-center mt-8">
             <button
               onClick={() => setShowModal(true)}
-              className="relative px-6 py-3 rounded-sm font-semibold shadow-sm overflow-hidden group"
+              className="relative px-6 py-3 rounded-sm font-medium shadow-sm overflow-hidden group"
               style={{ backgroundColor: colors.accent_color, color: colors.secondary_color }}
             >
               <span className="relative z-10 group-hover:text-white transition-colors">Submit Your Review</span>
@@ -449,7 +458,6 @@ export default function TestimonialsSection() {
                     className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                       formErrors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
                     }`}
-                    style={{ focusRingColor: formErrors.name ? '#ef4444' : colors.primary_color }}
                   />
                   {formErrors.name && <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>}
                 </div>
@@ -467,7 +475,6 @@ export default function TestimonialsSection() {
                     className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                       formErrors.position ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
                     }`}
-                    style={{ focusRingColor: formErrors.position ? '#ef4444' : colors.primary_color }}
                   />
                   {formErrors.position && <p className="text-red-500 text-sm mt-1">{formErrors.position}</p>}
                 </div>
@@ -485,7 +492,6 @@ export default function TestimonialsSection() {
                     className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                       formErrors.company ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
                     }`}
-                    style={{ focusRingColor: formErrors.company ? '#ef4444' : colors.primary_color }}
                   />
                   {formErrors.company && <p className="text-red-500 text-sm mt-1">{formErrors.company}</p>}
                 </div>
@@ -525,7 +531,6 @@ export default function TestimonialsSection() {
                     className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 resize-none ${
                       formErrors.content ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
                     }`}
-                    style={{ focusRingColor: formErrors.content ? '#ef4444' : colors.primary_color }}
                     placeholder="Share your experience with us..."
                   />
                   {formErrors.content && <p className="text-red-500 text-sm mt-1">{formErrors.content}</p>}
@@ -548,7 +553,7 @@ export default function TestimonialsSection() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 disabled:opacity-50"
+                    className="flex-1 px-4 py-2 rounded-lg text-white font-medium transition-all duration-300 disabled:opacity-50"
                     style={{ backgroundColor: colors.primary_color }}
                   >
                     {isSubmitting ? 'Submitting...' : 'Submit Review'}

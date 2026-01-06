@@ -30,6 +30,15 @@ export default function WorkingProcess() {
   useEffect(() => {
     fetchWorkingProcessData()
     fetchSectionData()
+    
+    // Initialize AOS
+    import('aos').then((AOS) => {
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+      })
+    })
   }, [])
 
   const fetchWorkingProcessData = async () => {
@@ -149,14 +158,14 @@ export default function WorkingProcess() {
   return (
     <section className="py-20" style={{ backgroundColor: '#fff' }}>
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-aos="fade-up">
           <div className="flex items-center justify-center mb-4">
             <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
             <span className="text-gray-500 uppercase tracking-wider text-sm">
               {sectionData.subtitle}
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-[#012340]">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-[#012340]" data-aos="fade-up" data-aos-delay="200">
             {sectionData.title.split(' ').map((word, index) => 
               word === 'Process' ? (
                 <span key={`title-${word}-${index}`} className="text-[#FCB316]">{word}</span>
@@ -165,7 +174,7 @@ export default function WorkingProcess() {
               )
             )}
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="400">
             {sectionData.description}
           </p>
         </div>

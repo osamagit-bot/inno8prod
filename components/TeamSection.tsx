@@ -37,6 +37,15 @@ export default function TeamSection() {
       }
     }
     loadTeamData()
+    
+    // Initialize AOS
+    import('aos').then((AOS) => {
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+      })
+    })
   }, [])
 
   const totalSlides = Math.ceil(teamMembers.length / itemsPerSlide)
@@ -57,23 +66,26 @@ export default function TeamSection() {
   return (
     <section className="py-16 px-4">
       <div className="container mx-auto">
-        <div className="text-center mb-12">
+        {/* Section Header */}
+        <div className="text-center mb-12" data-aos="fade-up">
           <div className="flex items-center justify-center mb-4">
             <div className="w-12 h-0.5 bg-[#FCB316] mr-4"></div>
             <span className="text-gray-500 uppercase tracking-wider text-sm">OUR PROFESSIONAL</span>
           </div>
-          <h2 className="text-3xl font-bold mb-4" style={{ color: colors.primary_color }}>
+          <h2 className="text-3xl font-bold mb-4" style={{ color: colors.primary_color }} data-aos="fade-up" data-aos-delay="200">
             Meet Our Experts People
           </h2>
         </div>
         <div className="relative">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {getCurrentMembers().map((member) => (
+            {getCurrentMembers().map((member, index) => (
               <div
                 key={member.id}
                 className="relative group cursor-pointer"
                 onMouseEnter={() => setHoveredCard(member.id)}
                 onMouseLeave={() => setHoveredCard(null)}
+                data-aos="fade-up"
+                data-aos-delay={index * 100}
               >
                 <div className="rounded-tl-[4rem] rounded-br-[4rem] shadow-sm overflow-hidden transition-all duration-300" style={{'backgroundColor':'#f8f9fa'}}>
                   <div className="relative h-80 overflow-hidden">

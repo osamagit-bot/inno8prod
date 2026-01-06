@@ -8,46 +8,94 @@ class Command(BaseCommand):
         self.stdout.write('Populating database with content...')
         
         # Hero Section
-        HeroSection.objects.all().delete()
-        HeroSection.objects.create(
-            title="Innovative Software Solutions for Afghanistan & Beyond",
-            subtitle="Empowering Digital Transformation",
-            description="Leading software house in Afghanistan providing cutting-edge web development, mobile apps, and digital solutions to businesses across Afghanistan and internationally.",
-            button_text="Start Your Project",
-            order=1
-        )
+    HeroSection.objects.all().delete()
+
+    hero_sections = [
+        {
+            'title': 'Innovative Software Solutions for Modern Businesses',
+            'subtitle': 'Empowering Digital Transformation',
+            'description': 'We build powerful web, mobile, and digital solutions that help businesses grow, scale, and succeed in a competitive digital world.',
+            'button_text': 'Start Your Project',
+            'order': 1
+        },
+        {
+            'title': 'Smart Digital Solutions Built for Growth',
+            'subtitle': 'Technology That Drives Results',
+            'description': 'From custom software to digital marketing, we deliver reliable and scalable solutions tailored to your business goals.',
+            'button_text': 'Our Services',
+            'order': 2
+        },
+        {
+            'title': 'Creative, Scalable, and Future-Ready',
+            'subtitle': 'Innovation Meets Execution',
+            'description': 'Our expert team combines creativity and technology to build digital products that stand out and perform.',
+            'button_text': 'View Portfolio',
+            'order': 3
+        },
+        {
+            'title': 'Your Trusted Digital Innovation Partner',
+            'subtitle': 'Let’s Build Something Great',
+            'description': 'Partner with us to turn ideas into impactful digital experiences powered by modern technologies.',
+            'button_text': 'Contact Us',
+            'order': 4
+        }
+    ]
+
+    for hero in hero_sections:
+        HeroSection.objects.create(**hero)
+
         
         # Services
         Service.objects.all().delete()
-        services = [
-            {
-                'name': 'Web Development',
-                'description': 'Custom websites and web applications built with modern technologies, serving clients in Kabul, Herat, Mazar-i-Sharif and internationally.',
-                'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10c0 5.55 3.84 9.739 9 11 5.16-1.261 9-5.45 9-11V7l-10-5z"/></svg>',
-                'order': 1
-            },
-            {
-                'name': 'Mobile App Development',
-                'description': 'Native and cross-platform mobile applications for iOS and Android, connecting Afghan businesses with global markets.',
-                'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 19H7V5h10v14zm-1-6h-8v4h8v-4z"/></svg>',
-                'order': 2
-            },
-            {
-                'name': 'E-commerce Solutions',
-                'description': 'Complete online stores and marketplace platforms helping Afghan entrepreneurs reach customers worldwide.',
-                'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>',
-                'order': 3
-            },
-            {
-                'name': 'Digital Marketing',
-                'description': 'SEO, social media marketing, and digital advertising strategies tailored for Afghan and international markets.',
-                'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
-                'order': 4
-            }
-        ]
-        
-        for service_data in services:
-            Service.objects.create(**service_data)
+
+    services = [
+        {
+            'name': 'Web Development',
+            'description': 'Custom websites and web applications built with modern technologies for local and international clients.',
+            'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10c0 5.55 3.84 9.739 9 11 5.16-1.261 9-5.45 9-11V7l-10-5z"/></svg>',
+            'order': 1
+        },
+        {
+            'name': 'Graphic Design',
+            'description': 'Creative graphic design services including logos, branding, social media designs, and marketing materials.',
+            'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v18H3V3zm4 4h10v2H7V7zm0 4h10v6H7v-6z"/></svg>',
+            'order': 2
+        },
+        {
+            'name': 'Database Development',
+            'description': 'Design, development, and optimization of secure and scalable databases for business applications.',
+            'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7.58 2 4 3.79 4 6v12c0 2.21 3.58 4 8 4s8-1.79 8-4V6c0-2.21-3.58-4-8-4z"/></svg>',
+            'order': 3
+        },
+        {
+            'name': 'Video Editing',
+            'description': 'Professional video editing for promotional videos, social media content, and educational materials.',
+            'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V6c0-1.1-.9-2-2-2H5C3.9 4 3 4.9 3 6v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-4.5l4 4v-11l-4 4z"/></svg>',
+            'order': 4
+        },
+        {
+            'name': 'IT Solutions & Technical Support',
+            'description': 'Reliable IT solutions, system maintenance, troubleshooting, and technical support for businesses.',
+            'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>',
+            'order': 5
+        },
+        {
+            'name': 'Digital Marketing',
+            'description': 'SEO, social media marketing, content creation, and online advertising to grow your brand.',
+            'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm4 4h2V7H7v10zm4 2h2V3h-2v16zm4-4h2V9h-2v6zm4-6v2h2V9h-2z"/></svg>',
+            'order': 6
+        },
+        {
+            'name': 'Essay Writing',
+            'description': 'Well-researched and professionally written essays for academic and professional purposes.',
+            'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm1 7V3.5L18.5 9H15z"/></svg>',
+            'order': 7
+        }
+    ]
+
+    for service_data in services:
+        Service.objects.create(**service_data)
+
         
         # Testimonials
         Testimonial.objects.all().delete()
@@ -105,13 +153,7 @@ class Command(BaseCommand):
                 'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
                 'order': 3
             },
-            {
-                'number': '04',
-                'title': 'Launch & Support',
-                'description': 'We deploy your solution and provide ongoing support, ensuring smooth operation and continuous improvement for your growing business.',
-                'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
-                'order': 4
-            }
+       
         ]
         
         for step_data in steps:
@@ -119,35 +161,31 @@ class Command(BaseCommand):
         
         # Why Choose Us Features
         WhyChooseUsFeature.objects.all().delete()
-        features = [
-            {
-                'title': 'Local Expertise, Global Standards',
-                'description': 'Deep understanding of Afghan market needs combined with international best practices and quality standards.',
-                'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
-                'order': 1
-            },
-            {
-                'title': 'Cultural Sensitivity',
-                'description': 'Solutions designed with respect for Afghan culture, traditions, and business practices while maintaining modern functionality.',
-                'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
-                'order': 2
-            },
-            {
-                'title': 'Multilingual Support',
-                'description': 'Fluent in Dari, Pashto, and English, ensuring clear communication and culturally appropriate solutions.',
-                'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>',
-                'order': 3
-            },
-            {
-                'title': 'Affordable Excellence',
-                'description': 'High-quality solutions at competitive prices, making advanced technology accessible to Afghan businesses of all sizes.',
-                'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>',
-                'order': 4
-            }
-        ]
-        
-        for feature_data in features:
-            WhyChooseUsFeature.objects.create(**feature_data)
+
+    features = [
+        {
+            'title': 'Expert Team',
+            'description': 'Our skilled professionals bring years of experience in cutting-edge technologies to deliver reliable and innovative solutions.',
+            'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>',
+            'order': 1
+        },
+        {
+            'title': 'Quality Assurance',
+            'description': 'We ensure the highest quality standards in every project we deliver through careful planning, testing, and execution.',
+            'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-3zm-1.2 14.2L7 12.4l1.4-1.4 2.4 2.4 4.8-4.8 1.4 1.4-6.2 6.2z"/></svg>',
+            'order': 2
+        },
+        {
+            'title': '24/7 Support',
+            'description': 'Round-the-clock technical support to ensure your business systems operate smoothly without interruptions.',
+            'icon_svg': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a11 11 0 100 22 11 11 0 000-22zm1 17.93c-2.83.48-5.43-1.58-5.91-4.41-.48-2.83 1.58-5.43 4.41-5.91V5h2v3.61c2.16.45 3.79 2.37 3.79 4.69 0 2.65-2.15 4.8-4.8 4.8-.17 0-.33-.01-.49-.03V19z"/></svg>',
+            'order': 3
+        }
+    ]
+
+    for feature_data in features:
+        WhyChooseUsFeature.objects.create(**feature_data)
+
         
         # FAQs
         FAQ.objects.all().delete()
@@ -205,26 +243,28 @@ class Command(BaseCommand):
         )
         
         AboutSection.objects.all().delete()
-        AboutSection.objects.create(
-            subtitle="About Inno8 Solutions",
-            title="Bridging Afghanistan with\\nGlobal Technology",
-            overview_title="Our Story",
-            overview_description1="Founded in Afghanistan with a vision to connect local businesses with global opportunities through technology. We understand the unique challenges and immense potential of the Afghan market.",
-            overview_description2="Our team combines deep local knowledge with international experience, delivering solutions that work in Afghanistan's context while meeting global standards.",
-            mission_title="Our Mission",
-            mission_description="To empower Afghan businesses and international clients with innovative technology solutions that drive growth, efficiency, and global connectivity.",
-            vision_title="Our Vision",
-            vision_description="To be the leading technology partner for businesses in Afghanistan and the region, fostering digital transformation and economic growth through innovative solutions.",
-            projects_count=75,
-            years_experience=6
-        )
+
+    AboutSection.objects.create(
+        subtitle="About Inno8 Solutions",
+        title="Bridging Businesses with\nGlobal Technology",
+        overview_title="Our Story",
+        overview_description1="Founded with a vision to help businesses connect with global opportunities through technology. We focus on delivering practical, scalable, and future-ready digital solutions.",
+        overview_description2="Our team combines technical expertise, creative thinking, and industry experience to deliver solutions that meet international standards and real-world business needs.",
+        mission_title="Our Mission",
+        mission_description="To deliver smart software, digital solutions, and marketing strategies that help businesses grow, connect, and succeed in the digital world.",
+        vision_title="Our Vision",
+        vision_description="To be a leading digital innovation agency, empowering brands through technology, creativity, and data-driven growth.",
+        projects_count=100,
+        years_experience=6
+    )
+
         
-        ServicesSection.objects.all().delete()
-        ServicesSection.objects.create(
+    ServicesSection.objects.all().delete()
+    ServicesSection.objects.create(
             subtitle="OUR EXPERTISE",
             title="Empowering Afghanistan Through",
             title_highlight="Digital Innovation",
             button_text="Explore Our Services"
         )
         
-        self.stdout.write(self.style.SUCCESS('Successfully populated database with Afghanistan and international content!'))
+    self.stdout.write(self.style.SUCCESS('Successfully populated database with Afghanistan and international content!'))

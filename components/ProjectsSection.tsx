@@ -122,8 +122,7 @@ export default function ProjectsSection() {
                   : 'text-gray-600 bg-white'
               }`}
               style={{
-                backgroundColor: activeCategory === category ? colors.primary_color : 'white',
-                borderColor: colors.primary_color
+                backgroundColor: activeCategory === category ? colors.primary_color : '#FAFAFA'
               }}
             >
               <span className="relative z-10 group-hover:text-white transition-colors">{category}</span>

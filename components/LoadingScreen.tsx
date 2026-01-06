@@ -29,7 +29,14 @@ export default function LoadingScreen() {
       }`} style={{ backgroundColor: colors.secondary_color, height: '50vh' }}>
         <div className="text-center pb-4">
           <div className="relative mb-4">
-            <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: colors.accent_color, borderTopColor: 'transparent' }}></div>
+            <div className="relative w-16 h-16 mx-auto">
+              {/* Outer rotating ring */}
+              <div className="absolute inset-0 border-2 border-transparent rounded-full animate-spin" style={{ borderTopColor: colors.accent_color, borderRightColor: colors.accent_color }}></div>
+              {/* Inner pulsing circle */}
+              <div className="absolute inset-2 rounded-full animate-pulse" style={{ backgroundColor: colors.accent_color + '20' }}></div>
+              {/* Center dot */}
+              <div className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full transform -translate-x-1/2 -translate-y-1/2" style={{ backgroundColor: colors.accent_color }}></div>
+            </div>
           </div>
           <h1 className="text-3xl font-bold" style={{ color: colors.accent_color }}>INNO8</h1>
         </div>

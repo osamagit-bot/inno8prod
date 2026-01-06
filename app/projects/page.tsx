@@ -149,7 +149,7 @@ export default function ProjectsPage() {
                     : 'text-gray-600 bg-white border border-gray-200'
                 }`}
                 style={{
-                  backgroundColor: activeFilter === filter ? colors.primary_color : 'white'
+                  backgroundColor: activeFilter === filter ? colors.primary_color : '#FAFAFA'
                 }}
               >
                 <span className="relative z-10 group-hover:text-white transition-colors">{filter}</span>

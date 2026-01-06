@@ -104,55 +104,55 @@ export default function WhyChooseUsSection() {
               )
             )}
           </h2>
-          <div className="flex items-center justify-center space-x-8 text-white/80">
+          <div className="flex items-center justify-center space-x-4 md:space-x-8 text-white/80">
             {sectionData.breadcrumb_items?.split(',').map((item, index, array) => (
               <div key={`breadcrumb-${index}`} className="flex items-center">
                 <span className="text-lg font-medium">{item.trim()}</span>
-                {index < array.length - 1 && <div className="w-2 h-2 rounded-full bg-white/60 ml-8"></div>}
+                {index < array.length - 1 && <div className="w-2 h-2 rounded-full bg-white/60 ml-4 md:ml-8"></div>}
               </div>
             ))}
           </div>
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
           {features.map((feature, index) => (
             <div
               key={feature.id}
-              className="relative"
+              className="relative w-72 h-72 mx-auto"
               data-aos="fade-up"
               data-aos-delay={index * 100}
             >
-              {/* Outer Orange Circle */}
-              <div className="w-72 h-72 mx-auto rounded-full border-2 border-dashed flex items-center justify-center" style={{ borderColor: colors.accent_color }}>
-                {/* Inner Circular Card */}
-                <div className="group relative w-64 h-64 rounded-full bg-white/95 backdrop-blur-sm border-2 flex flex-col items-center justify-center p-8 hover:scale-105 transition-all duration-500 shadow-xl overflow-hidden" style={{ borderColor: colors.primary_color }}>
-                  {/* Icon */}
-                  <div className="mb-4 relative z-10">
+              {/* Outer Orange Circle - Only this rotates */}
+              <div className="absolute inset-0 rounded-full border-2 border-dashed animate-spin" style={{ borderColor: colors.accent_color, animationDuration: '50s' }}></div>
+              
+              {/* Inner Circular Card - Static */}
+              <div className="absolute top-4 left-4 group w-64 h-64 rounded-full bg-white/95 backdrop-blur-sm border-2 flex flex-col items-center justify-center p-8 hover:scale-105 transition-all duration-500 shadow-xl overflow-hidden" style={{ borderColor: colors.primary_color }}>
+                {/* Icon */}
+                <div className="mb-4 relative z-10">
+                  <div 
+                    className="w-16 h-16 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: colors.primary_color + '20', color: colors.primary_color }}
+                  >
                     <div 
-                      className="w-16 h-16 rounded-full flex items-center justify-center"
-                      style={{ backgroundColor: colors.primary_color + '20', color: colors.primary_color }}
-                    >
-                      <div 
-                        className="w-12 h-12" 
-                        dangerouslySetInnerHTML={{ __html: feature.icon_svg }}
-                      />
-                    </div>
+                      className="w-12 h-12" 
+                      dangerouslySetInnerHTML={{ __html: feature.icon_svg }}
+                    />
                   </div>
-
-                  {/* Title */}
-                  <h3 className="text-xl font-bold mb-2 text-center relative z-10" style={{ color: colors.secondary_color }}>
-                    {feature.title}
-                  </h3>
-
-                  {/* Yellow overlay animation */}
-                  <div className="absolute inset-0 rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.accent_color }}></div>
                 </div>
+
+                {/* Title */}
+                <h3 className="text-xl font-bold mb-2 text-center relative z-10" style={{ color: colors.secondary_color }}>
+                  {feature.title}
+                </h3>
+
+                {/* Yellow overlay animation */}
+                <div className="absolute inset-0 rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.accent_color }}></div>
               </div>
 
               {/* Description below circle */}
-              <div className="mt-6 text-center">
-                <p className="text-white/90 leading-relaxed max-w-xs mx-auto">
+              <div className="absolute top-80 left-1/2 transform -translate-x-1/2 text-center">
+                <p className="text-white/90 leading-relaxed max-w-xs">
                   {feature.description}
                 </p>
               </div>

@@ -115,44 +115,47 @@ export default function WhyChooseUsSection() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-8 mb-24">
           {features.map((feature, index) => (
             <div
               key={feature.id}
-              className="relative w-72 h-72 mx-auto"
+              className="flex flex-col items-center space-y-6"
               data-aos="fade-up"
               data-aos-delay={index * 100}
             >
-              {/* Outer Orange Circle - Only this rotates */}
-              <div className="absolute inset-0 rounded-full border-2 border-dashed animate-spin" style={{ borderColor: colors.accent_color, animationDuration: '50s' }}></div>
-              
-              {/* Inner Circular Card - Static */}
-              <div className="absolute top-4 left-4 group w-64 h-64 rounded-full bg-white/95 backdrop-blur-sm border-2 flex flex-col items-center justify-center p-8 hover:scale-105 transition-all duration-500 shadow-xl overflow-hidden" style={{ borderColor: colors.primary_color }}>
-                {/* Icon */}
-                <div className="mb-4 relative z-10">
-                  <div 
-                    className="w-16 h-16 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: colors.primary_color + '20', color: colors.primary_color }}
-                  >
+              {/* Circle Container */}
+              <div className="relative w-72 h-72">
+                {/* Outer Orange Circle - Only this rotates */}
+                <div className="absolute inset-0 rounded-full border-2 border-dashed animate-spin" style={{ borderColor: colors.accent_color, animationDuration: '50s' }}></div>
+                
+                {/* Inner Circular Card - Static */}
+                <div className="absolute top-4 left-4 group w-64 h-64 rounded-full bg-white/95 backdrop-blur-sm border-2 flex flex-col items-center justify-center p-8 hover:scale-105 transition-all duration-500 shadow-xl overflow-hidden" style={{ borderColor: colors.primary_color }}>
+                  {/* Icon */}
+                  <div className="mb-4 relative z-10">
                     <div 
-                      className="w-12 h-12" 
-                      dangerouslySetInnerHTML={{ __html: feature.icon_svg }}
-                    />
+                      className="w-16 h-16 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: colors.primary_color + '20', color: colors.primary_color }}
+                    >
+                      <div 
+                        className="w-12 h-12" 
+                        dangerouslySetInnerHTML={{ __html: feature.icon_svg }}
+                      />
+                    </div>
                   </div>
+
+                  {/* Title */}
+                  <h3 className="text-xl font-bold mb-2 text-center relative z-10" style={{ color: colors.secondary_color }}>
+                    {feature.title}
+                  </h3>
+
+                  {/* Yellow overlay animation */}
+                  <div className="absolute inset-0 rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.accent_color }}></div>
                 </div>
-
-                {/* Title */}
-                <h3 className="text-xl font-bold mb-2 text-center relative z-10" style={{ color: colors.secondary_color }}>
-                  {feature.title}
-                </h3>
-
-                {/* Yellow overlay animation */}
-                <div className="absolute inset-0 rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.accent_color }}></div>
               </div>
 
               {/* Description below circle */}
-              <div className="absolute top-80 left-1/2 transform -translate-x-1/2 text-center">
-                <p className="text-white/90 leading-relaxed max-w-xs">
+              <div className="text-center px-4">
+                <p className="text-white/90 leading-relaxed max-w-xs mx-auto">
                   {feature.description}
                 </p>
               </div>

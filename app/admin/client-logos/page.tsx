@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_ENDPOINTS, getImageUrl } from '../../../lib/api'
@@ -22,6 +22,7 @@ export default function AdminClientLogos() {
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
+  const logosContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -145,6 +146,16 @@ export default function AdminClientLogos() {
       is_active: true
     }
     setLogos([...logos, newLogo])
+    
+    // Scroll to the new logo after a short delay
+    setTimeout(() => {
+      if (logosContainerRef.current) {
+        const newLogoElement = logosContainerRef.current.lastElementChild
+        if (newLogoElement) {
+          newLogoElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
   const deleteLogo = async (index: number) => {
@@ -212,7 +223,7 @@ export default function AdminClientLogos() {
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-6">Client Logos Management</h2>
           
-          <div className="space-y-4">
+          <div className="space-y-4" ref={logosContainerRef}>
             <div className="flex justify-between items-center">
               <h3 className="text-md font-medium text-gray-800">Client Logos</h3>
               <button

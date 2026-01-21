@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_ENDPOINTS } from '../../../lib/api'
@@ -24,6 +24,7 @@ export default function ContactSection() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [hasInteracted, setHasInteracted] = useState(false)
   const router = useRouter()
+  const contactInfoContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -208,6 +209,16 @@ export default function ContactSection() {
       is_active: true
     }
     setContactInfo([...contactInfo, newInfo])
+    
+    // Scroll to the new contact info after a short delay
+    setTimeout(() => {
+      if (contactInfoContainerRef.current) {
+        const newInfoElement = contactInfoContainerRef.current.lastElementChild
+        if (newInfoElement) {
+          newInfoElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
   const confirmDelete = (index: number, info: any) => {
@@ -320,7 +331,7 @@ export default function ContactSection() {
           </div>
 
           {/* Contact Information */}
-          <div className="space-y-4">
+          <div className="space-y-4" ref={contactInfoContainerRef}>
             <div className="flex justify-between items-center">
               <h3 className="text-md font-medium text-gray-800">Contact Information</h3>
               <button

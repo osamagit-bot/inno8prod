@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_ENDPOINTS } from '../../../lib/api'
@@ -33,6 +33,7 @@ export default function AdminWhyChooseUs() {
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
+  const featuresContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -178,6 +179,16 @@ export default function AdminWhyChooseUs() {
       is_active: true
     }
     setFeatures([...features, newFeature])
+    
+    // Scroll to the new feature after a short delay
+    setTimeout(() => {
+      if (featuresContainerRef.current) {
+        const newFeatureElement = featuresContainerRef.current.lastElementChild
+        if (newFeatureElement) {
+          newFeatureElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
   const deleteFeature = async (index: number) => {
@@ -289,7 +300,7 @@ export default function AdminWhyChooseUs() {
             </div>
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-4" ref={featuresContainerRef}>
             <div className="flex justify-between items-center">
               <h3 className="text-md font-medium text-gray-800">Features</h3>
               <button

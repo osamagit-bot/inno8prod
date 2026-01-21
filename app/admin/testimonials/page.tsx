@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_ENDPOINTS } from '../../../lib/api'
@@ -40,6 +40,7 @@ export default function Testimonials() {
   const [successMessage, setSuccessMessage] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
+  const testimonialsContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -233,6 +234,16 @@ export default function Testimonials() {
       is_active: true
     }
     setTestimonials([...testimonials, newTestimonial])
+    
+    // Scroll to the new testimonial after a short delay
+    setTimeout(() => {
+      if (testimonialsContainerRef.current) {
+        const newTestimonialElement = testimonialsContainerRef.current.lastElementChild
+        if (newTestimonialElement) {
+          newTestimonialElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
   const confirmDelete = (index: number, testimonial: Testimonial) => {
@@ -345,7 +356,7 @@ export default function Testimonials() {
           </div>
 
           {/* Testimonials List */}
-          <div className="space-y-4">
+          <div className="space-y-4" ref={testimonialsContainerRef}>
             <div className="flex justify-between items-center">
               <h3 className="text-md font-medium text-gray-800">Testimonials</h3>
               <button

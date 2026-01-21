@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_ENDPOINTS, getImageUrl } from '../../../lib/api'
@@ -21,6 +21,7 @@ export default function BlogsAdmin() {
   const [successMessage, setSuccessMessage] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
+  const postsContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -211,6 +212,16 @@ export default function BlogsAdmin() {
       is_active: true
     }
     setPosts([...posts, newPost])
+    
+    // Scroll to the new post after a short delay
+    setTimeout(() => {
+      if (postsContainerRef.current) {
+        const newPostElement = postsContainerRef.current.lastElementChild
+        if (newPostElement) {
+          newPostElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
   const confirmDelete = (index: number, post: any) => {
@@ -330,7 +341,7 @@ export default function BlogsAdmin() {
           </div>
 
           {/* Blog Posts */}
-          <div className="space-y-4">
+          <div className="space-y-4" ref={postsContainerRef}>
             <div className="flex justify-between items-center">
               <h3 className="text-md font-medium text-gray-800">Blog Posts</h3>
               <button

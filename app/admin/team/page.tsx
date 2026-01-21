@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_ENDPOINTS, getImageUrl } from '../../../lib/api'
@@ -44,6 +44,7 @@ export default function TeamAdmin() {
   const [successMessage, setSuccessMessage] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
+  const membersContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -204,6 +205,16 @@ export default function TeamAdmin() {
       is_active: true
     }
     setMembers([...members, newMember])
+    
+    // Scroll to the new member after a short delay
+    setTimeout(() => {
+      if (membersContainerRef.current) {
+        const newMemberElement = membersContainerRef.current.lastElementChild
+        if (newMemberElement) {
+          newMemberElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
   const confirmDelete = (index: number, member: TeamMember) => {
@@ -307,7 +318,7 @@ export default function TeamAdmin() {
           </div>
 
           {/* Team Members */}
-          <div className="space-y-4">
+          <div className="space-y-4" ref={membersContainerRef}>
             <div className="flex justify-between items-center">
               <h3 className="text-md font-medium text-gray-800">Team Members</h3>
               <button

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_ENDPOINTS } from '../../../lib/api'
@@ -41,6 +41,7 @@ export default function WorkingProcess() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [hasInteracted, setHasInteracted] = useState(false)
   const router = useRouter()
+  const stepsContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -241,6 +242,16 @@ export default function WorkingProcess() {
       is_active: true
     }
     setSteps([...steps, newStep])
+    
+    // Scroll to the new step after a short delay
+    setTimeout(() => {
+      if (stepsContainerRef.current) {
+        const newStepElement = stepsContainerRef.current.lastElementChild
+        if (newStepElement) {
+          newStepElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
   const confirmDelete = (index: number, step: Step) => {
@@ -357,7 +368,7 @@ export default function WorkingProcess() {
           </div>
 
           {/* Process Steps */}
-          <div className="space-y-4">
+          <div className="space-y-4" ref={stepsContainerRef}>
             <div className="flex justify-between items-center">
               <h3 className="text-md font-medium text-gray-800">Process Steps</h3>
               <button

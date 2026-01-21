@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_ENDPOINTS, getImageUrl } from '../../../lib/api'
@@ -27,6 +27,7 @@ export default function AdminProjects() {
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
+  const projectsContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -142,6 +143,16 @@ export default function AdminProjects() {
       is_active: true
     }
     setProjects([...projects, newProject])
+    
+    // Scroll to the new project after a short delay
+    setTimeout(() => {
+      if (projectsContainerRef.current) {
+        const newProjectElement = projectsContainerRef.current.lastElementChild
+        if (newProjectElement) {
+          newProjectElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, 100)
   }
 
   const deleteProject = async (index: number) => {
@@ -210,7 +221,7 @@ export default function AdminProjects() {
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-6">Projects Management</h2>
           
-          <div className="space-y-4">
+          <div className="space-y-4" ref={projectsContainerRef}>
             <div className="flex justify-between items-center">
               <h3 className="text-md font-medium text-gray-800">Projects</h3>
               <button

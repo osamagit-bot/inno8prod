@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "aos": "^2.3.4",
-    "framer-motion": "^12.24.0",
+    "framer-motion": "^12.28.1",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18"

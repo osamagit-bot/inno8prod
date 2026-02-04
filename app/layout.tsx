@@ -2,10 +2,11 @@
 
 import './globals.css'
 import { Nunito } from 'next/font/google'
+import WhatsAppFloat from '@/components/WhatsAppFloat'
 import Header from '@/components/Header'
 import LoadingScreen from '@/components/LoadingScreen'
 import CustomCursor from '@/components/CustomCursor'
-import WhatsAppFloat from '@/components/WhatsAppFloat'
+
 import { usePathname } from 'next/navigation'
 import { ColorProvider } from '@/contexts/ColorContext'
 import { useEffect, useState } from 'react'
@@ -72,7 +73,7 @@ export default function RootLayout({
           <LoadingScreen />
           {!hideHeader && <Header />}
           {children}
-          <WhatsAppFloat />
+       	  <WhatsAppFloat />
         </ColorProvider>
       </body>
     </html>

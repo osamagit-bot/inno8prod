@@ -1,7 +1,6 @@
 'use client'
 
 import { useColors } from '../../contexts/ColorContext'
-import Image from 'next/image'
 
 export default function AboutPage() {
   const colors = useColors()
@@ -96,7 +95,7 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="relative">
-              <Image
+              <img
                 src="/images/about1.avif"
                 alt="About Inno8"
                 width={500}
@@ -156,7 +155,7 @@ export default function AboutPage() {
             {teamMembers.map((member, index) => (
               <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden group hover:shadow-xl transition-shadow duration-300">
                 <div className="relative overflow-hidden">
-                  <Image
+                  <img
                     src={member.image}
                     alt={member.name}
                     width={300}

@@ -67,5 +67,6 @@ urlpatterns = [
     path('admin/menu-items/', views.admin_menu_items_view, name='admin-menu-items'),
     path('maintenance-status/', views.maintenance_status_view, name='maintenance-status'),
     path('admin/toggle-maintenance/', views.toggle_maintenance_mode, name='toggle-maintenance'),
+    path('admin/dashboard/', views.dashboard_redirect_view, name='admin-dashboard'),
     path('admin/', include(router.urls)),
 ]

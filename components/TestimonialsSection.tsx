@@ -276,7 +276,7 @@ export default function TestimonialsSection() {
   }
 
   return (
-    <section id="testimonials" className="py-20" style={{ backgroundColor: colors.secondary_color, scrollMarginTop: '100px' }}>
+    <section id="testimonials" className="py-20" style={{ backgroundColor: colors.primary_color, scrollMarginTop: '100px' }}>
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16" data-aos="fade-up">
@@ -289,7 +289,7 @@ export default function TestimonialsSection() {
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white" data-aos="fade-up" data-aos-delay="200">
             {sectionData.title.split(' ').map((word, index) => 
               word === 'Clients' || word === 'Say' ? (
-                <span key={`title-${word}-${index}`} style={{ color: colors.primary_color }}>{word} </span>
+                <span key={`title-${word}-${index}`} style={{color: colors.accent_color }}>{word} </span>
               ) : (
                 <span key={`title-${word}-${index}`}>{word} </span>
               )

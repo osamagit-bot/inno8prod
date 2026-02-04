@@ -24,10 +24,10 @@ export default function LoadingScreen() {
   return (
     <>
       {/* Top Half */}
-      <div className={`fixed inset-0 z-[9999] flex items-end justify-center ${
+      <div className={`fixed inset-0 z-[9999] flex items-center justify-center ${
         isExiting ? 'animate-splitUp' : ''
       }`} style={{ backgroundColor: colors.secondary_color, height: '50vh' }}>
-        <div className="text-center pb-4">
+        <div className="text-center">
           <div className="relative mb-4">
             <div className="relative w-16 h-16 mx-auto">
               {/* Outer rotating ring */}

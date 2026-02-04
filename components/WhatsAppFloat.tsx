@@ -30,7 +30,7 @@ export default function WhatsAppFloat() {
   }
 
   const handleClick = () => {
-    const phoneNumber = siteSettings.phone?.replace(/\s/g, '') || "+1234567890"
+    const phoneNumber = siteSettings.phone?.replace(/\s/g, '') || "+93729848064"
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
     window.open(url, '_blank')
   }

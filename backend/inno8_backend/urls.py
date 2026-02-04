@@ -18,12 +18,26 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
 from django.conf import settings
+from django.shortcuts import redirect
 from django.conf.urls.static import static
+
+
+
+
 
 def api_health(request):
     return JsonResponse({'status': 'ok', 'message': 'Inno8 API is running'})
 
+
+def admin_dashboard_redirect(request):
+    """Redirect Django admin dashboard to Next.js dashboard"""
+    return redirect('/admin/dashboard')
+
+
+
+
 urlpatterns = [
+    path('admin/dashboard/', admin_dashboard_redirect, name='admin_dashboard'),
     path('admin/', admin.site.urls),
     path('api/health/', api_health, name='api_health'),
     path('api/', include('content.urls')),

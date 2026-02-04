@@ -18,6 +18,20 @@ module.exports = {
       fontFamily: {
         'poppins': ['Poppins', 'sans-serif'],
       },
+      keyframes: {
+        splitUp: {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(-100%)' }
+        },
+        splitDown: {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(100%)' }
+        }
+      },
+      animation: {
+        splitUp: 'splitUp 0.8s ease-in-out forwards',
+        splitDown: 'splitDown 0.8s ease-in-out forwards'
+      }
     },
   },
   plugins: [],

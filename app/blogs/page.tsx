@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
+
 import Footer from '../../components/Footer'
 import { useColors } from '../../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../../lib/api'
@@ -114,11 +114,11 @@ export default function BlogsPage() {
                 
                 <div className="aspect-video bg-gray-200 relative overflow-hidden">
                   {post.image ? (
-                    <Image 
+                    <img 
                       src={getImageUrl(post.image)} 
                       alt={post.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                     
+                      className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">

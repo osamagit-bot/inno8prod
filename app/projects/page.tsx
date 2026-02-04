@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+
 import { useEffect, useState } from 'react'
 import Footer from '../../components/Footer'
 import { useColors } from '../../contexts/ColorContext'
@@ -173,11 +173,11 @@ export default function ProjectsPage() {
                 {/* Project Image */}
                 <div className="relative h-64 overflow-hidden bg-gray-200 flex-shrink-0">
                   {project.image ? (
-                    <Image
+                    <img
                       src={getImageUrl(project.image)}
                       alt={project.title}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';

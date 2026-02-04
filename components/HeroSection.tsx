@@ -12,6 +12,7 @@ interface HeroContent {
   subtitle: string
   description: string
   buttonText: string
+  buttonUrl: string
   backgroundImage: string
   order?: number
 }
@@ -28,6 +29,7 @@ export default function HeroSection() {
       subtitle: fallbackData.heroSections[0].subtitle,
       description: fallbackData.heroSections[0].description,
       buttonText: fallbackData.heroSections[0].button_text,
+      buttonUrl: fallbackData.heroSections[0].button_url || '/contact',
       backgroundImage: fallbackData.heroSections[0].background_image
     }
   ])
@@ -65,6 +67,7 @@ export default function HeroSection() {
             subtitle: item.subtitle,
             description: item.description,
             buttonText: item.buttonText || item.button_text,
+            buttonUrl: item.buttonUrl || item.button_url || '/contact',
             backgroundImage: getImageUrl(item.background_image)
           }))
           setHeroContents(formattedData)
@@ -78,6 +81,7 @@ export default function HeroSection() {
           subtitle: fallbackData.heroSections[0].subtitle,
           description: fallbackData.heroSections[0].description,
           buttonText: fallbackData.heroSections[0].button_text,
+          buttonUrl: fallbackData.heroSections[0].button_url || '/contact',
           backgroundImage: fallbackData.heroSections[0].background_image
         }
       ])
@@ -285,8 +289,9 @@ export default function HeroSection() {
             </motion.p>
             
             {/* Animated Button */}
-            <motion.button 
-              className="relative px-6 py-3 rounded-sm font-medium shadow-sm overflow-hidden group"
+            <motion.a 
+              href={currentContent.buttonUrl}
+              className="relative inline-block px-6 py-3 rounded-sm font-medium shadow-sm overflow-hidden group"
               style={{ backgroundColor: colors.accent_color, color: colors.secondary_color }}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -298,7 +303,7 @@ export default function HeroSection() {
                 {currentContent.buttonText}
               </span>
               <div className="absolute inset-0 rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
-            </motion.button>
+            </motion.a>
           </motion.div>
         </AnimatePresence>
       </div>

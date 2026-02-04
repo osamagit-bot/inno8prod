@@ -1,138 +1,206 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { useColors } from '../contexts/ColorContext'
-import { API_ENDPOINTS } from '../lib/api'
-import { fallbackData } from '../lib/fallbackData'
+import { useEffect, useState } from "react";
+import { useColors } from "../contexts/ColorContext";
+import { API_ENDPOINTS } from "../lib/api";
+import { fallbackData } from "../lib/fallbackData";
 
 interface ServicesSectionContent {
-  subtitle: string
-  title: string
-  title_highlight: string
-  button_text: string
+  subtitle: string;
+  title: string;
+  title_highlight: string;
+  button_text: string;
 }
 
 interface Service {
-  id: number
-  name: string
-  description: string
-  icon: string
-  icon_svg?: string
-  order: number
+  id: number;
+  name: string;
+  description: string;
+  icon: string;
+  icon_svg?: string;
+  order: number;
 }
 
 export default function ServicesSection() {
-  const colors = useColors()
-  const [sectionContent, setSectionContent] = useState<ServicesSectionContent>(fallbackData.servicesSection)
-  const [services, setServices] = useState<Service[]>(fallbackData.services)
+  const colors = useColors();
+  const [sectionContent, setSectionContent] = useState<ServicesSectionContent>(
+    fallbackData.servicesSection,
+  );
+  const [services, setServices] = useState<Service[]>(fallbackData.services);
 
   useEffect(() => {
-    fetchSectionContent()
-    fetchServices()
-    
+    fetchSectionContent();
+    fetchServices();
+
     // Initialize AOS
-    import('aos').then((AOS) => {
+    import("aos").then((AOS) => {
       AOS.init({
         duration: 800,
         once: true,
-        offset: 100
-      })
-    })
-  }, [])
+        offset: 100,
+      });
+    });
+  }, []);
 
   const fetchSectionContent = async () => {
     try {
-      const response = await fetch(API_ENDPOINTS.SERVICES_SECTION)
+      const response = await fetch(API_ENDPOINTS.SERVICES_SECTION);
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json();
         setSectionContent({
           subtitle: data.subtitle || sectionContent.subtitle,
           title: data.title || sectionContent.title,
-          title_highlight: data.title_highlight || sectionContent.title_highlight,
-          button_text: data.button_text || sectionContent.button_text
-        })
+          title_highlight:
+            data.title_highlight || sectionContent.title_highlight,
+          button_text: data.button_text || sectionContent.button_text,
+        });
       }
     } catch (error) {
-      console.log('Backend offline - using fallback services section content')
-      setSectionContent(fallbackData.servicesSection)
+      console.log("Backend offline - using fallback services section content");
+      setSectionContent(fallbackData.servicesSection);
     }
-  }
+  };
 
   const fetchServices = async () => {
     try {
-      const response = await fetch(API_ENDPOINTS.SERVICES)
+      const response = await fetch(API_ENDPOINTS.SERVICES);
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json();
         if (data.length > 0) {
-          setServices(data)
+          setServices(data);
         }
       }
     } catch (error) {
-      console.log('Backend offline - using fallback services')
-      setServices(fallbackData.services)
+      console.log("Backend offline - using fallback services");
+      setServices(fallbackData.services);
     }
-  }
+  };
 
   const getServiceIcon = (iconType: string) => {
     switch (iconType) {
-      case 'web':
+      case "web":
         return (
-          <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+          <svg
+            className="w-12 h-12"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+            />
           </svg>
-        )
-      case 'design':
+        );
+      case "design":
         return (
-          <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 21h10a2 2 0 002-2v-4a2 2 0 00-2-2H7M7 21V9a2 2 0 012-2h10a2 2 0 012 2v4M7 21h4" />
+          <svg
+            className="w-12 h-12"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 21h10a2 2 0 002-2v-4a2 2 0 00-2-2H7M7 21V9a2 2 0 012-2h10a2 2 0 012 2v4M7 21h4"
+            />
           </svg>
-        )
-      case 'video':
+        );
+      case "video":
         return (
-          <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          <svg
+            className="w-12 h-12"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+            />
           </svg>
-        )
-      case 'database':
+        );
+      case "database":
         return (
-          <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+          <svg
+            className="w-12 h-12"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+            />
           </svg>
-        )
-      case 'it':
+        );
+      case "it":
         return (
-          <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          <svg
+            className="w-12 h-12"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
           </svg>
-        )
-      case 'support':
+        );
+      case "support":
         return (
-          <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 109.75 9.75A9.75 9.75 0 0012 2.25zm0 0v19.5" />
+          <svg
+            className="w-12 h-12"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 109.75 9.75A9.75 9.75 0 0012 2.25zm0 0v19.5"
+            />
           </svg>
-        )
+        );
       default:
         return (
-          <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          <svg
+            className="w-12 h-12"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            />
           </svg>
-        )
+        );
     }
-  }
+  };
 
   return (
-    <section 
+    <section
       className="relative py-20 overflow-hidden"
-      style={{
-        backgroundImage: 'url(/images/cardbg.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
+      style={{ backgroundColor: colors.primary_color }}
     >
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/60"></div>
-      
+      <div className="absolute inset-0 bg-black/20"></div>
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-32 h-32 border border-blue-500/20 rounded-full animate-pulse"></div>
@@ -149,19 +217,47 @@ export default function ServicesSection() {
               {sectionContent.subtitle}
             </span>
           </div>
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6" data-aos="fade-up" data-aos-delay="200">
-            {sectionContent.title}<br />
-            <span style={{ color: colors.accent_color }}>{sectionContent.title_highlight}</span>
+          <h2
+            className="text-4xl lg:text-5xl font-bold text-white mb-6"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            {sectionContent.title}
+            <br />
+            <span style={{ color: colors.accent_color }}>
+              {sectionContent.title_highlight}
+            </span>
           </h2>
-          <div className="flex justify-end" data-aos="fade-up" data-aos-delay="400">
-            <a href="/services" className="relative bg-transparent border font-medium overflow-hidden group transition-colors px-8 py-3 rounded-sm text-white" style={{ borderColor: colors.primary_color }}>
+          <div
+            className="flex justify-end"
+            data-aos="fade-up"
+            data-aos-delay="400"
+          >
+            <a
+              href="/services"
+              className="relative bg-transparent border font-medium overflow-hidden group transition-colors px-8 py-3 rounded-sm text-white"
+              style={{ borderColor: colors.primary_color }}
+            >
               <span className="relative z-10 flex items-center space-x-2">
                 <span>{sectionContent.button_text}</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
                 </svg>
               </span>
-              <div className="absolute inset-0 scale-0 group-hover:scale-100 transition-transform duration-300 ease-out" style={{ backgroundColor: colors.primary_color }}></div>
+              <div
+                className="absolute inset-0 scale-0 group-hover:scale-100 transition-transform duration-300 ease-out"
+                style={{ backgroundColor: colors.primary_color }}
+              ></div>
             </a>
           </div>
         </div>
@@ -169,26 +265,34 @@ export default function ServicesSection() {
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <div 
+            <div
               key={service.id}
-              className="group relative rounded-lg p-8 transition-all duration-500 hover:scale-105 hover:shadow-2xl overflow-hidden bg-blue-800/30" 
+              className="group relative rounded-lg p-8 transition-all duration-500 hover:scale-105 hover:shadow-2xl overflow-hidden bg-blue-800/30"
               data-aos="fade-up"
               data-aos-delay={index * 100}
             >
               {/* Dark Background Overlay - Slides from bottom to top */}
-              <div className="absolute inset-0 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" style={{ backgroundColor: colors.secondary_color }}></div>
-              
+              <div className="absolute inset-0 bg-[#FCB316]/80 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
+
               {/* Bottom Border - Slides from left to right */}
-              <div className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-500 ease-out" style={{ backgroundColor: colors.accent_color }}></div>
-              
+              <div
+                className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-500 ease-out"
+                style={{ backgroundColor: colors.accent_color }}
+              ></div>
+
               {/* Service Icon */}
               <div className="mb-6 relative z-10">
-                <div 
-                  className="w-20 h-20 rounded-lg flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" 
-                  style={{ backgroundColor: colors.primary_color + '20', color: colors.primary_color }}
+                <div
+                  className="w-20 h-20 rounded-lg flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"
+                  style={{
+                    backgroundColor: colors.primary_color + "20",
+                    color: colors.primary_color,
+                  }}
                 >
                   {service.icon_svg ? (
-                    <div dangerouslySetInnerHTML={{ __html: service.icon_svg }} />
+                    <div
+                      dangerouslySetInnerHTML={{ __html: service.icon_svg }}
+                    />
                   ) : (
                     getServiceIcon(service.icon)
                   )}
@@ -208,9 +312,22 @@ export default function ServicesSection() {
               )}
 
               {/* Arrow Icon - Bottom Right */}
-              <div className="absolute bottom-4 right-4 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0 z-10" style={{ backgroundColor: colors.primary_color }}>
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              <div
+                className="absolute bottom-4 right-4 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0 z-10"
+                style={{ backgroundColor: colors.primary_color }}
+              >
+                <svg
+                  className="w-4 h-4 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
                 </svg>
               </div>
             </div>
@@ -218,5 +335,5 @@ export default function ServicesSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

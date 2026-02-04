@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+
 import { useEffect, useState } from 'react'
 import { useColors } from '../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../lib/api'
@@ -144,13 +144,13 @@ export default function ProjectsSection() {
               data-aos-delay={index * 100}
             >
               {/* Project Image */}
-              <div className="relative h-64 overflow-hidden">
+               <div className="relative h-64 overflow-hidden bg-gray-200 flex-shrink-0">
                 {project.image ? (
-                  <Image
+                  <img
                     src={getImageUrl(project.image)}
                     alt={project.title}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+            
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     onError={(e) => {
                       console.log('Image failed to load:', project.image, 'Generated URL:', getImageUrl(project.image))
                     }}

@@ -1,0 +1,273 @@
+
+> inno8-website@0.1.0 start
+> next start
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at Server.listen (node:net:1953:7)
+    at /var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:279:16
+    at new Promise (<anonymous>)
+    at startServer (/var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:190:11)
+    at nextStart (/var/www/inno8solutions.com/node_modules/next/dist/cli/next-start.js:50:40)
+    at /var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:54
+    at async main (/var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:5) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+> inno8-website@0.1.0 start
+> next start
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at Server.listen (node:net:1953:7)
+    at /var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:279:16
+    at new Promise (<anonymous>)
+    at startServer (/var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:190:11)
+    at nextStart (/var/www/inno8solutions.com/node_modules/next/dist/cli/next-start.js:50:40)
+    at /var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:54
+    at async main (/var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:5) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+> inno8-website@0.1.0 start
+> next start
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at Server.listen (node:net:1953:7)
+    at /var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:279:16
+    at new Promise (<anonymous>)
+    at startServer (/var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:190:11)
+    at nextStart (/var/www/inno8solutions.com/node_modules/next/dist/cli/next-start.js:50:40)
+    at /var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:54
+    at async main (/var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:5) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+> inno8-website@0.1.0 start
+> next start
+
+   ▲ Next.js 14.0.4
+   - Local:        http://localhost:3000
+
+[Error: ENOENT: no such file or directory, open '/var/www/inno8solutions.com/.next/BUILD_ID'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/var/www/inno8solutions.com/.next/BUILD_ID'
+}
+
+> inno8-website@0.1.0 start
+> next start
+
+   ▲ Next.js 14.0.4
+   - Local:        http://localhost:3000
+
+ ✓ Ready in 346ms
+ ⚠ For production Image Optimization with Next.js, the optional 'sharp' package is strongly recommended. Run 'npm i sharp', and Next.js will use it automatically for Image Optimization.
+Read more: https://nextjs.org/docs/messages/sharp-missing-in-production
+
+> inno8-website@0.1.0 start
+> next start
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at Server.listen (node:net:1953:7)
+    at /var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:279:16
+    at new Promise (<anonymous>)
+    at startServer (/var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:190:11)
+    at nextStart (/var/www/inno8solutions.com/node_modules/next/dist/cli/next-start.js:50:40)
+    at /var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:54
+    at async main (/var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:5) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+> inno8-website@0.1.0 start
+> next start
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at Server.listen (node:net:1953:7)
+    at /var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:279:16
+    at new Promise (<anonymous>)
+    at startServer (/var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:190:11)
+    at nextStart (/var/www/inno8solutions.com/node_modules/next/dist/cli/next-start.js:50:40)
+    at /var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:54
+    at async main (/var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:5) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+> inno8-website@0.1.0 start
+> next start
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at Server.listen (node:net:1953:7)
+    at /var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:279:16
+    at new Promise (<anonymous>)
+    at startServer (/var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:190:11)
+    at nextStart (/var/www/inno8solutions.com/node_modules/next/dist/cli/next-start.js:50:40)
+    at /var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:54
+    at async main (/var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:5) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+> inno8-website@0.1.0 start
+> next start
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at Server.listen (node:net:1953:7)
+    at /var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:279:16
+    at new Promise (<anonymous>)
+    at startServer (/var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:190:11)
+    at nextStart (/var/www/inno8solutions.com/node_modules/next/dist/cli/next-start.js:50:40)
+    at /var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:54
+    at async main (/var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:5) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+> inno8-website@0.1.0 start
+> next start
+
+   ▲ Next.js 14.0.4
+   - Local:        http://localhost:3000
+
+ ✓ Ready in 347ms
+ ⚠ For production Image Optimization with Next.js, the optional 'sharp' package is strongly recommended. Run 'npm i sharp', and Next.js will use it automatically for Image Optimization.
+Read more: https://nextjs.org/docs/messages/sharp-missing-in-production
+python: can't open file '/var/www/inno8solutions.com/manage.py': [Errno 2] No such file or directory
+
+> inno8-website@0.1.0 start
+> next start
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at Server.listen (node:net:1953:7)
+    at /var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:279:16
+    at new Promise (<anonymous>)
+    at startServer (/var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:190:11)
+    at nextStart (/var/www/inno8solutions.com/node_modules/next/dist/cli/next-start.js:50:40)
+    at /var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:54
+    at async main (/var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:5) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+> inno8-website@0.1.0 start
+> next start
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at Server.listen (node:net:1953:7)
+    at /var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:279:16
+    at new Promise (<anonymous>)
+    at startServer (/var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:190:11)
+    at nextStart (/var/www/inno8solutions.com/node_modules/next/dist/cli/next-start.js:50:40)
+    at /var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:54
+    at async main (/var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:5) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+> inno8-website@0.1.0 start
+> next start
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at Server.listen (node:net:1953:7)
+    at /var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:279:16
+    at new Promise (<anonymous>)
+    at startServer (/var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:190:11)
+    at nextStart (/var/www/inno8solutions.com/node_modules/next/dist/cli/next-start.js:50:40)
+    at /var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:54
+    at async main (/var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:5) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+> inno8-website@0.1.0 start
+> next start
+
+   ▲ Next.js 14.0.4
+   - Local:        http://localhost:3000
+
+ ✓ Ready in 321ms
+
+> inno8-website@0.1.0 start
+> next start
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at Server.listen (node:net:1953:7)
+    at /var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:279:16
+    at new Promise (<anonymous>)
+    at startServer (/var/www/inno8solutions.com/node_modules/next/dist/server/lib/start-server.js:190:11)
+    at nextStart (/var/www/inno8solutions.com/node_modules/next/dist/cli/next-start.js:50:40)
+    at /var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:54
+    at async main (/var/www/inno8solutions.com/node_modules/next/dist/bin/next:157:5) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}

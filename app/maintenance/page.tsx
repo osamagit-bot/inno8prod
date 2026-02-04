@@ -7,22 +7,24 @@ import { fetchMaintenanceStatus } from '@/lib/api'
 export default function MaintenancePage() {
   const router = useRouter()
 
-  useEffect(() => {
-    const checkMaintenance = async () => {
-      try {
-        const data = await fetchMaintenanceStatus()
-        if (!data.maintenance_mode) {
-          router.push('/')
-        }
-      } catch (error) {
-        console.error('Failed to check maintenance status:', error)
+useEffect(() => {
+  const checkMaintenance = async () => {
+    try {
+      const response = await fetch('/api/maintenance-status/')
+      const data = await response.json()
+      if (!data.maintenance_mode) {
+        window.location.href = '/'
       }
+    } catch (error) {
+      console.error('Failed to check maintenance status:', error)
     }
+  }
 
-    checkMaintenance()
-    const interval = setInterval(checkMaintenance, 5000)
-    return () => clearInterval(interval)
-  }, [router])
+  checkMaintenance()
+  const interval = setInterval(checkMaintenance, 3000)
+  return () => clearInterval(interval)
+}, [])
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: '#012340'}}>

@@ -142,7 +142,7 @@ export default function BlogDetailPage() {
             {/* Featured Image */}
             {post.image && (
               <div className="mb-8 rounded-lg overflow-hidden">
-                <Image
+                <img
                   src={getImageUrl(post.image)}
                   alt={post.title}
                   width={800}

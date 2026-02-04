@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, permission_classes
+from django.shortcuts import redirect
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
@@ -7,7 +8,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import *
 from .serializers import *
 
+@api_view(['GET'])
+def dashboard_redirect_view(request):
+    """Redirect Django admin dashboard requests to Next.js frontend dashboard"""
+    return redirect('/admin/dashboard')
+
 @api_view(['POST'])
+
 def login_view(request):
     username = request.data.get('username')
     password = request.data.get('password')

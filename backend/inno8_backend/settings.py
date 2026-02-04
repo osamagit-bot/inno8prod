@@ -7,7 +7,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-produc
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'inno8.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1','www.inno8solutions.com','72.61.84.41','https://inno8solutions.com', 'inno8solutions.com', 'www.inno8solutions.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -52,6 +52,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'inno8_backend.wsgi.application'
+
+CSRF_TRUSTED_ORIGINS = ['https://inno8solutions.com', 'https://www.inno8solutions.com']
 
 DATABASES = {
     'default': {
@@ -110,8 +112,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    'https://inno8solutions.com',
+    'https://www.inno8solutions.com'
 ]
-
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True

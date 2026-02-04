@@ -1,5 +1,26 @@
 from django.contrib import admin
 from .models import *
+from django.http import HttpResponseRedirect
+from django.urls import path
+from django.shortcuts import render 
+from .models import SiteSettings
+class MaintenanceAdmin:
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('maintenance-toggle/', self.maintenance_toggle_view, name='maintenance_toggle'),
+        ]
+        return custom_urls + urls
+    
+    def maintenance_toggle_view(self, request):
+        settings, created = SiteSettings.objects.get_or_create(id=1)
+        settings.maintenance_mode = not settings.maintenance_mode
+        settings.save()
+        self.message_user(request, f'Maintenance mode {"enabled" if settings.maintenance_mode else "disabled"}')
+        return HttpResponseRedirect('/admin/')
+
+admin.site.__class__ = type('CustomAdminSite', (admin.site.__class__, MaintenanceAdmin), {})
+
 
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(admin.ModelAdmin):

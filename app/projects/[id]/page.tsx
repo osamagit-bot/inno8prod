@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { useColors } from '../../../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../../../lib/api'
-import Image from 'next/image'
 import Footer from '../../../components/Footer'
 
 interface Project {
@@ -70,12 +69,10 @@ export default function ProjectDetailPage() {
       {/* Hero Section */}
       <section className="relative h-96 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
-          <Image
+          <img
             src="/images/abouthero.jpg"
             alt="Project Hero"
-            fill
-            className="object-cover"
-            priority
+            className="w-full h-full object-cover"
           />
         </div>
         
@@ -111,7 +108,7 @@ export default function ProjectDetailPage() {
             <div className="relative">
               <div className="absolute -top-4 -left-4 w-full h-full rounded-lg" style={{ backgroundColor: colors.primary_color }}></div>
               <div className="relative overflow-hidden rounded-lg group">
-                <Image
+                <img
                   src={project.image ? getImageUrl(project.image) : '/images/placeholder.jpg'}
                   alt={project.title}
                   width={600}

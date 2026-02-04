@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     }
 
     try {
-      const response = await fetch('http://localhost:8010/api/admin/toggle-maintenance/', {
+            const response = await fetch('http://127.0.0.1:8000/api/admin/toggle-maintenance/', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

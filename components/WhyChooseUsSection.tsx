@@ -69,7 +69,7 @@ export default function WhyChooseUsSection() {
 
   if (loading) {
     return (
-      <section className="relative py-20 overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
+      <section className="relative py-20 overflow-hidden" style={{ backgroundColor: colors.primary_color }}>
         <div className="container mx-auto px-4 text-center">
           <div className="text-white">Loading...</div>
         </div>
@@ -78,7 +78,7 @@ export default function WhyChooseUsSection() {
   }
 
   return (
-    <section className="relative py-20 overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
+    <section className="relative py-20 overflow-hidden" style={{ backgroundColor: colors.primary_color }}>
       {/* Circular Gradient Background */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>

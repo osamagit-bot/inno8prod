@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'content',
+	'analytics',
 ]
 
 MIDDLEWARE = [
@@ -31,6 +32,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+'analytics.middleware.AnalyticsMiddleware',
 ]
 
 ROOT_URLCONF = 'inno8_backend.urls'

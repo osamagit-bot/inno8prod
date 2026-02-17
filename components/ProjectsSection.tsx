@@ -56,11 +56,14 @@ export default function ProjectsSection() {
   const getCategories = () => {
     const techs = projects.flatMap(p => p.technologies.split(', '))
     const categories = ['All', 'Featured']
-    if (techs.some(t => ['React', 'Vue', 'Next', 'Angular'].some(web => t.includes(web)))) {
+    if (techs.some(t => ['React', 'Vue', 'Next', 'Angular', 'HTML', 'CSS', 'JavaScript', 'Django', 'Tailwind', 'Bootstrap', 'Laravel', 'PHP'].some(web => t.toLowerCase().includes(web.toLowerCase())))) {
       categories.push('Web Development')
     }
     if (techs.some(t => t.includes('React Native') || t.includes('Flutter'))) {
       categories.push('Mobile Apps')
+    }
+    if (techs.some(t => ['MySQL', 'PostgreSQL', 'MongoDB', 'SQLite', 'Oracle', 'SQL Server', 'Database', 'PHP', 'Django', 'Laravel', 'Node.js', 'Express'].some(db => t.toLowerCase().includes(db.toLowerCase())))) {
+      categories.push('Database Development')
     }
     if (techs.some(t => ['Spring', 'Oracle', 'Enterprise'].some(ent => t.includes(ent)))) {
       categories.push('Enterprise')
@@ -76,9 +79,11 @@ export default function ProjectsSection() {
       case 'Featured':
         return projects.filter(p => p.is_featured)
       case 'Web Development':
-        return projects.filter(p => ['React', 'Vue', 'Next', 'Angular'].some(tech => p.technologies.includes(tech)))
+        return projects.filter(p => ['React', 'Vue', 'Next', 'Angular', 'HTML', 'CSS', 'JavaScript', 'Django', 'Tailwind', 'Bootstrap', 'Laravel', 'PHP'].some(tech => p.technologies.toLowerCase().includes(tech.toLowerCase())))
       case 'Mobile Apps':
         return projects.filter(p => p.technologies.includes('React Native') || p.technologies.includes('Flutter'))
+      case 'Database Development':
+        return projects.filter(p => ['MySQL', 'PostgreSQL', 'MongoDB', 'SQLite', 'Oracle', 'SQL Server', 'Database', 'PHP', 'Django', 'Laravel', 'Node.js', 'Express'].some(tech => p.technologies.toLowerCase().includes(tech.toLowerCase())))
       case 'Enterprise':
         return projects.filter(p => ['Spring', 'Oracle', 'Enterprise'].some(tech => p.technologies.includes(tech)))
       case 'Branding & Logo':
@@ -144,13 +149,13 @@ export default function ProjectsSection() {
               data-aos-delay={index * 100}
             >
               {/* Project Image */}
-               <div className="relative h-64 overflow-hidden bg-gray-200 flex-shrink-0">
+              <div className="relative h-64 overflow-hidden">
                 {project.image ? (
                   <img
                     src={getImageUrl(project.image)}
                     alt={project.title}
-            
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    
+                    className="object-cover h-full w-full group-hover:scale-110 transition-transform duration-500"
                     onError={(e) => {
                       console.log('Image failed to load:', project.image, 'Generated URL:', getImageUrl(project.image))
                     }}

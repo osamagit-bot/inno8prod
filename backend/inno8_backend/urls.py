@@ -41,6 +41,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/health/', api_health, name='api_health'),
     path('api/', include('content.urls')),
+	  path('api/analytics/', include('analytics.urls')),
 ]
 
 if settings.DEBUG:

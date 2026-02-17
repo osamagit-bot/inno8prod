@@ -27,31 +27,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: 'https://inno8solutions.com/services/web-development',
+      url: 'https://inno8solutions.com/services/1',
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: 'https://inno8solutions.com/services/mobile-apps',
+      url: 'https://inno8solutions.com/services/2',
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: 'https://inno8solutions.com/services/software-development',
+      url: 'https://inno8solutions.com/services/3',
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: 'https://inno8solutions.com/services/ui-ux-design',
+      url: 'https://inno8solutions.com/services/4',
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: 'https://inno8solutions.com/services/digital-marketing',
+      url: 'https://inno8solutions.com/services/5',
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
@@ -76,4 +76,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]
 }
-

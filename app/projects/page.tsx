@@ -53,41 +53,103 @@ export default function ProjectsPage() {
     setLoading(false)
   }
 
-  const getCategories = () => {
-    const techs = projects.flatMap(p => p.technologies.split(', '))
-    const categories = ['All', 'Featured']
-    if (techs.some(t => ['React', 'Vue', 'Next', 'Angular'].some(web => t.includes(web)))) {
-      categories.push('Web Development')
+ const getCategories = () => {
+    const techs = projects.flatMap((p) => p.technologies.split(", "));
+    const categories = ["All", "Featured"];
+    if (
+      techs.some((t) =>
+        ["React", "Vue", "Next", "Angular", "HTML", "CSS", "JavaScript", "Django", "Tailwind", "Bootstrap", "Laravel", "PHP"].some((web) => t.toLowerCase().includes(web.toLowerCase())),
+      )
+    ) {
+      categories.push("Web Development");
     }
-    if (techs.some(t => t.includes('React Native') || t.includes('Flutter'))) {
-      categories.push('Mobile Apps')
+    if (
+      techs.some((t) => t.includes("React Native") || t.includes("Flutter"))
+    ) {
+      categories.push("Mobile Apps");
     }
-    if (techs.some(t => ['Spring', 'Oracle', 'Enterprise'].some(ent => t.includes(ent)))) {
-      categories.push('Enterprise')
+    if (
+      techs.some((t) =>
+        ["MySQL", "PostgreSQL", "MongoDB", "SQLite", "Oracle", "SQL Server", "Database", "PHP", "Django", "Laravel", "Node.js", "Express"].some((db) => t.toLowerCase().includes(db.toLowerCase())),
+      )
+    ) {
+      categories.push("Database Development");
     }
-    if (techs.some(t => ['Logo', 'Branding', 'Brand', 'Identity', 'Photoshop', 'Canva', 'CorelDraw', 'Illustrator', 'Design', 'Graphics'].some(brand => t.includes(brand)))) {
-      categories.push('Branding & Logo')
+    if (
+      techs.some((t) =>
+        ["Spring", "Oracle", "Enterprise"].some((ent) => t.includes(ent)),
+      )
+    ) {
+      categories.push("Enterprise");
     }
-    return categories
-  }
+    if (
+      techs.some((t) =>
+        [
+          "Logo",
+          "Branding",
+          "Brand",
+          "Identity",
+          "Photoshop",
+          "Canva",
+          "CorelDraw",
+          "Illustrator",
+          "Design",
+          "Graphics",
+        ].some((brand) => t.includes(brand)),
+      )
+    ) {
+      categories.push("Branding & Logo");
+    }
+    return categories;
+  };
   
-  const getFilteredProjects = () => {
+const getFilteredProjects = () => {
     switch (activeFilter) {
-      case 'Featured':
-        return projects.filter(p => p.is_featured)
-      case 'Web Development':
-        return projects.filter(p => ['React', 'Vue', 'Next', 'Angular'].some(tech => p.technologies.includes(tech)))
-      case 'Mobile Apps':
-        return projects.filter(p => p.technologies.includes('React Native') || p.technologies.includes('Flutter'))
-      case 'Enterprise':
-        return projects.filter(p => ['Spring', 'Oracle', 'Enterprise'].some(tech => p.technologies.includes(tech)))
-      case 'Branding & Logo':
-        return projects.filter(p => ['Logo', 'Branding', 'Brand', 'Identity', 'Photoshop', 'Canva', 'CorelDraw', 'Illustrator', 'Design', 'Graphics'].some(tech => p.technologies.includes(tech)))
+      case "Featured":
+        return projects.filter((p) => p.is_featured);
+      case "Web Development":
+        return projects.filter((p) =>
+          ["React", "Vue", "Next", "Angular", "HTML", "CSS", "JavaScript", "Django", "Tailwind", "Bootstrap", "Laravel", "PHP"].some((tech) =>
+            p.technologies.toLowerCase().includes(tech.toLowerCase()),
+          ),
+        );
+      case "Mobile Apps":
+        return projects.filter(
+          (p) =>
+            p.technologies.includes("React Native") ||
+            p.technologies.includes("Flutter"),
+        );
+      case "Database Development":
+        return projects.filter((p) =>
+          ["MySQL", "PostgreSQL", "MongoDB", "SQLite", "Oracle", "SQL Server", "Database", "PHP", "Django", "Laravel", "Node.js", "Express"].some((tech) =>
+            p.technologies.toLowerCase().includes(tech.toLowerCase()),
+          ),
+        );
+      case "Enterprise":
+        return projects.filter((p) =>
+          ["Spring", "Oracle", "Enterprise"].some((tech) =>
+            p.technologies.includes(tech),
+          ),
+        );
+      case "Branding & Logo":
+        return projects.filter((p) =>
+          [
+            "Logo",
+            "Branding",
+            "Brand",
+            "Identity",
+            "Photoshop",
+            "Canva",
+            "CorelDraw",
+            "Illustrator",
+            "Design",
+            "Graphics",
+          ].some((tech) => p.technologies.includes(tech)),
+        );
       default:
-        return projects
+        return projects;
     }
-  }
-
+  };
   const filters = getCategories()
 
   if (loading) {

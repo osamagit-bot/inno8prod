@@ -1,80 +1,79 @@
-'use client'
-
 import './globals.css'
 import { Nunito } from 'next/font/google'
-import WhatsAppFloat from '@/components/WhatsAppFloat'
-import Header from '@/components/Header'
-import LoadingScreen from '@/components/LoadingScreen'
-import CustomCursor from '@/components/CustomCursor'
-
-import { usePathname } from 'next/navigation'
-import { ColorProvider } from '@/contexts/ColorContext'
-import { useEffect, useState } from 'react'
-import { fetchMaintenanceStatus, API_ENDPOINTS, getImageUrl } from '@/lib/api'
-import Head from 'next/head'
+import ClientLayout from '@/components/ClientLayout'
+import type { Metadata } from 'next'
 
 const nunito = Nunito({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: {
+    default: 'Inno8 Software House - Custom Software Development & Digital Solutions',
+    template: '%s | Inno8 Software House'
+  },
+  description: 'Inno8 is a leading software house delivering innovative digital solutions including web development, mobile app development, UI/UX design, and cloud solutions. Transform your business with our expert team.',
+  keywords: ['software development', 'web development', 'mobile app development', 'UI/UX design', 'digital solutions', 'software house', 'custom software', 'technology solutions'],
+  authors: [{ name: 'Inno8 Software House' }],
+  creator: 'Inno8 Software House',
+  publisher: 'Inno8 Software House',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://inno8solutions.com'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'Inno8 Software House - Custom Software Development & Digital Solutions',
+    description: 'Leading software house delivering innovative digital solutions including web development, mobile apps, UI/UX design, and cloud solutions.',
+    url: 'https://inno8solutions.com',
+    siteName: 'Inno8 Software House',
+    images: [
+      {
+        url: '/images/inoo8%20With%20Bg.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Inno8 Software House Logo',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Inno8 Software House - Custom Software Development',
+    description: 'Leading software house delivering innovative digital solutions including web development, mobile apps, and UI/UX design.',
+    images: ['/images/inoo8%20With%20Bg.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+}
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const pathname = usePathname()
-  const [maintenanceMode, setMaintenanceMode] = useState(false)
-  const [faviconUrl, setFaviconUrl] = useState('/images/inoo8%20With%20Bg.jpg')
-  
-  useEffect(() => {
-    const checkMaintenance = async () => {
-      try {
-        const data = await fetchMaintenanceStatus()
-        setMaintenanceMode(data.maintenance_mode)
-      } catch (error) {
-        console.error('Failed to check maintenance status:', error)
-      }
-    }
-    
-    const fetchFavicon = async () => {
-      try {
-        const response = await fetch(API_ENDPOINTS.SITE_SETTINGS)
-        if (response.ok) {
-          const data = await response.json()
-          if (data.mobile_logo) {
-            setFaviconUrl(getImageUrl(data.mobile_logo))
-          }
-        }
-      } catch (error) {
-        console.log('Using fallback favicon')
-      }
-    }
-    
-    checkMaintenance()
-    fetchFavicon()
-  }, [pathname])
-  
-  useEffect(() => {
-    const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement || document.createElement('link')
-    link.type = 'image/x-icon'
-    link.rel = 'shortcut icon'
-    link.href = faviconUrl
-    document.getElementsByTagName('head')[0].appendChild(link)
-  }, [faviconUrl])
-  
-  const hideHeader = pathname === '/login' || pathname === '/login/' || pathname?.startsWith('/admin') || pathname === '/maintenance' || maintenanceMode
-
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href={faviconUrl} />
+        <link rel="icon" href="/images/inoo8%20With%20Bg.jpg" />
+        <meta name="google-site-verification" content="" />
       </head>
       <body className="cursor-none" style={{ fontFamily: 'Poppins, sans-serif' }}>
-        <ColorProvider>
-          <CustomCursor />
-          <LoadingScreen />
-          {!hideHeader && <Header />}
+        <ClientLayout>
           {children}
-       	  <WhatsAppFloat />
-        </ColorProvider>
+        </ClientLayout>
       </body>
     </html>
   )

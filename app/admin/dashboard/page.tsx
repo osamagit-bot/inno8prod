@@ -74,6 +74,8 @@ export default function AdminDashboard() {
 
   const menuItems = [
  { id: 'analytics', name: 'Website Analytics', href: '/admin/analytics', icon: '??' },
+{ id: 'newsletter', name: 'Newsletter', href: '/admin/newsletter', icon: '??' },
+
     { id: 'site-settings', name: 'Site Settings', href: '/admin/site-settings', icon: '⚙️' },
     { id: 'color-palette', name: 'Color Palette', href: '/admin/color-palette', icon: '🎨' },
     { id: 'hero-sections', name: 'Hero Sections', href: '/admin/hero-sections', icon: '🖼️' },

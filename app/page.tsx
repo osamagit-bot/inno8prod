@@ -4,7 +4,10 @@ import ClientLogosSection from '../components/ClientLogosSection'
 import CTASection from '../components/CTASection'
 import FAQSection from '../components/FAQSection'
 import ImageSection from '../components/ImageSection'
+import NewsletterSubscribe from '../components/NewsletterSubscribe'
+
 import Footer from '../components/Footer'
+
 import HeroSection from '../components/HeroSection'
 import ProjectsSection from '../components/ProjectsSection'
 import ServicesSection from '../components/ServicesSection'
@@ -41,6 +44,8 @@ export default function Home() {
        <FAQSection />
       <CTASection />
        <ImageSection />
+<NewsletterSubscribe />
+
       <Footer />
     </main>
   )

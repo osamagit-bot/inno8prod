@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
+import NewsletterSubscribe from '../../../components/NewsletterSubscribe'
 import Footer from '../../../components/Footer'
 import { useColors } from '../../../contexts/ColorContext'
 import { API_ENDPOINTS, getImageUrl } from '../../../lib/api'
@@ -158,9 +159,10 @@ export default function BlogDetailPage() {
                 {post.excerpt}
               </p>
               
-              <div className="text-gray-700 leading-relaxed whitespace-pre-line">
-                {post.content}
-              </div>
+             <div 
+  className="text-gray-700 leading-relaxed"
+  dangerouslySetInnerHTML={{ __html: post.content }}
+/>
             </div>
 
             {/* Back Button */}
@@ -181,7 +183,7 @@ export default function BlogDetailPage() {
           </div>
         </div>
       </section>
-
+	 <NewsletterSubscribe />
       <Footer />
     </div>
   )

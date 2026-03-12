@@ -1,4 +1,6 @@
 from django.db import models
+from ckeditor.fields import RichTextField
+
 
 class SiteSettings(models.Model):
     site_name = models.CharField(max_length=100, default="Inno8 Solutions")
@@ -225,7 +227,7 @@ class ContactSection(models.Model):
 class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     excerpt = models.TextField(max_length=300)
-    content = models.TextField()
+    content = RichTextField()
     image = models.ImageField(upload_to='blogs/', null=True, blank=True)
     author = models.CharField(max_length=100, default="Inno8 Team")
     category = models.CharField(max_length=50, default="DEVELOPMENT")

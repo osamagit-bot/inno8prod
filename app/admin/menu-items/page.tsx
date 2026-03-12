@@ -50,7 +50,6 @@ export default function MenuItems() {
     menuItems.forEach((item) => {
       if (!item.name.trim()) newErrors[`name_${item.id}`] = 'Menu name is required'
       if (!item.url.trim()) newErrors[`url_${item.id}`] = 'URL is required'
-      else if (!item.url.startsWith('/')) newErrors[`url_${item.id}`] = 'URL must start with /'
     })
     
     setErrors(newErrors)
@@ -60,8 +59,7 @@ export default function MenuItems() {
   const isFormValid = () => {
     return menuItems.every(item => 
       item.name.trim() && 
-      item.url.trim() && 
-      item.url.startsWith('/')
+      item.url.trim()
     )
   }
 
@@ -202,7 +200,7 @@ export default function MenuItems() {
     <div className="min-h-screen bg-gray-100">
       <div className="fixed top-0 left-0 right-0 z-50" style={{backgroundColor: '#0477BF', color: 'white', padding: '16px'}}>
         <Link href="/admin/dashboard" style={{color: 'white', textDecoration: 'none', fontSize: '16px', fontWeight: 'bold'}}>
-          ← Back to Dashboard
+          ? Back to Dashboard
         </Link>
       </div>
 
@@ -229,14 +227,14 @@ export default function MenuItems() {
                       onClick={() => moveItem(item.id, 'up')}
                       className="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
                     >
-                      ↑
+                      ?
                     </button>
                     <span className="text-xs text-center font-medium">{item.order}</span>
                     <button
                       onClick={() => moveItem(item.id, 'down')}
                       className="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
                     >
-                      ↓
+                      ?
                     </button>
                   </div>
 

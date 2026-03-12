@@ -20,8 +20,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'content',
-	'analytics',
-'newsletter',
+    'analytics',
+    'newsletter',
+    'ckeditor',
+    'ckeditor_uploader',
+    'converter',
 ]
 
 MIDDLEWARE = [
@@ -33,7 +36,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-'analytics.middleware.AnalyticsMiddleware',
+    'analytics.middleware.AnalyticsMiddleware',
 ]
 
 ROOT_URLCONF = 'inno8_backend.urls'
@@ -57,6 +60,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'inno8_backend.wsgi.application'
 
 CSRF_TRUSTED_ORIGINS = ['https://inno8solutions.com', 'https://www.inno8solutions.com']
+CSRF_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 DATABASES = {
     'default': {
@@ -113,6 +119,20 @@ SIMPLE_JWT = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 400,
+        'width': '100%',
+    },
+}
+
+# File upload settings for converter
+FILE_UPLOAD_MAX_MEMORY_SIZE = 18 * 1024 * 1024  # 50MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 18 * 1024 * 1024  # 50MB
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000
+
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     'https://inno8solutions.com',
@@ -120,6 +140,25 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
 
 # Email settings
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
@@ -130,4 +169,3 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@inno8solutions.com')
 FRONTEND_URL = config('FRONTEND_URL', default='https://inno8solutions.com')
-

@@ -198,10 +198,9 @@ export default function ProjectsSection() {
                 <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-600 transition-colors tracking-wide" style={{ color: colors.primary_color }}>
                   {project.title}
                 </h3>
-                <p className="text-gray-600 mb-4 line-clamp-3 flex-grow font-normal">
+                <p className="text-gray-600 mb-4 line-clamp-3 font-normal" style={{ minHeight: '4.5rem' }}>
                   {project.description}
                 </p>
-
                 {/* Technologies */}
                 <div className="flex flex-wrap gap-2 mb-4 mt-auto">
                   {project.technologies.split(', ').map((tech, techIndex) => (

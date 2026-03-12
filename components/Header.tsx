@@ -36,6 +36,7 @@ export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(
     fallbackData.siteSettings,
   );
@@ -46,10 +47,16 @@ export default function Header() {
     fetchMenuItems();
 
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 64);
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > 100) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+      setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -288,9 +295,12 @@ export default function Header() {
 
       </div>
 
+      {/* Spacer for fixed header */}
+      {isScrolled && <div style={{ height: '88px' }} />}
+
       {/* Main Header */}
       <header
-        className={`bg-white shadow-md transition-all duration-500 ease-out ${isScrolled ? "fixed top-0 left-0 right-0 z-50" : "relative"}`}
+        className={`bg-white shadow-md transition-all duration-500 ease-in-out ${isScrolled ? "fixed top-0 left-0 right-0 z-50" : "relative"}`}
         style={{ backgroundColor: "#FAFAFA" }}
       >
         <nav className="container mx-auto px-4 py-6">

@@ -39,10 +39,13 @@ def admin_dashboard_redirect(request):
 urlpatterns = [
     path('admin/dashboard/', admin_dashboard_redirect, name='admin_dashboard'),
     path('admin/', admin.site.urls),
+path('ckeditor/', include('ckeditor_uploader.urls')),
+
     path('api/health/', api_health, name='api_health'),
     path('api/', include('content.urls')),
 	  path('api/analytics/', include('analytics.urls')),
 path('api/newsletter/', include('newsletter.urls')),
+ path('api/converter/', include('converter.urls')),
 
 ]
 
